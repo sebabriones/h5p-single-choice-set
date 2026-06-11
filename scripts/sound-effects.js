@@ -1,6 +1,6 @@
-H5P.SingleChoiceSet = H5P.SingleChoiceSet || {};
+H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
 
-H5P.SingleChoiceSet.SoundEffects = (function () {
+H5P.SingleChoiceSetCFRD.SoundEffects = (function () {
   let isDefined = false;
 
   const SoundEffects = {

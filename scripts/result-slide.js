@@ -1,9 +1,9 @@
 var H5P = H5P || {};
-H5P.SingleChoiceSet = H5P.SingleChoiceSet || {};
+H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
 /**
  * SingleChoiceResultSlide - Represents the result slide
  */
-H5P.SingleChoiceSet.ResultSlide = (function ($, EventDispatcher) {
+H5P.SingleChoiceSetCFRD.ResultSlide = (function ($, EventDispatcher) {
 
   /**
    * @constructor

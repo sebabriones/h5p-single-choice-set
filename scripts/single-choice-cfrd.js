@@ -1,7 +1,7 @@
 var H5P = H5P || {};
-H5P.SingleChoiceSet = H5P.SingleChoiceSet || {};
+H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
 
-H5P.SingleChoiceSet.SingleChoice = (function ($, EventDispatcher, Alternative) {
+H5P.SingleChoiceSetCFRD.SingleChoice = (function ($, EventDispatcher, Alternative) {
   /**
    * Constructor function.
    */
@@ -274,4 +274,4 @@ H5P.SingleChoiceSet.SingleChoice = (function ($, EventDispatcher, Alternative) {
   };
 
   return SingleChoice;
-}(H5P.jQuery, H5P.EventDispatcher, H5P.SingleChoiceSet.Alternative));
+}(H5P.jQuery, H5P.EventDispatcher, H5P.SingleChoiceSetCFRD.Alternative));

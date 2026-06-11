@@ -1,14 +1,14 @@
 var H5P = H5P || {};
-H5P.SingleChoiceSet = H5P.SingleChoiceSet || {};
+H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
 
-H5P.SingleChoiceSet.XApiEventBuilder = (function ($, EventDispatcher) {
+H5P.SingleChoiceSetCFRD.XApiEventBuilder = (function ($, EventDispatcher) {
   /**
    * @typedef {object} LocalizedString
    * @property {string} en-US
    */
 
   /**
-   * @class {H5P.SingleChoiceSet.XApiEventDefinitionBuilder}
+   * @class {H5P.SingleChoiceSetCFRD.XApiEventDefinitionBuilder}
    * @constructor
    */
   function XApiEventDefinitionBuilder() {
@@ -206,7 +206,7 @@ H5P.SingleChoiceSet.XApiEventBuilder = (function ($, EventDispatcher) {
   // -----------------------------------------------------
 
   /**
-   * @class {H5P.SingleChoiceSet.XApiEventBuilder}
+   * @class {H5P.SingleChoiceSetCFRD.XApiEventBuilder}
    */
   function XApiEventBuilder() {
     EventDispatcher.call(this);
@@ -226,7 +226,7 @@ H5P.SingleChoiceSet.XApiEventBuilder = (function ($, EventDispatcher) {
    * @param {object} verb
    *
    * @public
-   * @return {H5P.SingleChoiceSet.XApiEventBuilder}
+   * @return {H5P.SingleChoiceSetCFRD.XApiEventBuilder}
    */
   XApiEventBuilder.prototype.verb = function (verb) {
     this.attributes.verb = verb;
@@ -239,7 +239,7 @@ H5P.SingleChoiceSet.XApiEventBuilder = (function ($, EventDispatcher) {
    * @param {string} objectType
    *
    * @public
-   * @return {H5P.SingleChoiceSet.XApiEventBuilder}
+   * @return {H5P.SingleChoiceSetCFRD.XApiEventBuilder}
    */
   XApiEventBuilder.prototype.actor = function (name, mbox, objectType) {
     this.attributes.actor = {
@@ -255,7 +255,7 @@ H5P.SingleChoiceSet.XApiEventBuilder = (function ($, EventDispatcher) {
    * Sets contentId
    * @param {string} contentId
    * @param {string} [subContentId]
-   * @return {H5P.SingleChoiceSet.XApiEventBuilder}
+   * @return {H5P.SingleChoiceSetCFRD.XApiEventBuilder}
    */
   XApiEventBuilder.prototype.contentId = function (contentId, subContentId) {
     this.attributes.contentId = contentId;
@@ -268,7 +268,7 @@ H5P.SingleChoiceSet.XApiEventBuilder = (function ($, EventDispatcher) {
    *
    * @param {string} parentContentId
    * @param {string} [parentSubContentId]
-   * @return {H5P.SingleChoiceSet.XApiEventBuilder}
+   * @return {H5P.SingleChoiceSetCFRD.XApiEventBuilder}
    */
   XApiEventBuilder.prototype.context = function (parentContentId, parentSubContentId) {
     this.attributes.parentContentId = parentContentId;
@@ -280,7 +280,7 @@ H5P.SingleChoiceSet.XApiEventBuilder = (function ($, EventDispatcher) {
    * @param {object} result
    *
    * @public
-   * @return {H5P.SingleChoiceSet.XApiEventBuilder}
+   * @return {H5P.SingleChoiceSetCFRD.XApiEventBuilder}
    */
   XApiEventBuilder.prototype.result = function (result) {
     this.attributes.result = result;
@@ -291,7 +291,7 @@ H5P.SingleChoiceSet.XApiEventBuilder = (function ($, EventDispatcher) {
    * @param {object} objectDefinition
    *
    * @public
-   * @return {H5P.SingleChoiceSet.XApiEventBuilder}
+   * @return {H5P.SingleChoiceSetCFRD.XApiEventBuilder}
    */
   XApiEventBuilder.prototype.objectDefinition = function (objectDefinition) {
     this.attributes.objectDefinition = objectDefinition;
@@ -411,7 +411,7 @@ H5P.SingleChoiceSet.XApiEventBuilder = (function ($, EventDispatcher) {
    *
    * @public
    * @static
-   * @return {H5P.SingleChoiceSet.XApiEventBuilder}
+   * @return {H5P.SingleChoiceSetCFRD.XApiEventBuilder}
    */
   XApiEventBuilder.create = function () {
     return new XApiEventBuilder();

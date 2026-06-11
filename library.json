@@ -1,12 +1,13 @@
 {
-  "machineName": "H5P.SingleChoiceSet",
-  "title": "Single Choice Set",
+  "machineName": "H5P.SingleChoiceSetCFRD",
+  "title": "Single Choice Set (CFRD)",
   "description": "Create sets of single choice tasks",
+  "contentType": "Question",
   "license": "MIT",
-  "author": "Joubel",
+  "author": "sbriones (CFRD-UDEC)",
   "majorVersion": 1,
-  "minorVersion": 11,
-  "patchVersion": 88,
+  "minorVersion": 1,
+  "patchVersion": 0,
   "runnable": 1,
   "fullscreen": 0,
   "embedTypes": [
@@ -18,7 +19,7 @@
   },
   "preloadedCss": [
     {
-      "path": "styles/single-choice-set.css"
+      "path": "styles/single-choice-set-cfrd.css"
     }
   ],
   "preloadedJs": [
@@ -38,10 +39,10 @@
       "path": "scripts/single-choice-alternative.js"
     },
     {
-      "path": "scripts/single-choice.js"
+      "path": "scripts/single-choice-cfrd.js"
     },
     {
-      "path": "scripts/single-choice-set.js"
+      "path": "scripts/single-choice-set-cfrd.js"
     }
   ],
   "preloadedDependencies": [

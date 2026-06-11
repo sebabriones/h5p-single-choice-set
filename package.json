@@ -1,0 +1,11 @@
+{
+  "name": "h5p-single-choice-set-cfrd",
+  "version": "1.0.0",
+  "description": "Single Choice Set (CFRD) — fork upstream 1.11 sobre coreApi 1.28.",
+  "private": true,
+  "scripts": {
+    "sync:h5p-cli": "powershell -ExecutionPolicy Bypass -File ..\\scripts\\sync-h5p-cli.ps1"
+  },
+  "author": "sbriones (CFRD-UDEC)",
+  "license": "MIT"
+}

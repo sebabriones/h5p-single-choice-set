@@ -1,6 +1,6 @@
 var H5P = H5P || {};
 
-H5P.SingleChoiceSet = (function ($, UI, Question, SingleChoice, ResultSlide, SoundEffects, XApiEventBuilder, StopWatch) {
+H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, ResultSlide, SoundEffects, XApiEventBuilder, StopWatch) {
   /**
    * @constructor
    * @extends Question
@@ -866,4 +866,4 @@ H5P.SingleChoiceSet = (function ($, UI, Question, SingleChoice, ResultSlide, Sou
   };
 
   return SingleChoiceSet;
-}(H5P.jQuery, H5P.JoubelUI, H5P.Question, H5P.SingleChoiceSet.SingleChoice, H5P.SingleChoiceSet.ResultSlide, H5P.SingleChoiceSet.SoundEffects, H5P.SingleChoiceSet.XApiEventBuilder, H5P.SingleChoiceSet.StopWatch));
+}(H5P.jQuery, H5P.JoubelUI, H5P.Question, H5P.SingleChoiceSetCFRD.SingleChoice, H5P.SingleChoiceSetCFRD.ResultSlide, H5P.SingleChoiceSetCFRD.SoundEffects, H5P.SingleChoiceSetCFRD.XApiEventBuilder, H5P.SingleChoiceSetCFRD.StopWatch));

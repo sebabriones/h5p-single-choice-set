@@ -1,13 +1,13 @@
 var H5PPresave = H5PPresave || {};
 
 /**
- * Resolve the presave logic for the content type Single Choice Set
+ * Resolve the presave logic for the content type Single Choice Set (CFRD)
  *
  * @param {object} content
  * @param finished
  * @constructor
  */
-H5PPresave['H5P.SingleChoiceSet'] = function (content, finished) {
+H5PPresave['H5P.SingleChoiceSetCFRD'] = function (content, finished) {
   var presave = H5PEditor.Presave;
   var score = 0;
 
