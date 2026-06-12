@@ -1,5 +1,126 @@
 var H5P = H5P || {};
 
+/**
+ * @param {*} value
+ * @returns {boolean}
+ */
+function isTruthy(value) {
+  return value === true || value === 1 || value === '1' || value === 'true';
+}
+
+/**
+ * @param {H5P.SingleChoiceSetCFRD} instance
+ * @returns {Object|null}
+ */
+function getInstructionsOptions(instance) {
+  var instructions = instance && instance.options && instance.options.instructions;
+  var text;
+
+  if (!instructions || !isTruthy(instructions.enabled)) {
+    return null;
+  }
+
+  text = (instructions.text === undefined || instructions.text === null) ?
+    '' :
+    String(instructions.text).trim();
+
+  if (!text) {
+    return null;
+  }
+
+  return {
+    id: instance.contentId || instance.id,
+    text: text,
+    displayMode: instructions.displayMode || 'both',
+    introButtonLabel: instructions.introButtonLabel || 'Start',
+    tabButtonLabel: instructions.tabButtonLabel || 'Instructions',
+    animation: H5P.jQuery.extend(true, {}, instructions.animation || {}),
+    startCollapsed: instructions.startCollapsed === undefined ?
+      true :
+      isTruthy(instructions.startCollapsed)
+  };
+}
+
+/**
+ * @param {H5P.SingleChoiceSetCFRD} instance
+ * @param {H5P.jQuery} $fallbackContainer
+ */
+function scheduleInstructionsAttach(instance, $fallbackContainer) {
+  [0, 200, 500].forEach(function (delay) {
+    setTimeout(function () {
+      var instructions = getInstructionsOptions(instance);
+      var $target = (instance.$playArea && instance.$playArea.length) ?
+        instance.$playArea :
+        ((instance.$container && instance.$container.length) ?
+          instance.$container :
+          $fallbackContainer);
+      var attached;
+
+      if (!instructions || !$target || !$target.length) {
+        return;
+      }
+
+      if ($target.find('.h5p-instructions-root').length) {
+        instance.trigger('resize');
+        return;
+      }
+
+      if (H5P.Instructions && typeof H5P.Instructions.attach === 'function') {
+        attached = H5P.Instructions.attach($target, instructions);
+
+        if (attached) {
+          instance.trigger('resize');
+        }
+      }
+    }, delay);
+  });
+}
+
+/**
+ * @param {H5P.SingleChoiceSetCFRD} instance
+ */
+function scheduleDeferredResize(instance) {
+  requestAnimationFrame(function () {
+    instance.trigger('resize');
+
+    requestAnimationFrame(function () {
+      instance.trigger('resize');
+    });
+  });
+
+  [50, 150, 350].forEach(function (delay) {
+    setTimeout(function () {
+      instance.trigger('resize');
+    }, delay);
+  });
+}
+
+/**
+ * Lightweight layout pass for the result slide (DOM already prepared).
+ *
+ * @param {H5P.SingleChoiceSetCFRD} instance
+ */
+function scheduleResultResize(instance) {
+  requestAnimationFrame(function () {
+    instance.trigger('resize');
+  });
+}
+
+/**
+ * @param {H5P.SingleChoiceSetCFRD} instance
+ * @returns {object}
+ */
+function getResultSlideParams(instance) {
+  return {
+    l10n: instance.l10n,
+    questions: instance.choices,
+    userResponses: instance.userResponses,
+    totalScore: instance.results.corrects,
+  };
+}
+
+var PlayArea = H5P.SingleChoiceSetCFRD && H5P.SingleChoiceSetCFRD.PlayArea;
+
 H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, ResultSlide, SoundEffects, XApiEventBuilder, StopWatch) {
   /**
    * @constructor
@@ -28,7 +149,7 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, ResultSlide,
         autoContinue: true,
         timeoutCorrect: 2000,
         timeoutWrong: 3000,
-        soundEffectsEnabled: true,
+        soundEffectsEnabled: false,
         enableRetry: true,
         enableSolutionsButton: true,
         passPercentage: 100,
@@ -51,6 +172,8 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, ResultSlide,
       this.options.behaviour.timeoutCorrect = 0;
       this.options.behaviour.timeoutWrong = 0;
     }
+
+    this.playAreaSize = PlayArea.getDesignSize();
 
     /**
      * @property {StopWatch[]} Stop watches for tracking duration of slides
@@ -84,9 +207,15 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, ResultSlide,
       correctAnswerIntroduction: 'Correct answer',
     }, options.l10n !== undefined ? options.l10n : {});
 
+    this.$playArea = $('<div>', {
+      class: 'h5p-sc-play-area',
+    });
+
     this.$container = $('<div>', {
       class: 'h5p-sc-set-wrapper navigatable',
     });
+
+    this.$playArea.append(this.$container);
 
     this.$slides = [];
     // An array containing the SingleChoice instances
@@ -128,6 +257,10 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, ResultSlide,
       self.resetTask(true);
     }, this);
     this.$slides.push(this.resultSlide.$resultSlide);
+
+    requestAnimationFrame(function () {
+      self.resultSlide.warmUp(getResultSlideParams(self));
+    });
 
     this.on('resize', this.resize, this);
 
@@ -215,6 +348,7 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, ResultSlide,
 
     if (event.data.index + 1 >= self.choices.length) {
       self.nav?.setCanShowLast(true);
+      self.resultSlide.refreshContent(getResultSlideParams(self));
     }
   };
 
@@ -388,18 +522,13 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, ResultSlide,
 
     this.$container.addClass('showing-results');
     this.showingResultScreen = true;
-    this.resultSlide.showSlide({
-      l10n: this.l10n,
-      questions: this.choices,
-      userResponses: this.userResponses,
-      totalScore: this.results.corrects,
-    });
+    this.resultSlide.showSlide(getResultSlideParams(this));
 
     if (!noXAPI) {
       self.triggerXAPIScored(score, self.options.choices.length, 'completed', true, (100 * score / self.options.choices.length) >= self.options.behaviour.passPercentage);
     }
 
-    self.trigger('resize');
+    scheduleResultResize(self);
   };
 
   /**
@@ -434,9 +563,9 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, ResultSlide,
       this.trigger('question-finished');
     }
 
-    requestAnimationFrame(() => {
-      self.trigger('resize');
-    });
+    scheduleInstructionsAttach(self, self.$playArea);
+    self.observePlayAreaResize();
+    scheduleDeferredResize(self);
   };
 
   /**
@@ -527,7 +656,7 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, ResultSlide,
         role: 'button',
         'aria-label': self.l10n.muteButtonLabel,
         'aria-pressed': false,
-      }).appendTo(self.$container.find('.h5p-question-introduction'));
+      }).appendTo(self.choices[self.currentIndex].$choice.find('.h5p-question-introduction').first());
       self.$muteButton.on('click', toggleMute);
       self.$muteButton.on('keydown', (event) => {
         switch (event.which) {
@@ -539,12 +668,182 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, ResultSlide,
       });
     }
 
-    self.resize();
-
-    // Hide all other slides than the current one:
     self.$container.addClass('initialized');
+    scheduleDeferredResize(self);
 
-    return self.$container;
+    return self.$playArea;
+  };
+
+  /**
+   * Observe play area size changes for layout refresh.
+   */
+  SingleChoiceSet.prototype.observePlayAreaResize = function () {
+    const self = this;
+
+    if (!window.ResizeObserver || !self.$playArea || !self.$playArea.length) {
+      return;
+    }
+
+    if (self.playAreaResizeObserver) {
+      return;
+    }
+
+    self.playAreaResizeObserver = new ResizeObserver(function () {
+      self.trigger('resize');
+    });
+
+    self.playAreaResizeObserver.observe(self.$playArea[0]);
+  };
+
+  /**
+   * Keep mute control on the current question slide.
+   */
+  SingleChoiceSet.prototype.syncMuteButtonPlacement = function () {
+    const self = this;
+    const choice = self.choices[self.currentIndex];
+
+    if (!self.$muteButton || !choice || !choice.$choice || self.currentIndex >= self.choices.length) {
+      return;
+    }
+
+    choice.$choice.find('.h5p-question-introduction').first().append(self.$muteButton);
+  };
+
+  /**
+   * Play-area layout: one visible slide at a time (no horizontal carousel transform).
+   */
+  SingleChoiceSet.prototype.syncPlayAreaSlides = function () {
+    const self = this;
+
+    if (!self.$playArea || !self.$playArea.length) {
+      return;
+    }
+
+    self.$slides.forEach(function ($slide) {
+      $slide.css('left', '0');
+    });
+
+    self.$choices.css({
+      '-webkit-transform': '',
+      '-moz-transform': '',
+      '-ms-transform': '',
+      transform: '',
+    });
+  };
+
+  /**
+   * Height of wrapper children excluding the carousel (e.g. navigation).
+   *
+   * @param {H5P.jQuery} $wrapper
+   * @param {H5P.jQuery} $choices
+   * @returns {number}
+   */
+  SingleChoiceSet.prototype.getCarouselChromeHeight = function ($wrapper, $choices) {
+    let chromeHeight = 0;
+
+    $wrapper.children().each(function () {
+      if (this !== $choices[0]) {
+        chromeHeight += $(this).outerHeight(true);
+      }
+    });
+
+    return chromeHeight;
+  };
+
+  /**
+   * Natural content height of a slide in the play area.
+   *
+   * @param {H5P.jQuery} $slide
+   * @returns {number}
+   */
+  SingleChoiceSet.prototype.measureNaturalSlideHeight = function ($slide) {
+    if (!$slide || !$slide.length || !$slide.is(':visible')) {
+      return 0;
+    }
+
+    const $intro = $slide.find('.h5p-question-introduction').first();
+    const $alternatives = $slide.find('ul.h5p-sc-alternatives').first();
+    let height = 0;
+
+    if ($intro.length) {
+      height += $intro.outerHeight(true);
+    }
+
+    if ($alternatives.length) {
+      height += $alternatives.outerHeight(true);
+    }
+
+    if (height > 0) {
+      return height;
+    }
+
+    return $slide[0].scrollHeight;
+  };
+
+  /**
+   * Equalize slide heights inside the carousel.
+   */
+  SingleChoiceSet.prototype.syncSlideHeights = function () {
+    const self = this;
+    const $wrapper = self.$container;
+    const wrapperHeight = $wrapper.innerHeight() || 0;
+
+    if (wrapperHeight <= 0) {
+      scheduleDeferredResize(self);
+      return;
+    }
+
+    const chromeHeight = self.getCarouselChromeHeight($wrapper, self.$choices);
+    const availableHeight = Math.max(0, wrapperHeight - chromeHeight);
+    let maxNaturalHeight = 0;
+
+    if (self.showingResultScreen) {
+      const resultScreenHeight = self.resultSlide.component.scrollHeight;
+      const listContainer = $wrapper.find('.h5p-theme-results-list-container')[0];
+
+      maxNaturalHeight = resultScreenHeight;
+
+      if (listContainer) {
+        const containerStyle = getComputedStyle(listContainer);
+        const bottomPadding = parseInt(containerStyle.paddingBottom, 10) || 0;
+        const bottomMargin = parseInt(containerStyle.marginBottom, 10) || 0;
+        maxNaturalHeight += bottomPadding + bottomMargin;
+      }
+    }
+    else {
+      const $current = self.$slides[self.currentIndex];
+      maxNaturalHeight = self.measureNaturalSlideHeight($current);
+    }
+
+    const overflow = availableHeight > 0 && maxNaturalHeight > availableHeight + 1;
+
+    if (overflow) {
+      self.$choices.addClass('h5p-sc-set--scroll');
+      self.$choices.scrollTop(0);
+    }
+    else {
+      self.$choices.removeClass('h5p-sc-set--scroll');
+      self.$choices.scrollTop(0);
+    }
+
+    self.syncPlayAreaSlides();
+    self.syncMuteButtonPlacement();
+  };
+
+  /**
+   * Refresh instructions scale when available.
+   */
+  SingleChoiceSet.prototype.refreshInstructionsScale = function () {
+    const self = this;
+    const instructions = getInstructionsOptions(self);
+
+    if (!instructions || !self.$playArea || !self.$playArea.length) {
+      return;
+    }
+
+    if (H5P.Instructions && typeof H5P.Instructions.updateScale === 'function') {
+      H5P.Instructions.updateScale(self.$playArea, instructions);
+    }
   };
 
   /**
@@ -552,28 +851,36 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, ResultSlide,
    */
   SingleChoiceSet.prototype.resize = function () {
     const self = this;
-    let maxHeight = 0;
 
-    self.choices.forEach((choice) => {
-      const choiceHeight = choice.$choice.outerHeight();
-      maxHeight = choiceHeight > maxHeight ? choiceHeight : maxHeight;
-    });
-
-    if (this.showingResultScreen) {
-      const resultScreenHeight = this.resultSlide.component.scrollHeight;
-
-      const listContainer = self.$container.find('.h5p-theme-results-list-container')[0];
-
-      if (listContainer) {
-        const containerStyle = getComputedStyle(listContainer);
-        const bottomPadding = parseInt(containerStyle.paddingBottom) || 0;
-        const bottomMargin = parseInt(containerStyle.marginBottom) || 0;
-        maxHeight = resultScreenHeight + bottomPadding + bottomMargin;
-      }
+    if (!self.$playArea || !self.$playArea.length) {
+      return;
     }
 
-    // Set minimum height for choices
-    self.$choices.css({ minHeight: `${maxHeight}px` });
+    if (!self.$playArea.is(':visible')) {
+      scheduleDeferredResize(self);
+      return;
+    }
+
+    const design = self.playAreaSize;
+    const $parent = self.$playArea.parent();
+    let width = self.$playArea.width();
+
+    if (width <= 0) {
+      width = $parent.width() || design.baseWidth;
+    }
+
+    const scale = PlayArea.getScale(width);
+    const fontSize = (design.baseFontSize * scale) + 'px';
+
+    self.$playArea.css({
+      width: '100%',
+      height: '',
+      fontSize: fontSize,
+      '--sc-scale': scale.toFixed(4),
+    });
+
+    self.refreshInstructionsScale();
+    self.syncSlideHeights();
   };
 
   /**
@@ -593,13 +900,7 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, ResultSlide,
    * @public
    */
   SingleChoiceSet.prototype.recklessJump = function (index) {
-    const tX = `translateX(${-index * 100}%)`;
-    this.$choices.css({
-      '-webkit-transform': tX,
-      '-moz-transform': tX,
-      '-ms-transform': tX,
-      transform: tX,
-    });
+    this.syncPlayAreaSlides();
     this.progressbar.setProgress(index + 1);
   };
 
@@ -633,6 +934,13 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, ResultSlide,
       else {
         self.resultSlide.focusScore();
       }
+
+      if (isResultSlide) {
+        scheduleResultResize(self);
+      }
+      else {
+        scheduleDeferredResize(self);
+      }
     }, 600);
 
     // if should show result slide
@@ -649,10 +957,10 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, ResultSlide,
     // move to slide
     $currentSlide.addClass('h5p-sc-current-slide');
     self.recklessJump(index);
-
-    self.trigger('resize');
+    self.$choices.scrollTop(0);
 
     self.currentIndex = index;
+    self.trigger('resize');
   };
 
   /**
@@ -818,6 +1126,7 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, ResultSlide,
     this.$container.removeClass('showing-results');
 
     this.move(0, moveFocus);
+    scheduleDeferredResize(this);
 
     // Reset userResponses as well
     this.userResponses = [];

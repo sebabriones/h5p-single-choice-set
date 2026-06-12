@@ -18,6 +18,100 @@
   overflow: hidden;
 }
 
+.h5p-sc-play-area {
+  --sc-scale: 1;
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  padding: var(--h5p-theme-spacing-m);
+}
+
+.h5p-sc-play-area .h5p-sc-set-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.h5p-sc-play-area .h5p-sc-set-wrapper > .h5p-joubelui-progressbar {
+  position: relative;
+  bottom: auto;
+  left: auto;
+  right: auto;
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.h5p-sc-play-area .h5p-sc-set {
+  flex: 1 1 0;
+  min-height: 0;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.h5p-sc-play-area .h5p-sc-set.h5p-sc-set--scroll {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.h5p-sc-play-area .h5p-sc-set-wrapper .h5p-navigation {
+  flex-shrink: 0;
+}
+
+.h5p-sc-play-area .initialized .h5p-sc-set .h5p-sc-slide {
+  position: relative;
+  left: auto;
+  top: auto;
+  display: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.h5p-sc-play-area .initialized .h5p-sc-set .h5p-sc-slide.h5p-sc-current-slide {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  justify-content: safe center;
+}
+
+.h5p-sc-play-area .initialized .h5p-sc-set.h5p-sc-set--scroll .h5p-sc-slide.h5p-sc-current-slide {
+  flex: 0 0 auto;
+  justify-content: flex-start;
+}
+
+.h5p-sc-play-area .h5p-sc-set.h5p-sc-animate {
+  transition: none;
+}
+
+.h5p-theme .h5p-sc-play-area .h5p-sc-set .h5p-question-introduction {
+  font-size: 1em;
+  line-height: 1.5;
+}
+
+.h5p-sc-play-area .h5p-sc-question,
+.h5p-sc-play-area .h5p-sc-question p,
+.h5p-sc-play-area .h5p-question-introduction .h5p-sc-question * {
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.h5p-sc-play-area ul.h5p-sc-alternatives li.h5p-sc-alternative {
+  font-size: 1em;
+  line-height: 1.5;
+}
+
+.h5p-single-choice-set.h5p-theme .h5p-question-content {
+  padding: 0;
+}
+
 .h5p-single-choice-set .h5p-question-introduction {
   margin-left: 0 !important;
   display: flex;
@@ -35,6 +129,10 @@
   overflow-y: auto;
   -ms-scroll-limit: 0 0 0 0; /* IE11 bugfix for where this element can be out of line, when focusing on elements. */
   height: 100%;
+}
+
+.h5p-sc-play-area .h5p-sc-set-wrapper.initialized {
+  overflow: hidden;
 }
 
 .h5p-sc-set {
