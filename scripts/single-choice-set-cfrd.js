@@ -119,6 +119,25 @@ function getResultSlideParams(instance) {
   };
 }
 
+/**
+ * @param {H5P.jQuery} $slide
+ */
+function triggerSlideEnterAnimation($slide) {
+  if (!$slide || !$slide.length) {
+    return;
+  }
+
+  $slide.removeClass('h5p-sc-slide-enter');
+
+  // Reflow so the enter animation runs after display toggling.
+  void $slide[0].offsetWidth;
+
+  $slide.addClass('h5p-sc-slide-enter');
+  $slide.one('animationend', function () {
+    $slide.removeClass('h5p-sc-slide-enter');
+  });
+}
+
 var PlayArea = H5P.SingleChoiceSetCFRD && H5P.SingleChoiceSetCFRD.PlayArea;
 var AlternativeLabel = H5P.SingleChoiceSetCFRD && H5P.SingleChoiceSetCFRD.AlternativeLabel;
 
@@ -939,27 +958,6 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, ResultSlide,
 
     self.toggleNextButton(false);
 
-    H5P.Transition.onTransitionEnd(self.$choices, () => {
-      $previousSlide.removeClass('h5p-sc-current-slide');
-
-      // on slides with answers focus on first alternative
-      // if content is root and not on result slide - always move focus
-      if (!isResultSlide && (moveFocus || self.isRoot())) {
-        $currentChoice.focusOnAlternative(0);
-      }
-      // on last slide, focus on try again button
-      else {
-        self.resultSlide.focusScore();
-      }
-
-      if (isResultSlide) {
-        scheduleResultResize(self);
-      }
-      else {
-        scheduleDeferredResize(self);
-      }
-    }, 600);
-
     // if should show result slide
     if (isResultSlide) {
       self.setScore(self.results.corrects);
@@ -971,13 +969,31 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, ResultSlide,
     // start timing of new slide
     this.startStopWatch(index);
 
-    // move to slide
+    // switch slides immediately (play area uses display toggling, not carousel transform)
+    $previousSlide.removeClass('h5p-sc-current-slide h5p-sc-slide-enter');
     $currentSlide.addClass('h5p-sc-current-slide');
+    triggerSlideEnterAnimation($currentSlide);
     self.recklessJump(index);
     self.$choices.scrollTop(0);
 
     self.currentIndex = index;
     self.trigger('resize');
+
+    requestAnimationFrame(function () {
+      if (!isResultSlide && (moveFocus || self.isRoot())) {
+        $currentChoice.focusOnAlternative(0);
+      }
+      else if (isResultSlide) {
+        self.resultSlide.focusScore();
+      }
+
+      if (isResultSlide) {
+        scheduleResultResize(self);
+      }
+      else {
+        scheduleDeferredResize(self);
+      }
+    });
   };
 
   /**

@@ -87,8 +87,31 @@
   justify-content: flex-start;
 }
 
+.h5p-sc-play-area .initialized .h5p-sc-set .h5p-sc-slide.h5p-sc-current-slide.h5p-sc-slide-enter {
+  animation: h5p-sc-slide-enter 0.28s ease-out both;
+}
+
 .h5p-sc-play-area .h5p-sc-set.h5p-sc-animate {
   transition: none;
+}
+
+@keyframes h5p-sc-slide-enter {
+  from {
+    opacity: 0;
+    transform: translateX(1.25rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .h5p-sc-play-area .initialized .h5p-sc-set .h5p-sc-slide.h5p-sc-current-slide.h5p-sc-slide-enter,
+  .initialized .h5p-sc-slide.h5p-sc-current-slide.h5p-sc-slide-enter {
+    animation: none;
+  }
 }
 
 .h5p-theme .h5p-sc-play-area .h5p-sc-set .h5p-question-introduction {
@@ -191,6 +214,10 @@
 
 .initialized .h5p-sc-slide.h5p-sc-current-slide {
   display: block;
+}
+
+.initialized .h5p-sc-slide.h5p-sc-current-slide.h5p-sc-slide-enter {
+  animation: h5p-sc-slide-enter 0.28s ease-out both;
 }
 
 ul.h5p-sc-alternatives {
