@@ -3,7 +3,12 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
 /**
  * SingleChoiceResultSlide - Represents the result slide
  */
-H5P.SingleChoiceSetCFRD.ResultSlide = (function ($, EventDispatcher) {
+H5P.SingleChoiceSetCFRD.ResultSlide = (function ($, EventDispatcher, AlternativeLabel) {
+  AlternativeLabel = AlternativeLabel || {
+    prependLabel: function (prefix, text) {
+      return prefix ? prefix + ' ' + text : text;
+    },
+  };
 
   /**
    * @param {string} html
@@ -16,28 +21,42 @@ H5P.SingleChoiceSetCFRD.ResultSlide = (function ($, EventDispatcher) {
   }
 
   /**
-   * @param {object} question
-   * @param {number|undefined} userResponseIndex
+   * @param {object} choice
+   * @param {number|undefined} displayIndex
    * @param {object} l10n
    * @returns {object}
    */
-  function buildQuestionData(question, userResponseIndex, l10n) {
-    const hasResponse = userResponseIndex !== undefined && userResponseIndex !== null;
-    const selectedAnswer = hasResponse ? question.options.answers[userResponseIndex] : null;
-    const isCorrect = hasResponse && selectedAnswer?.correct;
+  function buildQuestionData(choice, displayIndex, l10n) {
+    const hasResponse = displayIndex !== undefined && displayIndex !== null;
+    const selectedAlternative = hasResponse && choice.alternatives ?
+      choice.alternatives[displayIndex] :
+      null;
+    const selectedAnswer = selectedAlternative ? selectedAlternative.options : null;
+    const isCorrect = hasResponse && selectedAnswer && selectedAnswer.correct;
     const data = {
-      title: stripHtml(question.options.question),
+      title: stripHtml(choice.options.question),
       points: hasResponse ? (isCorrect ? '1' : '0') : '0',
     };
 
     if (hasResponse && selectedAnswer) {
       data.isCorrect = isCorrect;
-      data.userAnswer = stripHtml(selectedAnswer.text);
+      data.userAnswer = AlternativeLabel.prependLabel(
+        selectedAnswer.prefix || '',
+        stripHtml(selectedAnswer.text)
+      );
 
       if (!isCorrect) {
-        data.correctAnswer = stripHtml(question.options.answers.find(function (a) {
-          return a.correct;
-        }).text);
+        const correctAlternative = choice.alternatives.find(function (alternative) {
+          return alternative.options.correct;
+        });
+
+        if (correctAlternative) {
+          data.correctAnswer = AlternativeLabel.prependLabel(
+            correctAlternative.options.prefix || '',
+            stripHtml(correctAlternative.options.text)
+          );
+        }
+
         data.correctAnswerPrepend = l10n.correctAnswerIntroduction + ': ';
       }
     }
@@ -61,8 +80,8 @@ H5P.SingleChoiceSetCFRD.ResultSlide = (function ($, EventDispatcher) {
           params.l10n.resultTableHeader,
           params.l10n.resultScoreTableHeader,
         ],
-        questions: params.questions.map(function (question, i) {
-          return buildQuestionData(question, params.userResponses[i], params.l10n);
+        questions: params.questions.map(function (choice, i) {
+          return buildQuestionData(choice, params.userResponses[i], params.l10n);
         }),
       }],
     };
@@ -159,4 +178,4 @@ H5P.SingleChoiceSetCFRD.ResultSlide = (function ($, EventDispatcher) {
   };
 
   return ResultSlide;
-})(H5P.jQuery, H5P.EventDispatcher);
+})(H5P.jQuery, H5P.EventDispatcher, H5P.SingleChoiceSetCFRD.AlternativeLabel);

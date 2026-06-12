@@ -108,6 +108,48 @@
       ]
     },
     {
+      "label": "Etiquetas de alternativas",
+      "fields": [
+        {
+          "label": "Mostrar etiquetas en las alternativas"
+        },
+        {
+          "label": "Estilo de etiqueta",
+          "options": [
+            {
+              "label": "Números (1, 2, 3)"
+            },
+            {
+              "label": "Letras mayúsculas (A, B, C)"
+            },
+            {
+              "label": "Letras minúsculas (a, b, c)"
+            },
+            {
+              "label": "Números romanos mayúsculas (I, II, III)"
+            },
+            {
+              "label": "Números romanos minúsculas (i, ii, iii)"
+            }
+          ]
+        },
+        {
+          "label": "Separador después de la etiqueta",
+          "options": [
+            {
+              "label": "Punto (A.)"
+            },
+            {
+              "label": "Paréntesis ((A))"
+            },
+            {
+              "label": "Ninguno (A)"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "label": "Configuración del comportamiento",
       "fields": [
         {

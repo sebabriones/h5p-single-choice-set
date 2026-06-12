@@ -1,18 +1,19 @@
 var H5P = H5P || {};
 H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
 
-H5P.SingleChoiceSetCFRD.SingleChoice = (function ($, EventDispatcher, Alternative) {
+H5P.SingleChoiceSetCFRD.SingleChoice = (function ($, EventDispatcher, Alternative, AlternativeLabel) {
   /**
    * Constructor function.
    */
-  function SingleChoice(options, index, id, isAutoConfinue) {
+  function SingleChoice(options, index, id, isAutoContinue, alternativeLabels) {
     EventDispatcher.call(this);
     // Extend defaults with provided options
     this.options = $.extend(true, {}, {
       question: '',
       answers: [],
     }, options);
-    this.isAutoConfinue = isAutoConfinue;
+    this.isAutoContinue = isAutoContinue;
+    this.alternativeLabels = AlternativeLabel.normalizeSettings(alternativeLabels);
     // Keep provided id.
     this.index = index;
     this.id = id;
@@ -75,7 +76,14 @@ H5P.SingleChoiceSetCFRD.SingleChoice = (function ($, EventDispatcher, Alternativ
      *
      * @type {Alternative[]}
      */
-    this.alternatives = self.options.answers.map((opts) => new Alternative(opts));
+    this.alternatives = self.options.answers.map(function (opts, displayIndex) {
+      return new Alternative({
+        text: opts.text,
+        correct: opts.correct,
+        answerIndex: opts.answerIndex,
+        prefix: AlternativeLabel.getAlternativeLabel(displayIndex, self.alternativeLabels),
+      });
+    });
 
     /**
      * Handles click on an alternative
@@ -193,7 +201,7 @@ H5P.SingleChoiceSetCFRD.SingleChoice = (function ($, EventDispatcher, Alternativ
    * @param {Number} index The index of the alternative to focus on
    */
   SingleChoice.prototype.focusOnAlternative = function (index) {
-    if (!this.answered || !this.isAutoConfinue) {
+    if (!this.answered || !this.isAutoContinue) {
       this.alternatives[index].focus();
     }
   };
@@ -254,7 +262,7 @@ H5P.SingleChoiceSetCFRD.SingleChoice = (function ($, EventDispatcher, Alternativ
   SingleChoice.prototype.setAriaAttributes = function () {
     const self = this;
     // A11y mode is enabled
-    if (!self.isAutoConfinue) {
+    if (!self.isAutoContinue) {
       self.$choice.find('.h5p-sc-alternative.h5p-sc-selected').attr('aria-checked', true);
       self.$choice.find('.h5p-sc-alternative').attr('aria-disabled', true);
     }
@@ -266,7 +274,7 @@ H5P.SingleChoiceSetCFRD.SingleChoice = (function ($, EventDispatcher, Alternativ
   SingleChoice.prototype.resetAriaAttributes = function () {
     const self = this;
     // A11y mode is enabled
-    if (!self.isAutoConfinue) {
+    if (!self.isAutoContinue) {
       const alternative = self.$choice.find('.h5p-sc-alternative');
       alternative.removeAttr('aria-disabled');
       alternative.removeAttr('aria-checked');
@@ -274,4 +282,4 @@ H5P.SingleChoiceSetCFRD.SingleChoice = (function ($, EventDispatcher, Alternativ
   };
 
   return SingleChoice;
-}(H5P.jQuery, H5P.EventDispatcher, H5P.SingleChoiceSetCFRD.Alternative));
+}(H5P.jQuery, H5P.EventDispatcher, H5P.SingleChoiceSetCFRD.Alternative, H5P.SingleChoiceSetCFRD.AlternativeLabel));

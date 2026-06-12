@@ -238,6 +238,87 @@
     ]
   },
   {
+    "name": "alternativeLabels",
+    "type": "group",
+    "label": "Alternative labels",
+    "importance": "medium",
+    "optional": true,
+    "fields": [
+      {
+        "name": "enabled",
+        "type": "boolean",
+        "label": "Show labels on alternatives",
+        "default": false
+      },
+      {
+        "name": "style",
+        "type": "select",
+        "label": "Label style",
+        "default": "uppercase",
+        "options": [
+          {
+            "value": "numbers",
+            "label": "Numbers (1, 2, 3)"
+          },
+          {
+            "value": "uppercase",
+            "label": "Uppercase letters (A, B, C)"
+          },
+          {
+            "value": "lowercase",
+            "label": "Lowercase letters (a, b, c)"
+          },
+          {
+            "value": "upperRoman",
+            "label": "Uppercase Roman numerals (I, II, III)"
+          },
+          {
+            "value": "lowerRoman",
+            "label": "Lowercase Roman numerals (i, ii, iii)"
+          }
+        ],
+        "widget": "showWhen",
+        "showWhen": {
+          "rules": [
+            {
+              "field": "enabled",
+              "equals": true
+            }
+          ]
+        }
+      },
+      {
+        "name": "separator",
+        "type": "select",
+        "label": "Separator after label",
+        "default": "period",
+        "options": [
+          {
+            "value": "period",
+            "label": "Period (A.)"
+          },
+          {
+            "value": "paren",
+            "label": "Parenthesis ((A))"
+          },
+          {
+            "value": "none",
+            "label": "None (A)"
+          }
+        ],
+        "widget": "showWhen",
+        "showWhen": {
+          "rules": [
+            {
+              "field": "enabled",
+              "equals": true
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
     "name": "behaviour",
     "type": "group",
     "label": "Behavioural settings",

@@ -1,7 +1,22 @@
 var H5P = H5P || {};
 H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
 
-H5P.SingleChoiceSetCFRD.Alternative = (function ($, EventDispatcher) {
+H5P.SingleChoiceSetCFRD.Alternative = (function ($, EventDispatcher, AlternativeLabel) {
+  AlternativeLabel = AlternativeLabel || {
+    prependLabel: function (prefix, text) {
+      return prefix ? prefix + ' ' + text : text;
+    },
+  };
+
+  /**
+   * @param {string} html
+   * @returns {string}
+   */
+  function stripHtml(html) {
+    const decoder = document.createElement('div');
+    decoder.innerHTML = html;
+    return (decoder.textContent || decoder.innerText || '').replace(/[\n\r]+|[\s]{2,}/g, ' ').trim();
+  }
 
   /**
    * @constructor
@@ -71,15 +86,38 @@ H5P.SingleChoiceSetCFRD.Alternative = (function ($, EventDispatcher) {
       'click': triggerAlternativeSelected
     });
 
+    if (this.options.prefix) {
+      this.$alternative.attr(
+        'aria-label',
+        AlternativeLabel.prependLabel(
+          this.options.prefix,
+          stripHtml(this.options.text)
+        )
+      );
+    }
+
     this.$alternative.append($('<div>', {
       'class': 'h5p-sc-progressbar'
     }));
 
-    this.$alternative.append($('<div>', {
+    const $body = $('<div>', {
+      'class': 'h5p-sc-alternative-body'
+    });
+
+    if (this.options.prefix) {
+      $body.append($('<span>', {
+        'class': 'h5p-sc-alternative-prefix',
+        'aria-hidden': 'true',
+        'text': this.options.prefix
+      }));
+    }
+
+    $body.append($('<div>', {
       'class': 'h5p-sc-label',
       'html': this.options.text
     }));
 
+    this.$alternative.append($body);
     this.$alternative.append($('<div>', {
       'class': 'h5p-sc-status'
     }));
@@ -135,4 +173,4 @@ H5P.SingleChoiceSetCFRD.Alternative = (function ($, EventDispatcher) {
 
   return Alternative;
 
-})(H5P.jQuery, H5P.EventDispatcher);
+})(H5P.jQuery, H5P.EventDispatcher, H5P.SingleChoiceSetCFRD.AlternativeLabel);
