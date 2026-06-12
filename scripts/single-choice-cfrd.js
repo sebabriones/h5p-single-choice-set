@@ -5,7 +5,7 @@ H5P.SingleChoiceSetCFRD.SingleChoice = (function ($, EventDispatcher, Alternativ
   /**
    * Constructor function.
    */
-  function SingleChoice(options, index, id, isAutoContinue, alternativeLabels) {
+  function SingleChoice(options, index, id, isAutoContinue, alternativeLabels, showCorrectAnswerWhenWrong) {
     EventDispatcher.call(this);
     // Extend defaults with provided options
     this.options = $.extend(true, {}, {
@@ -14,6 +14,7 @@ H5P.SingleChoiceSetCFRD.SingleChoice = (function ($, EventDispatcher, Alternativ
     }, options);
     this.isAutoContinue = isAutoContinue;
     this.alternativeLabels = AlternativeLabel.normalizeSettings(alternativeLabels);
+    this.showCorrectAnswerWhenWrong = !!showCorrectAnswerWhenWrong;
     // Keep provided id.
     this.index = index;
     this.id = id;
@@ -106,7 +107,7 @@ H5P.SingleChoiceSetCFRD.SingleChoice = (function ($, EventDispatcher, Alternativ
 
       H5P.Transition.onTransitionEnd($element.find('.h5p-sc-progressbar'), () => {
         $element.addClass('h5p-sc-drummed');
-        self.showResult(correct, answerIndex);
+        self.showResult(correct, answerIndex, $element);
       }, 700);
 
       $element.addClass('h5p-sc-selected').parent().addClass('h5p-sc-selected');
@@ -220,13 +221,17 @@ H5P.SingleChoiceSetCFRD.SingleChoice = (function ($, EventDispatcher, Alternativ
    *
    * @param  {boolean} correct True uf answer was correct, otherwise false
    * @param  {number} answerIndex Original index of answer
+   * @param  {H5P.jQuery} $selectedAlternative The chosen alternative element
    */
-  SingleChoice.prototype.showResult = function (correct, answerIndex) {
+  SingleChoice.prototype.showResult = function (correct, answerIndex, $selectedAlternative) {
     const self = this;
-
     const $correctAlternative = self.$choice.find('.h5p-sc-is-correct');
+    const revealCorrectAnswer = correct || self.showCorrectAnswerWhenWrong;
+    const $transitionTarget = revealCorrectAnswer && !correct ?
+      $correctAlternative :
+      ($selectedAlternative && $selectedAlternative.length ? $selectedAlternative : $correctAlternative);
 
-    H5P.Transition.onTransitionEnd($correctAlternative, () => {
+    H5P.Transition.onTransitionEnd($transitionTarget, () => {
       self.trigger('finished', {
         correct,
         index: self.index,
@@ -235,9 +240,17 @@ H5P.SingleChoiceSetCFRD.SingleChoice = (function ($, EventDispatcher, Alternativ
       self.setAriaAttributes();
     }, 600);
 
-    // Reveal corrects and wrong
-    self.$choice.find('.h5p-sc-is-wrong').addClass('h5p-sc-reveal-wrong');
-    $correctAlternative.addClass('h5p-sc-reveal-correct');
+    if (correct) {
+      self.$choice.find('.h5p-sc-is-wrong').addClass('h5p-sc-reveal-wrong');
+      $correctAlternative.addClass('h5p-sc-reveal-correct');
+    }
+    else if (self.showCorrectAnswerWhenWrong) {
+      self.$choice.find('.h5p-sc-is-wrong').addClass('h5p-sc-reveal-wrong');
+      $correctAlternative.addClass('h5p-sc-reveal-correct');
+    }
+    else if ($selectedAlternative && $selectedAlternative.length) {
+      $selectedAlternative.addClass('h5p-sc-reveal-wrong');
+    }
   };
 
   /**

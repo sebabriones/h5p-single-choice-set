@@ -26,7 +26,7 @@ H5P.SingleChoiceSetCFRD.ResultSlide = (function ($, EventDispatcher, Alternative
    * @param {object} l10n
    * @returns {object}
    */
-  function buildQuestionData(choice, displayIndex, l10n) {
+  function buildQuestionData(choice, displayIndex, l10n, showCorrectAnswerWhenWrong) {
     const hasResponse = displayIndex !== undefined && displayIndex !== null;
     const selectedAlternative = hasResponse && choice.alternatives ?
       choice.alternatives[displayIndex] :
@@ -45,7 +45,7 @@ H5P.SingleChoiceSetCFRD.ResultSlide = (function ($, EventDispatcher, Alternative
         stripHtml(selectedAnswer.text)
       );
 
-      if (!isCorrect) {
+      if (!isCorrect && showCorrectAnswerWhenWrong) {
         const correctAlternative = choice.alternatives.find(function (alternative) {
           return alternative.options.correct;
         });
@@ -81,7 +81,12 @@ H5P.SingleChoiceSetCFRD.ResultSlide = (function ($, EventDispatcher, Alternative
           params.l10n.resultScoreTableHeader,
         ],
         questions: params.questions.map(function (choice, i) {
-          return buildQuestionData(choice, params.userResponses[i], params.l10n);
+          return buildQuestionData(
+            choice,
+            params.userResponses[i],
+            params.l10n,
+            params.showCorrectAnswerWhenWrong
+          );
         }),
       }],
     };

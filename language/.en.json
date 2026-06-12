@@ -171,8 +171,8 @@
           "label": "Enable retry button"
         },
         {
-          "label": "Enable show solution button",
-          "description": "This feature is not applicable when the new look and feel is enabled."
+          "label": "Show correct answer when wrong",
+          "description": "When enabled, the correct alternative is revealed after an incorrect response and on the results slide. When disabled, only whether the answer was right or wrong is shown."
         },
         {
           "label": "Pass percentage",

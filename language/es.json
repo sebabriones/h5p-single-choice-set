@@ -171,8 +171,8 @@
           "label": "Habilitar botón \"Intentar de nuevo\""
         },
         {
-          "label": "Habilitar botón Mostrar solución",
-          "description": "This feature is not applicable when the new look and feel is enabled."
+          "label": "Mostrar respuesta correcta al fallar",
+          "description": "Si está activado, se muestra la alternativa correcta al responder incorrectamente y en la slide de resultados. Si está desactivado, solo se indica si la respuesta fue correcta o incorrecta."
         },
         {
           "label": "Porcentaje aprobatorio",

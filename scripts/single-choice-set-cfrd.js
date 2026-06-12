@@ -116,6 +116,7 @@ function getResultSlideParams(instance) {
     questions: instance.choices,
     userResponses: instance.userResponses,
     totalScore: instance.results.corrects,
+    showCorrectAnswerWhenWrong: isTruthy(instance.options.behaviour.enableSolutionsButton),
   };
 }
 
@@ -181,7 +182,7 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, ResultSlide,
         timeoutWrong: 3000,
         soundEffectsEnabled: false,
         enableRetry: true,
-        enableSolutionsButton: true,
+        enableSolutionsButton: false,
         passPercentage: 100,
       },
     }, options);
@@ -278,7 +279,8 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, ResultSlide,
         i,
         this.contentId,
         this.options.behaviour.autoContinue,
-        this.options.alternativeLabels
+        this.options.alternativeLabels,
+        isTruthy(this.options.behaviour.enableSolutionsButton)
       );
       choice.on('finished', this.handleQuestionFinished, this);
       choice.on('alternative-selected', this.handleAlternativeSelected, this);
@@ -1194,6 +1196,7 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, ResultSlide,
    */
   SingleChoiceSet.prototype.readA11yFriendlyText = function (index, currentIndex) {
     const self = this;
+    const showCorrectAnswerWhenWrong = isTruthy(self.options.behaviour.enableSolutionsButton);
     const $currentSlide = self.$choices.find('.h5p-sc-current-slide');
     const $selected = $currentSlide.find('.h5p-sc-alternative').eq(currentIndex);
     const prefix = $selected.find('.h5p-sc-alternative-prefix').text();
@@ -1205,14 +1208,27 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, ResultSlide,
     const labeledCorrectText = AlternativeLabelModule.prependLabel(correctPrefix, correctText);
     let selectedOptionText = this.lastAnswerIsCorrect ? self.l10n.correctText : self.l10n.incorrectText;
     // Announce by ARIA label
-    selectedOptionText = this.lastAnswerIsCorrect ? self.l10n.correctText + self.l10n.shouldSelect : self.l10n.incorrectText + self.l10n.shouldNotSelect;
-    self.$choices.find('.h5p-sc-current-slide .h5p-sc-is-correct .h5p-sc-a11y').text(self.l10n.shouldSelect);
+    selectedOptionText = this.lastAnswerIsCorrect ?
+      self.l10n.correctText + self.l10n.shouldSelect :
+      self.l10n.incorrectText + self.l10n.shouldNotSelect;
+
+    if (this.lastAnswerIsCorrect || showCorrectAnswerWhenWrong) {
+      self.$choices.find('.h5p-sc-current-slide .h5p-sc-is-correct .h5p-sc-a11y').text(self.l10n.shouldSelect);
+    }
+
     self.$choices.find('.h5p-sc-current-slide .h5p-sc-is-wrong .h5p-sc-a11y').text(self.l10n.shouldNotSelect);
     self.$choices.find('.h5p-sc-current-slide .h5p-sc-alternative').eq(currentIndex).find('.h5p-sc-a11y').text(selectedOptionText);
 
-    selectedOptionText = this.lastAnswerIsCorrect ?
-      self.l10n.correctText + ' ' + labeledSelectedText :
-      self.l10n.incorrectText + ' ' + labeledSelectedText + '. ' + labeledCorrectText + '. ' + self.l10n.shouldSelect;
+    if (this.lastAnswerIsCorrect) {
+      selectedOptionText = self.l10n.correctText + ' ' + labeledSelectedText;
+    }
+    else if (showCorrectAnswerWhenWrong) {
+      selectedOptionText = self.l10n.incorrectText + ' ' + labeledSelectedText + '. ' +
+        labeledCorrectText + '. ' + self.l10n.shouldSelect;
+    }
+    else {
+      selectedOptionText = self.l10n.incorrectText + ' ' + labeledSelectedText;
+    }
 
     self.read(selectedOptionText);
   };
