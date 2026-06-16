@@ -337,7 +337,7 @@
         "label": "Timeout on correct answers",
         "importance": "low",
         "description": "Value in milliseconds",
-        "default": 2000,
+        "default": 300,
         "widget": "showWhen",
         "showWhen": {
           "rules": [
@@ -354,7 +354,7 @@
         "label": "Timeout on wrong answers",
         "importance": "low",
         "description": "Value in milliseconds",
-        "default": 3000,
+        "default": 300,
         "widget": "showWhen",
         "showWhen": {
           "rules": [

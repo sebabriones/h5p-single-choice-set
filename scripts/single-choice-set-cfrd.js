@@ -107,16 +107,68 @@ function scheduleResultResize(instance) {
 }
 
 /**
+ * Resolve overall feedback text for the results slide (handles nested semantics).
+ *
+ * @param {Object|Array} overallFeedback
+ * @param {number} score
+ * @param {number} maxScore
+ * @returns {string}
+ */
+function resolveOverallFeedbackText(overallFeedback, score, maxScore) {
+  if (!maxScore) {
+    return '';
+  }
+
+  var QuestionApi = H5P.QuestionCFRD || H5P.Question;
+  var scoreRatio = score / maxScore;
+  var text = '';
+
+  if (QuestionApi && typeof QuestionApi.determineOverallFeedback === 'function') {
+    text = QuestionApi.determineOverallFeedback(overallFeedback, scoreRatio);
+  }
+
+  if (!text && overallFeedback) {
+    var ranges = Array.isArray(overallFeedback) ?
+      overallFeedback :
+      (overallFeedback.overallFeedback || []);
+    var pct = Math.floor(scoreRatio * 100);
+    var i;
+
+    for (i = 0; i < ranges.length; i++) {
+      var range = ranges[i];
+      var body = range && range.feedback ? String(range.feedback).trim() : '';
+
+      if (range && range.from <= pct && range.to >= pct && body) {
+        text = body;
+        break;
+      }
+    }
+  }
+
+  return text
+    .replace(':numcorrect', String(score))
+    .replace(':maxscore', String(maxScore));
+}
+
+/**
  * @param {H5P.SingleChoiceSetCFRD} instance
  * @returns {object}
  */
 function getResultSlideParams(instance) {
+  var maxScore = instance.options.choices.length;
+  var score = instance.results.corrects;
+
   return {
     l10n: instance.l10n,
     questions: instance.choices,
     userResponses: instance.userResponses,
-    totalScore: instance.results.corrects,
+    totalScore: score,
     showCorrectAnswerWhenWrong: isTruthy(instance.options.behaviour.enableSolutionsButton),
+    overallFeedbackText: resolveOverallFeedbackText(
+      instance.options.overallFeedback,
+      score,
+      maxScore
+    ),
   };
 }
 
@@ -831,28 +883,24 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, ResultSlide,
       return;
     }
 
+    const $currentSlide = self.$slides[self.currentIndex];
+    const onResultSlide = self.showingResultScreen || (
+      $currentSlide && $currentSlide.hasClass('h5p-sc-set-results')
+    );
+
+    // ResultScreen already scrolls inside .h5p-theme-results-list; avoid nested scroll on $choices.
+    if (onResultSlide) {
+      self.$choices.removeClass('h5p-sc-set--scroll');
+      self.$choices.scrollTop(0);
+      self.syncPlayAreaSlides();
+      self.syncMuteButtonPlacement();
+      return;
+    }
+
     const chromeHeight = self.getCarouselChromeHeight($wrapper, self.$choices);
     const availableHeight = Math.max(0, wrapperHeight - chromeHeight);
-    let maxNaturalHeight = 0;
-
-    if (self.showingResultScreen) {
-      const resultScreenHeight = self.resultSlide.component.scrollHeight;
-      const listContainer = $wrapper.find('.h5p-theme-results-list-container')[0];
-
-      maxNaturalHeight = resultScreenHeight;
-
-      if (listContainer) {
-        const containerStyle = getComputedStyle(listContainer);
-        const bottomPadding = parseInt(containerStyle.paddingBottom, 10) || 0;
-        const bottomMargin = parseInt(containerStyle.marginBottom, 10) || 0;
-        maxNaturalHeight += bottomPadding + bottomMargin;
-      }
-    }
-    else {
-      const $current = self.$slides[self.currentIndex];
-      maxNaturalHeight = self.measureNaturalSlideHeight($current);
-    }
-
+    const $current = self.$slides[self.currentIndex];
+    const maxNaturalHeight = self.measureNaturalSlideHeight($current);
     const overflow = availableHeight > 0 && maxNaturalHeight > availableHeight + 1;
 
     if (overflow) {

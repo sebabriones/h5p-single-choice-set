@@ -65,6 +65,21 @@ H5P.SingleChoiceSetCFRD.ResultSlide = (function ($, EventDispatcher, Alternative
   }
 
   /**
+   * @param {HTMLElement|null} banner
+   * @param {string} feedbackText
+   */
+  function appendOverallFeedback(banner, feedbackText) {
+    if (!banner || !feedbackText || !feedbackText.trim()) {
+      return;
+    }
+
+    const feedbackEl = document.createElement('div');
+    feedbackEl.className = 'h5p-sc-overall-feedback';
+    feedbackEl.innerHTML = feedbackText;
+    banner.appendChild(feedbackEl);
+  }
+
+  /**
    * @param {object} params
    * @param {number} maxscore
    * @returns {object}
@@ -133,6 +148,7 @@ H5P.SingleChoiceSetCFRD.ResultSlide = (function ($, EventDispatcher, Alternative
    * @param {[object]} params.questions The question objects, including answers
    * @param {[object]} params.userResponses What the user has answered
    * @param {number} params.totalScore The total score
+   * @param {string} [params.overallFeedbackText] Overall feedback for the score range
    */
   ResultSlide.prototype.refreshContent = function (params) {
     const screenParams = buildResultScreenParams(params, this.maxscore);
@@ -144,6 +160,11 @@ H5P.SingleChoiceSetCFRD.ResultSlide = (function ($, EventDispatcher, Alternative
     else {
       this.$resultSlide[0].prepend(nextComponent);
     }
+
+    appendOverallFeedback(
+      nextComponent.querySelector('.h5p-theme-results-banner'),
+      params.overallFeedbackText
+    );
 
     this.component = nextComponent;
     this.header = this.component.querySelector('.h5p-theme-results-banner');
