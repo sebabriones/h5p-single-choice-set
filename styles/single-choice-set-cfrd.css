@@ -94,6 +94,100 @@
   overflow: hidden;
 }
 
+.h5p-sc-play-area .initialized .h5p-sc-set .h5p-sc-slide.h5p-sc-has-context.h5p-sc-current-slide {
+  justify-content: flex-start;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.h5p-sc-play-area .initialized .h5p-sc-set .h5p-sc-slide.h5p-sc-has-context .h5p-sc-slide-layout {
+  flex: 1 1 auto;
+  height: 100%;
+  min-height: 0;
+}
+
+.h5p-sc-slide-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--h5p-theme-spacing-m, 1em);
+  align-items: stretch;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.h5p-sc-has-context .h5p-sc-slide-layout {
+  padding-top: var(--h5p-theme-spacing-m);
+  box-sizing: border-box;
+}
+
+.h5p-sc-context {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  gap: var(--h5p-theme-spacing-s, 0.5em);
+  text-align: left;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.h5p-sc-context-text {
+  flex: 0 0 auto;
+  font-size: inherit;
+  line-height: 1.5;
+  color: var(--h5p-theme-text-secondary);
+}
+
+.h5p-sc-context-text p {
+  margin: 0 0 0.5em;
+}
+
+.h5p-sc-context-text p:last-child {
+  margin-bottom: 0;
+}
+
+.h5p-sc-context-media {
+  flex: 0 0 auto;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.h5p-sc-context-media .h5p-image {
+  width: 100%;
+  max-width: 100%;
+}
+
+.h5p-sc-context-media .h5p-image > img {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.h5p-sc-question-column {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+}
+
+.h5p-sc-has-context .h5p-question-column .h5p-question-introduction {
+  flex-shrink: 0;
+  margin-top: 0;
+}
+
+.h5p-sc-context--image-only .h5p-sc-context-text,
+.h5p-sc-context--text-only .h5p-sc-context-media {
+  display: none;
+}
+
+.h5p-sc-play-area .h5p-sc-context-text,
+.h5p-sc-play-area .h5p-sc-context-text * {
+  font-size: inherit;
+  line-height: inherit;
+}
+
 .h5p-sc-play-area .h5p-sc-set-results .h5p-theme-result-screen {
   display: flex;
   flex-direction: column;

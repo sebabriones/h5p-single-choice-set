@@ -71,6 +71,27 @@
             "label": "Pregunta"
           },
           {
+            "label": "Contexto (opcional)",
+            "fields": [
+              {
+                "label": "Texto de contexto",
+                "description": "Texto de apoyo opcional que se muestra junto a la pregunta."
+              },
+              {
+                "label": "Imagen de contexto",
+                "fields": [
+                  {
+                    "label": "Imagen",
+                    "description": "Imagen de apoyo opcional que se muestra junto a la pregunta."
+                  },
+                  {
+                    "label": "Desactivar zoom de imagen"
+                  }
+                ]
+              }
+            ]
+          },
+          {
             "label": "Alternativas - la primera alternativa es la correcta.",
             "entity": "respuesta",
             "field": {

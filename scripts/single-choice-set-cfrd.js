@@ -851,6 +851,13 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, ResultSlide,
       return 0;
     }
 
+    if ($slide.hasClass('h5p-sc-has-context')) {
+      const $questionColumn = $slide.find('.h5p-sc-question-column').first();
+      if ($questionColumn.length) {
+        $slide = $questionColumn;
+      }
+    }
+
     const $intro = $slide.find('.h5p-question-introduction').first();
     const $alternatives = $slide.find('ul.h5p-sc-alternatives').first();
     let height = 0;

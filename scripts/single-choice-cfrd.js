@@ -3,6 +3,73 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
 
 H5P.SingleChoiceSetCFRD.SingleChoice = (function ($, EventDispatcher, Alternative, AlternativeLabel) {
   /**
+   * @param {string} html
+   * @returns {string}
+   */
+  function stripHtmlText(html) {
+    const decoder = document.createElement('div');
+    decoder.innerHTML = html || '';
+    return (decoder.textContent || decoder.innerText || '').replace(/[\n\r]+|[\s]{2,}/g, ' ').trim();
+  }
+
+  /**
+   * @param {object} context
+   * @returns {boolean}
+   */
+  function hasContextText(context) {
+    return !!(context && context.text && stripHtmlText(context.text));
+  }
+
+  /**
+   * @param {object} context
+   * @returns {boolean}
+   */
+  function hasContextImage(context) {
+    const media = context && context.media;
+    const type = media && media.type;
+    return !!(type && type.library && type.params && type.params.file);
+  }
+
+  /**
+   * @param {object} context
+   * @returns {string|null}
+   */
+  function getContextLayoutClass(context) {
+    const hasText = hasContextText(context);
+    const hasImage = hasContextImage(context);
+
+    if (!hasText && !hasImage) {
+      return null;
+    }
+
+    if (hasText && hasImage) {
+      return 'h5p-sc-context--both';
+    }
+
+    if (hasText) {
+      return 'h5p-sc-context--text-only';
+    }
+
+    return 'h5p-sc-context--image-only';
+  }
+
+  /**
+   * @param {object} context
+   * @param {number} contentId
+   * @param {H5P.jQuery} $container
+   */
+  function attachContextImage(context, contentId, $container) {
+    const media = context && context.media;
+    const library = media && media.type;
+
+    if (!library || !library.library || !$container || !$container.length) {
+      return;
+    }
+
+    H5P.newRunnable(library, contentId, $container);
+  }
+
+  /**
    * Constructor function.
    */
   function SingleChoice(options, index, id, isAutoContinue, alternativeLabels, showCorrectAnswerWhenWrong) {
@@ -11,6 +78,7 @@ H5P.SingleChoiceSetCFRD.SingleChoice = (function ($, EventDispatcher, Alternativ
     this.options = $.extend(true, {}, {
       question: '',
       answers: [],
+      context: {},
     }, options);
     this.isAutoContinue = isAutoContinue;
     this.alternativeLabels = AlternativeLabel.normalizeSettings(alternativeLabels);
@@ -53,18 +121,25 @@ H5P.SingleChoiceSetCFRD.SingleChoice = (function ($, EventDispatcher, Alternativ
     });
 
     const questionId = `single-choice-${self.id}-question-${self.index}`;
+    const contextLayoutClass = getContextLayoutClass(self.options.context);
+    const hasContext = !!contextLayoutClass;
+    const contextTextId = `single-choice-${self.id}-context-${self.index}`;
 
     const $introduction = $('<div>', {
       class: 'h5p-question-introduction',
     });
 
-    $introduction.append($('<div>', {
+    const questionAttrs = {
       id: questionId,
       class: 'h5p-sc-question',
       html: this.options.question,
-    }));
+    };
 
-    this.$choice.append($introduction);
+    if (hasContext && hasContextText(self.options.context)) {
+      questionAttrs['aria-describedby'] = contextTextId;
+    }
+
+    $introduction.append($('<div>', questionAttrs));
 
     const $alternatives = $('<ul>', {
       class: 'h5p-sc-alternatives',
@@ -191,8 +266,52 @@ H5P.SingleChoiceSetCFRD.SingleChoice = (function ($, EventDispatcher, Alternativ
       alternative.on('lastOption', handleLastOption, this);
     }
 
-    this.$choice.append($alternatives);
+    if (hasContext) {
+      self.$choice.addClass('h5p-sc-has-context ' + contextLayoutClass);
+
+      const $layout = $('<div>', {
+        class: 'h5p-sc-slide-layout',
+      });
+      const $context = $('<aside>', {
+        class: 'h5p-sc-context',
+        'aria-label': 'Context',
+      });
+      const $questionColumn = $('<div>', {
+        class: 'h5p-sc-question-column',
+      });
+
+      if (hasContextText(self.options.context)) {
+        $context.append($('<div>', {
+          id: contextTextId,
+          class: 'h5p-sc-context-text',
+          html: self.options.context.text,
+        }));
+      }
+
+      if (hasContextImage(self.options.context)) {
+        self.$contextMedia = $('<div>', {
+          class: 'h5p-sc-context-media',
+        });
+        $context.append(self.$contextMedia);
+      }
+
+      $questionColumn.append($introduction);
+      $questionColumn.append($alternatives);
+      $layout.append($context);
+      $layout.append($questionColumn);
+      self.$choice.append($layout);
+    }
+    else {
+      this.$choice.append($introduction);
+      this.$choice.append($alternatives);
+    }
+
     $container.append(this.$choice);
+
+    if (self.$contextMedia && self.$contextMedia.length) {
+      attachContextImage(self.options.context, self.id, self.$contextMedia);
+    }
+
     return this.$choice;
   };
 

@@ -153,6 +153,71 @@
           "importance": "high"
         },
         {
+          "name": "context",
+          "type": "group",
+          "label": "Context (optional)",
+          "importance": "low",
+          "optional": true,
+          "fields": [
+            {
+              "name": "text",
+              "type": "text",
+              "widget": "html",
+              "label": "Context text",
+              "importance": "medium",
+              "optional": true,
+              "description": "Optional supporting text shown beside the question.",
+              "tags": [
+                "p",
+                "br",
+                "strong",
+                "em",
+                "ul",
+                "ol",
+                "li",
+                "code"
+              ]
+            },
+            {
+              "name": "media",
+              "type": "group",
+              "label": "Context image",
+              "importance": "medium",
+              "optional": true,
+              "fields": [
+                {
+                  "name": "type",
+                  "type": "library",
+                  "label": "Image",
+                  "importance": "medium",
+                  "options": [
+                    "H5P.Image 1.1"
+                  ],
+                  "optional": true,
+                  "description": "Optional image shown beside the question."
+                },
+                {
+                  "name": "disableImageZooming",
+                  "type": "boolean",
+                  "label": "Disable image zooming",
+                  "importance": "low",
+                  "default": false,
+                  "optional": true,
+                  "widget": "showWhen",
+                  "showWhen": {
+                    "rules": [
+                      {
+                        "field": "type",
+                        "equals": "H5P.Image 1.1"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
           "name": "answers",
           "type": "list",
           "label": "Alternatives - first alternative is the correct one.",

@@ -7,7 +7,7 @@
   "author": "sbriones (CFRD-UDEC)",
   "majorVersion": 1,
   "minorVersion": 1,
-  "patchVersion": 28,
+  "patchVersion": 31,
   "runnable": 1,
   "fullscreen": 0,
   "embedTypes": [
@@ -76,6 +76,11 @@
       "machineName": "H5P.Instructions",
       "majorVersion": 1,
       "minorVersion": 0
+    },
+    {
+      "machineName": "H5P.Image",
+      "majorVersion": 1,
+      "minorVersion": 1
     }
   ],
   "editorDependencies": [
