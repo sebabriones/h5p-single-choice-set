@@ -964,12 +964,22 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, ResultSlide,
 
     const scale = PlayArea.getScale(width);
     const fontSize = (design.baseFontSize * scale) + 'px';
+    const scaleStyles = {
+      fontSize: fontSize,
+      '--sc-scale': scale.toFixed(4),
+    };
+    const $scaleRoot = self.$playArea.closest('.h5p-single-choice-set.h5p-theme');
+
+    if ($scaleRoot.length) {
+      $scaleRoot.css(scaleStyles);
+    }
+    else {
+      self.$playArea.css(scaleStyles);
+    }
 
     self.$playArea.css({
       width: '100%',
       height: '',
-      fontSize: fontSize,
-      '--sc-scale': scale.toFixed(4),
     });
 
     self.refreshInstructionsScale();
