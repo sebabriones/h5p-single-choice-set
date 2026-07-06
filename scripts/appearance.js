@@ -21,7 +21,7 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
     soundIcon: '#757575',
     questionBackground: 'transparent',
     questionPadding: 0,
-    questionPaddingRight: 1.777777778,
+    questionPaddingRight: 1.777,
     questionBorderRadius: 0,
     alternativeBorderRadius: 0.25,
     alternativeBorderWidth: '0',

@@ -1227,7 +1227,7 @@
             "type": "number",
             "label": "Question right padding",
             "description": "Minimum space on the right side (for the sound control). Uses the larger value between this and question padding.",
-            "default": 1.777777778,
+            "default": 1.777,
             "min": 0,
             "max": 4,
             "decimals": 3,
