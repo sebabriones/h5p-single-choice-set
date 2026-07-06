@@ -1,5 +1,79 @@
 var H5P = H5P || {};
 
+/**
+ * @param {*} value
+ * @returns {boolean}
+ */
+function isTruthy(value) {
+  return value === true || value === 1 || value === '1' || value === 'true';
+}
+
+/**
+ * @param {H5P.SingleChoiceSetCFRD} instance
+ * @returns {Object|null}
+ */
+function getInstructionsOptions(instance) {
+  var instructions = instance && instance.options && instance.options.instructions;
+  var text;
+
+  if (!instructions || !isTruthy(instructions.enabled)) {
+    return null;
+  }
+
+  text = (instructions.text === undefined || instructions.text === null) ?
+    '' :
+    String(instructions.text).trim();
+
+  if (!text) {
+    return null;
+  }
+
+  return {
+    id: instance.contentId || instance.id,
+    text: text,
+    displayMode: instructions.displayMode || 'both',
+    introButtonLabel: instructions.introButtonLabel || 'Start',
+    tabButtonLabel: instructions.tabButtonLabel || 'Instructions',
+    animation: H5P.jQuery.extend(true, {}, instructions.animation || {}),
+    startCollapsed: instructions.startCollapsed === undefined ?
+      true :
+      isTruthy(instructions.startCollapsed)
+  };
+}
+
+/**
+ * @param {H5P.SingleChoiceSetCFRD} instance
+ * @param {H5P.jQuery} $fallbackContainer
+ */
+function scheduleInstructionsAttach(instance, $fallbackContainer) {
+  [0, 200, 500].forEach(function (delay) {
+    setTimeout(function () {
+      var instructions = getInstructionsOptions(instance);
+      var $target = (instance.$container && instance.$container.length) ?
+        instance.$container :
+        $fallbackContainer;
+      var attached;
+
+      if (!instructions || !$target || !$target.length) {
+        return;
+      }
+
+      if ($target.find('.h5p-instructions-root').length) {
+        instance.trigger('resize');
+        return;
+      }
+
+      if (H5P.Instructions && typeof H5P.Instructions.attach === 'function') {
+        attached = H5P.Instructions.attach($target, instructions);
+
+        if (attached) {
+          instance.trigger('resize');
+        }
+      }
+    }, delay);
+  });
+}
+
 H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView, ResultSlide, SoundEffects, XApiEventBuilder, StopWatch) {
   /**
    * @constructor
@@ -370,19 +444,47 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
    */
   SingleChoiceSet.prototype.setScore = function (score, noXAPI) {
     var self = this;
+    var maxScore = self.options.choices.length;
+    var scoreRatio = maxScore ? score / maxScore : 0;
+    var resolved;
+    var feedbackText;
+    var popupSettings = null;
 
     if (!self.choices.length) {
       return;
     }
 
-    var feedbackText = Question.determineOverallFeedback(
+    resolved = Question.resolveOverallFeedback(
       self.options.overallFeedback,
-      score / self.options.choices.length
-    )
-      .replace(':numcorrect', score)
-      .replace(':maxscore', self.options.choices.length.toString());
+      scoreRatio,
+      self.contentId,
+      score,
+      maxScore
+    );
 
-    self.setFeedback(feedbackText, score, self.options.choices.length, self.l10n.scoreBarLabel);
+    if (resolved && resolved.html && resolved.html.trim().length > 0) {
+      feedbackText = resolved.html
+        .replace(':numcorrect', String(score))
+        .replace(':maxscore', String(maxScore));
+      popupSettings = {
+        showAsPopup: true,
+        closeText: self.l10n.closeButtonLabel,
+        alwaysShowClose: true,
+        dismissible: true,
+        popupBackgroundColor: resolved.popupBackgroundColor,
+        plainText: resolved.plainText
+      };
+    }
+    else {
+      feedbackText = Question.determineOverallFeedback(
+        self.options.overallFeedback,
+        scoreRatio
+      )
+        .replace(':numcorrect', score)
+        .replace(':maxscore', maxScore.toString());
+    }
+
+    self.setFeedback(feedbackText, score, maxScore, self.l10n.scoreBarLabel, undefined, popupSettings);
 
     if (score === self.options.choices.length) {
       self.hideButton('try-again');
@@ -451,6 +553,8 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
    * Called from H5P.QuestionCFRD.
    */
   SingleChoiceSet.prototype.registerDomElements = function () {
+    var self = this;
+
     // Register task content area.
     this.setContent(this.createQuestion());
 
@@ -467,6 +571,7 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
       this.trigger('question-finished');
     }
 
+    scheduleInstructionsAttach(self, self.$container);
     this.trigger('resize');
   };
 

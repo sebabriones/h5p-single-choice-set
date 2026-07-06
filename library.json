@@ -7,7 +7,7 @@
   "author": "sbriones (CFRD-UDEC)",
   "majorVersion": 1,
   "minorVersion": 0,
-  "patchVersion": 1,
+  "patchVersion": 2,
   "runnable": 1,
   "fullscreen": 0,
   "embedTypes": [
@@ -66,6 +66,11 @@
     },
     {
       "machineName": "H5P.QuestionCFRD",
+      "majorVersion": 1,
+      "minorVersion": 0
+    },
+    {
+      "machineName": "H5P.Instructions",
       "majorVersion": 1,
       "minorVersion": 0
     }
