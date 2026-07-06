@@ -84,7 +84,8 @@ function scheduleInstructionsAttach(instance, $fallbackContainer) {
  */
 function restoreResultSlideButtonLabels(instance) {
   var labels = {
-    'try-again': instance.l10n.retryButtonLabel
+    'try-again': instance.l10n.retryButtonLabel,
+    'show-solution': instance.l10n.showSolutionButtonLabel
   };
 
   if (!instance.resultSlide || !instance.resultSlide.$buttonContainer) {
@@ -138,16 +139,6 @@ function scheduleResultResize(instance) {
   });
 }
 
-/**
- * @param {string} html
- * @returns {string}
- */
-function stripHtmlText(html) {
-  var decoder = document.createElement('div');
-  decoder.innerHTML = html || '';
-  return (decoder.textContent || decoder.innerText || '').replace(/[\n\r]+|[\s]{2,}/g, ' ').trim();
-}
-
 var PlayArea = H5P.SingleChoiceSetCFRD && H5P.SingleChoiceSetCFRD.PlayArea;
 var AlternativeLabelModule = H5P.SingleChoiceSetCFRD && H5P.SingleChoiceSetCFRD.AlternativeLabel;
 
@@ -191,6 +182,7 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
         soundEffectsEnabled: false,
         enableRetry: true,
         enableSolutionsButton: false,
+        enableShowSolutionButton: true,
         passPercentage: 100
       }
     }, options);
@@ -570,13 +562,19 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
 
     // Inline en la diapositiva de resultados (patrón upstream), sin popup.
     self.setFeedback(feedbackText, score, maxScore, self.l10n.scoreBarLabel);
-    self.renderResultsAnswerSummary(score, maxScore);
 
     if (score === self.options.choices.length) {
       self.hideButton('try-again');
+      self.hideButton('show-solution');
     }
     else {
       self.showButton('try-again');
+      if (isTruthy(self.options.behaviour.enableShowSolutionButton)) {
+        self.showButton('show-solution');
+      }
+      else {
+        self.hideButton('show-solution');
+      }
     }
     self.handleQueuedButtonChanges();
     self.scoreTimeout = undefined;
@@ -589,68 +587,14 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
   };
 
   /**
-   * Lists correct answers for wrongly answered questions on the results slide.
-   *
-   * @param {number} score
-   * @param {number} maxScore
-   */
-  SingleChoiceSet.prototype.renderResultsAnswerSummary = function (score, maxScore) {
-    var self = this;
-
-    if (!self.resultSlide || !self.resultSlide.$feedbackContainer) {
-      return;
-    }
-
-    var $container = self.resultSlide.$feedbackContainer;
-    $container.find('.h5p-sc-results-answers').remove();
-
-    if (!isTruthy(self.options.behaviour.enableSolutionsButton) || score === maxScore) {
-      return;
-    }
-
-    var $summary = $('<dl>', {
-      'class': 'h5p-sc-results-answers'
-    });
-    var hasWrong = false;
-
-    self.options.choices.forEach(function (choice, index) {
-      if (!choice || !choice.answers || !choice.answers.length) {
-        return;
-      }
-
-      if (self.userResponses[index] === 0) {
-        return;
-      }
-
-      hasWrong = true;
-      var label = AlternativeLabel.getAlternativeLabel(0, self.options.alternativeLabels);
-      var answerText = AlternativeLabel.prependLabel(label, choice.answers[0]);
-      var questionLabel = self.l10n.solutionListQuestionNumber.replace(':num', index + 1);
-      var questionText = stripHtmlText(choice.question);
-
-      $summary.append($('<dt>', {
-        'class': 'h5p-sc-results-question',
-        text: questionLabel + ' ' + questionText
-      }));
-      $summary.append($('<dd>', {
-        'class': 'h5p-sc-results-answer',
-        html: answerText
-      }));
-    });
-
-    if (hasWrong) {
-      $container.append($summary);
-    }
-  };
-
-  /**
    * Opens the solution view overlay on the results slide.
    */
   SingleChoiceSet.prototype.openSolutionView = function () {
     var self = this;
 
     var $tryAgainButton = $('.h5p-question-try-again', self.$container);
-    var buttons = [self.$muteButton, $tryAgainButton];
+    var $showSolutionButton = $('.h5p-question-show-solution', self.$container);
+    var buttons = [self.$muteButton, $tryAgainButton, $showSolutionButton];
 
     buttons.forEach(function (button) {
       self.setTabbable(button, false);
@@ -729,6 +673,14 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
         self.resetTask(true);
       }, self.results.corrects !== self.options.choices.length, {
         'aria-label': this.l10n.a11yRetry,
+      });
+    }
+
+    if (isTruthy(this.options.behaviour.enableShowSolutionButton)) {
+      this.addButton('show-solution', this.l10n.showSolutionButtonLabel, function () {
+        self.showSolutions();
+      }, self.results.corrects !== self.options.choices.length, {
+        'aria-label': this.l10n.a11yShowSolution,
       });
     }
   };
@@ -1229,10 +1181,6 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
 
     // Close solution view if visible:
     this.solutionView.hide();
-
-    if (this.resultSlide && this.resultSlide.$feedbackContainer) {
-      this.resultSlide.$feedbackContainer.find('.h5p-sc-results-answers').remove();
-    }
 
     // Reset the user's answers
     var classes = ['h5p-sc-reveal-wrong', 'h5p-sc-reveal-correct', 'h5p-sc-selected', 'h5p-sc-drummed', 'h5p-sc-correct-answer'];
