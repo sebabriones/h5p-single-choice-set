@@ -1,16 +1,26 @@
 var H5P = H5P || {};
 H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
 
-H5P.SingleChoiceSetCFRD.SolutionView = (function ($, EventDispatcher) {
+H5P.SingleChoiceSetCFRD.SolutionView = (function ($, EventDispatcher, AlternativeLabel) {
+  AlternativeLabel = AlternativeLabel || {
+    prependLabel: function (prefix, text) {
+      return prefix ? prefix + ' ' + text : text;
+    },
+    getAlternativeLabel: function () {
+      return '';
+    }
+  };
+
   /**
    * Constructor function.
    */
-  function SolutionView(id, choices, l10n) {
+  function SolutionView(id, choices, l10n, alternativeLabels) {
     EventDispatcher.call(this);
     var self = this;
     self.id = id;
     this.choices = choices;
     self.l10n = l10n;
+    self.alternativeLabels = alternativeLabels;
 
     this.$solutionView = $('<div>', {
       'class': 'h5p-sc-solution-view'
@@ -94,9 +104,16 @@ H5P.SingleChoiceSetCFRD.SolutionView = (function ($, EventDispatcher) {
 
         self.$choices.append($question);
 
+        var answerHtml = choice.answers[0];
+        var correctLabel = AlternativeLabel.getAlternativeLabel(0, self.alternativeLabels);
+
+        if (correctLabel) {
+          answerHtml = AlternativeLabel.prependLabel(correctLabel, answerHtml);
+        }
+
         var $answer = self.addAriaPunctuation($('<dd>', {
           'class': 'h5p-sc-solution-answer',
-          html: choice.answers[0]
+          'html': answerHtml
         }));
 
         self.$choices.append($answer);
@@ -133,4 +150,4 @@ H5P.SingleChoiceSetCFRD.SolutionView = (function ($, EventDispatcher) {
   };
 
   return SolutionView;
-})(H5P.jQuery, H5P.EventDispatcher);
+})(H5P.jQuery, H5P.EventDispatcher, H5P.SingleChoiceSetCFRD.AlternativeLabel);

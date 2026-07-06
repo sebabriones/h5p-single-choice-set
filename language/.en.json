@@ -413,6 +413,51 @@
       ]
     },
     {
+      "label": "Alternative labels",
+      "fields": [
+        {
+          "label": "Show labels on alternatives",
+          "default": false
+        },
+        {
+          "label": "Label style",
+          "default": "uppercase",
+          "options": [
+            {
+              "label": "Numbers (1, 2, 3)"
+            },
+            {
+              "label": "Uppercase letters (A, B, C)"
+            },
+            {
+              "label": "Lowercase letters (a, b, c)"
+            },
+            {
+              "label": "Uppercase Roman numerals (I, II, III)"
+            },
+            {
+              "label": "Lowercase Roman numerals (i, ii, iii)"
+            }
+          ]
+        },
+        {
+          "label": "Separator after label",
+          "default": "period",
+          "options": [
+            {
+              "label": "Period (A.)"
+            },
+            {
+              "label": "Parenthesis ((A))"
+            },
+            {
+              "label": "None (A)"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "label": "Behavioural settings",
       "fields": [
         {

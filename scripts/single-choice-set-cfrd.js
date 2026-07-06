@@ -140,8 +140,14 @@ function scheduleResultResize(instance) {
 }
 
 var PlayArea = H5P.SingleChoiceSetCFRD && H5P.SingleChoiceSetCFRD.PlayArea;
+var AlternativeLabelModule = H5P.SingleChoiceSetCFRD && H5P.SingleChoiceSetCFRD.AlternativeLabel;
 
-H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView, ResultSlide, SoundEffects, XApiEventBuilder, StopWatch) {
+H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView, ResultSlide, SoundEffects, XApiEventBuilder, StopWatch, AlternativeLabel) {
+  AlternativeLabel = AlternativeLabel || {
+    prependLabel: function (prefix, text) {
+      return prefix ? prefix + ' ' + text : text;
+    }
+  };
   /**
    * @constructor
    * @extends Question
@@ -164,6 +170,11 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
     this.options = $.extend(true, {}, {
       choices: [],
       overallFeedback: [],
+      alternativeLabels: {
+        enabled: false,
+        style: 'uppercase',
+        separator: 'period'
+      },
       behaviour: {
         autoContinue: true,
         timeoutCorrect: 2000,
@@ -244,7 +255,7 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
      * The solution dialog
      * @type {SolutionView}
      */
-    this.solutionView = new SolutionView(contentId, this.options.choices, this.l10n);
+    this.solutionView = new SolutionView(contentId, this.options.choices, this.l10n, this.options.alternativeLabels);
 
     this.$choices = $('<div>', {
       'class': 'h5p-sc-set h5p-sc-animate'
@@ -256,7 +267,13 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
     });
 
     for (var i = 0; i < this.options.choices.length; i++) {
-      var choice = new SingleChoice(this.options.choices[i], i, this.contentId, this.options.behaviour.autoContinue);
+      var choice = new SingleChoice(
+        this.options.choices[i],
+        i,
+        this.contentId,
+        this.options.behaviour.autoContinue,
+        this.options.alternativeLabels
+      );
       choice.on('finished', this.handleQuestionFinished, this);
       choice.on('alternative-selected', this.handleAlternativeSelected, this);
       choice.appendTo(this.$choices, (i === this.currentIndex));
@@ -1209,21 +1226,33 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
    */
   SingleChoiceSet.prototype.readA11yFriendlyText = function (index, currentIndex) {
     var self = this;
-    var correctAnswer = self.$choices.find('.h5p-sc-is-correct')[index].textContent.replace(/[\n\r]+|[\s]{2,}/g, ' ').trim();
-    let selectedOptionText = this.lastAnswerIsCorrect ? self.l10n.correctText : self.l10n.incorrectText;
-    // Announce by ARIA label
+    var $currentSlide = self.$choices.find('.h5p-sc-current-slide');
+    var $selected = $currentSlide.find('.h5p-sc-alternative').eq(currentIndex);
+    var prefix = $selected.find('.h5p-sc-alternative-prefix').text();
+    var selectedText = $selected.find('.h5p-sc-label').text().replace(/[\n\r]+|[\s]{2,}/g, ' ').trim();
+    var labeledSelectedText = AlternativeLabel.prependLabel(prefix, selectedText);
+    var $correctAlternative = $currentSlide.find('.h5p-sc-is-correct');
+    var correctPrefix = $correctAlternative.find('.h5p-sc-alternative-prefix').text();
+    var correctText = $correctAlternative.find('.h5p-sc-label').text().replace(/[\n\r]+|[\s]{2,}/g, ' ').trim();
+    var labeledCorrectText = AlternativeLabel.prependLabel(correctPrefix, correctText);
+    var selectedOptionText = this.lastAnswerIsCorrect ? self.l10n.correctText : self.l10n.incorrectText;
+
     if (!self.options.behaviour.autoContinue) {
-      // Set text for a11y
-      selectedOptionText = this.lastAnswerIsCorrect ? self.l10n.correctText + self.l10n.shouldSelect : self.l10n.incorrectText + self.l10n.shouldNotSelect;
+      selectedOptionText = this.lastAnswerIsCorrect ?
+        self.l10n.correctText + self.l10n.shouldSelect :
+        self.l10n.incorrectText + self.l10n.shouldNotSelect;
       self.$choices.find('.h5p-sc-current-slide .h5p-sc-is-correct .h5p-sc-a11y').text(self.l10n.shouldSelect);
       self.$choices.find('.h5p-sc-current-slide .h5p-sc-is-wrong .h5p-sc-a11y').text(self.l10n.shouldNotSelect);
       self.$choices.find('.h5p-sc-current-slide .h5p-sc-alternative').eq(currentIndex).find('.h5p-sc-a11y').text(selectedOptionText);
 
-      // Utilize same variable for the read text
-      selectedOptionText = this.lastAnswerIsCorrect ? self.l10n.correctText : self.l10n.incorrectText + correctAnswer + self.l10n.shouldSelect;
+      selectedOptionText = this.lastAnswerIsCorrect ?
+        self.l10n.correctText + ' ' + labeledSelectedText :
+        self.l10n.incorrectText + ' ' + labeledSelectedText + '. ' +
+          labeledCorrectText + '. ' + self.l10n.shouldSelect;
     }
+
     self.read(selectedOptionText);
   };
 
   return SingleChoiceSet;
-})(H5P.jQuery, H5P.JoubelUICFRD, H5P.QuestionCFRD, H5P.SingleChoiceSetCFRD.SingleChoice, H5P.SingleChoiceSetCFRD.SolutionView, H5P.SingleChoiceSetCFRD.ResultSlide, H5P.SingleChoiceSetCFRD.SoundEffects, H5P.SingleChoiceSetCFRD.XApiEventBuilder, H5P.SingleChoiceSetCFRD.StopWatch);
+})(H5P.jQuery, H5P.JoubelUICFRD, H5P.QuestionCFRD, H5P.SingleChoiceSetCFRD.SingleChoice, H5P.SingleChoiceSetCFRD.SolutionView, H5P.SingleChoiceSetCFRD.ResultSlide, H5P.SingleChoiceSetCFRD.SoundEffects, H5P.SingleChoiceSetCFRD.XApiEventBuilder, H5P.SingleChoiceSetCFRD.StopWatch, AlternativeLabelModule);

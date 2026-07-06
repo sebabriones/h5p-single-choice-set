@@ -379,8 +379,25 @@ li.h5p-sc-alternative.h5p-sc-selected .h5p-sc-progressbar {
 @keyframes progress {
     from { } to { width: 100% }
 }
+li.h5p-sc-alternative .h5p-sc-alternative-body {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5em;
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+li.h5p-sc-alternative .h5p-sc-alternative-prefix {
+  flex: 0 0 auto;
+  font-weight: 600;
+  line-height: inherit;
+}
+
 li.h5p-sc-alternative .h5p-sc-label {
   position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 li.h5p-sc-alternative .h5p-sc-label p {
   margin: 0.75em 0;

@@ -1,7 +1,7 @@
 var H5P = H5P || {};
 H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
 
-H5P.SingleChoiceSetCFRD.SingleChoice = (function ($, EventDispatcher, Alternative) {
+H5P.SingleChoiceSetCFRD.SingleChoice = (function ($, EventDispatcher, Alternative, AlternativeLabel) {
   /**
    * @param {string} html
    * @returns {string}
@@ -72,7 +72,7 @@ H5P.SingleChoiceSetCFRD.SingleChoice = (function ($, EventDispatcher, Alternativ
   /**
    * Constructor function.
    */
-  function SingleChoice(options, index, id, isAutoConfinue) {
+  function SingleChoice(options, index, id, isAutoConfinue, alternativeLabels) {
     EventDispatcher.call(this);
     // Extend defaults with provided options
     this.options = $.extend(true, {}, {
@@ -81,6 +81,7 @@ H5P.SingleChoiceSetCFRD.SingleChoice = (function ($, EventDispatcher, Alternativ
       context: {}
     }, options);
     this.isAutoConfinue = isAutoConfinue;
+    this.alternativeLabels = AlternativeLabel.normalizeSettings(alternativeLabels);
     // Keep provided id.
     this.index = index;
     this.id = id;
@@ -150,8 +151,13 @@ H5P.SingleChoiceSetCFRD.SingleChoice = (function ($, EventDispatcher, Alternativ
      *
      * @type {Alternative[]}
      */
-    this.alternatives = self.options.answers.map(function (opts) {
-      return new Alternative(opts);
+    this.alternatives = self.options.answers.map(function (opts, displayIndex) {
+      return new Alternative({
+        text: opts.text,
+        correct: opts.correct,
+        answerIndex: opts.answerIndex,
+        prefix: AlternativeLabel.getAlternativeLabel(displayIndex, self.alternativeLabels)
+      });
     });
 
     /**
@@ -400,4 +406,4 @@ H5P.SingleChoiceSetCFRD.SingleChoice = (function ($, EventDispatcher, Alternativ
 
   return SingleChoice;
 
-})(H5P.jQuery, H5P.EventDispatcher, H5P.SingleChoiceSetCFRD.Alternative);
+})(H5P.jQuery, H5P.EventDispatcher, H5P.SingleChoiceSetCFRD.Alternative, H5P.SingleChoiceSetCFRD.AlternativeLabel);

@@ -1,7 +1,22 @@
 var H5P = H5P || {};
 H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
 
-H5P.SingleChoiceSetCFRD.Alternative = (function ($, EventDispatcher) {
+H5P.SingleChoiceSetCFRD.Alternative = (function ($, EventDispatcher, AlternativeLabel) {
+  AlternativeLabel = AlternativeLabel || {
+    prependLabel: function (prefix, text) {
+      return prefix ? prefix + ' ' + text : text;
+    }
+  };
+
+  /**
+   * @param {string} html
+   * @returns {string}
+   */
+  function stripHtml(html) {
+    var decoder = document.createElement('div');
+    decoder.innerHTML = html;
+    return (decoder.textContent || decoder.innerText || '').replace(/[\n\r]+|[\s]{2,}/g, ' ').trim();
+  }
 
   /**
    * @constructor
@@ -33,32 +48,27 @@ H5P.SingleChoiceSetCFRD.Alternative = (function ($, EventDispatcher) {
           switch (event.which) {
             case 13: // Enter
             case 32: // Space
-              // Answer question
               triggerAlternativeSelected(event);
               break;
 
-            case 35: // End radio button
-              // Go to previous Option
+            case 35: // End
               self.trigger('lastOption', event);
               event.preventDefault();
               break;
 
-            case 36: // Home radio button
-              // Go to previous Option
+            case 36: // Home
               self.trigger('firstOption', event);
               event.preventDefault();
               break;
 
-            case 37: // Left Arrow
-            case 38: // Up Arrow
-              // Go to previous Option
+            case 37: // Left
+            case 38: // Up
               self.trigger('previousOption', event);
               event.preventDefault();
               break;
 
-            case 39: // Right Arrow
-            case 40: // Down Arrow
-              // Go to next Option
+            case 39: // Right
+            case 40: // Down
               self.trigger('nextOption', event);
               event.preventDefault();
               break;
@@ -71,15 +81,38 @@ H5P.SingleChoiceSetCFRD.Alternative = (function ($, EventDispatcher) {
       'click': triggerAlternativeSelected
     });
 
+    if (this.options.prefix) {
+      this.$alternative.attr(
+        'aria-label',
+        AlternativeLabel.prependLabel(
+          this.options.prefix,
+          stripHtml(this.options.text)
+        )
+      );
+    }
+
     this.$alternative.append($('<div>', {
       'class': 'h5p-sc-progressbar'
     }));
 
-    this.$alternative.append($('<div>', {
+    var $body = $('<div>', {
+      'class': 'h5p-sc-alternative-body'
+    });
+
+    if (this.options.prefix) {
+      $body.append($('<span>', {
+        'class': 'h5p-sc-alternative-prefix',
+        'aria-hidden': 'true',
+        'text': this.options.prefix
+      }));
+    }
+
+    $body.append($('<div>', {
       'class': 'h5p-sc-label',
       'html': this.options.text
     }));
 
+    this.$alternative.append($body);
     this.$alternative.append($('<div>', {
       'class': 'h5p-sc-status'
     }));
@@ -93,41 +126,24 @@ H5P.SingleChoiceSetCFRD.Alternative = (function ($, EventDispatcher) {
   Alternative.prototype.constructor = Alternative;
 
   /**
-   * Is this alternative the correct one?
-   *
-   * @return {boolean}  Correct or not?
+   * @return {boolean}
    */
   Alternative.prototype.isCorrect = function () {
     return this.options.correct;
   };
 
-  /**
-   * Move focus to this option.
-   */
   Alternative.prototype.focus = function () {
     this.$alternative.focus();
   };
 
-  /**
-   * Makes it possible to tab your way to this option.
-   */
   Alternative.prototype.tabbable = function () {
     this.$alternative.attr('tabindex', 0);
   };
 
-  /**
-   * Make sure it's NOT possible to tab your way to this option.
-   */
   Alternative.prototype.notTabbable = function () {
     this.$alternative.attr('tabindex', -1);
   };
 
-  /**
-   * Append the alternative to a DOM container
-   *
-   * @param  {jQuery} $container The Dom element to append to
-   * @return {jQuery}            This dom element
-   */
   Alternative.prototype.appendTo = function ($container) {
     $container.append(this.$alternative);
     return this.$alternative;
@@ -135,4 +151,4 @@ H5P.SingleChoiceSetCFRD.Alternative = (function ($, EventDispatcher) {
 
   return Alternative;
 
-})(H5P.jQuery, H5P.EventDispatcher);
+})(H5P.jQuery, H5P.EventDispatcher, H5P.SingleChoiceSetCFRD.AlternativeLabel);
