@@ -1141,7 +1141,7 @@
         "label": "Enable show solution button",
         "description": "When enabled, a button on the results slide opens a list of all questions with their correct answers.",
         "importance": "low",
-        "default": true
+        "default": false
       },
       {
         "name": "passPercentage",
@@ -1188,7 +1188,7 @@
         "type": "text",
         "label": "Title for the show solution view",
         "importance": "low",
-        "default": "Solution list"
+        "default": "Solution"
       },
       {
         "name": "correctText",

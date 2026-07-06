@@ -464,7 +464,7 @@
         },
         {
           "label": "Título para la vista mostrar solución",
-          "default": "Lista Solución"
+          "default": "Solución"
         },
         {
           "label": "Texto para lectores de pantalla para respuesta correcta",

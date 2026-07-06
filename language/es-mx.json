@@ -101,7 +101,7 @@
         },
         {
           "label": "Título para la vista mostrar solución",
-          "default": "Lista Solución"
+          "default": "Solución"
         },
         {
           "label": "Texto de Lector en voz alta para respuesta correcta",

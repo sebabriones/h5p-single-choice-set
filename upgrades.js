@@ -43,7 +43,7 @@ H5PUpgrades['H5P.SingleChoiceSetCFRD'] = (function () {
         }
 
         if (parameters && parameters.behaviour && parameters.behaviour.enableShowSolutionButton === undefined) {
-          parameters.behaviour.enableShowSolutionButton = true;
+          parameters.behaviour.enableShowSolutionButton = false;
         }
 
         finished(null, parameters);

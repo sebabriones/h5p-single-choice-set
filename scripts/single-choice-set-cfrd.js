@@ -43,6 +43,33 @@ function getInstructionsOptions(instance) {
 }
 
 /**
+ * @param {object} options
+ * @returns {string|null} left | center | right, or null when tab is not used
+ */
+function getInstructionsTabPosition(options) {
+  var instructions = options && options.instructions;
+
+  if (!instructions || !isTruthy(instructions.enabled)) {
+    return null;
+  }
+
+  var displayMode = instructions.displayMode || 'both';
+
+  if (displayMode !== 'tab' && displayMode !== 'both') {
+    return null;
+  }
+
+  var tabAppearance = instructions.appearance && instructions.appearance.tab;
+  var position = tabAppearance && tabAppearance.buttonPosition;
+
+  if (position === 'left' || position === 'center' || position === 'right') {
+    return position;
+  }
+
+  return 'left';
+}
+
+/**
  * @param {H5P.SingleChoiceSetCFRD} instance
  * @param {H5P.jQuery} $fallbackContainer
  */
@@ -182,7 +209,7 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
         soundEffectsEnabled: false,
         enableRetry: true,
         enableSolutionsButton: false,
-        enableShowSolutionButton: true,
+        enableShowSolutionButton: false,
         passPercentage: 100
       }
     }, options);
@@ -607,6 +634,8 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
       self.toggleAriaVisibility(true);
       self.focusButton();
     });
+
+    self.solutionView.setCloseOnRight(getInstructionsTabPosition(self.options) === 'left');
 
     self.solutionView.show();
     self.toggleAriaVisibility(false);

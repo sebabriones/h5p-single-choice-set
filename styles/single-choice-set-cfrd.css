@@ -546,6 +546,7 @@ li.h5p-sc-alternative .h5p-sc-status {
   left: 0;
   visibility: visible;
   display: block;
+  z-index: 950;
 }
 .h5p-sc-solution-view-header {
   position: relative;
@@ -569,6 +570,8 @@ li.h5p-sc-alternative .h5p-sc-status {
   -webkit-transform: translateY(-50%);
   transform: translateY(-50%);
   left: 0;
+  right: auto;
+  padding: 0 0.75em;
   background: none;
   color: #1a73d9;
 }
@@ -589,8 +592,14 @@ li.h5p-sc-alternative .h5p-sc-status {
 }
 .h5p-single-choice-set .h5p-sc-solution-view .h5p-sc-close-solution-view:before {
   font-family: H5PFontAwesome4;
-  content: '\f060';
-  padding-right: 0.5em;
+  content: '\f00d';
+  font-size: 1.25em;
+  line-height: 1;
+}
+
+.h5p-single-choice-set .h5p-sc-solution-view--close-right .h5p-sc-close-solution-view {
+  left: auto;
+  right: 0;
 }
 .h5p-sc-solution-choices {
   font-size: 1.1em;
