@@ -61,15 +61,6 @@ H5P.SingleChoiceSetCFRD.SolutionView = (function ($, EventDispatcher, Alternativ
   };
 
   /**
-   * Positions the close control on the right when instructions tab is on the left.
-   *
-   * @param {boolean} closeOnRight
-   */
-  SolutionView.prototype.setCloseOnRight = function (closeOnRight) {
-    this.$solutionView.toggleClass('h5p-sc-solution-view--close-right', !!closeOnRight);
-  };
-
-  /**
    * Shows the solution view
    */
   SolutionView.prototype.show = function () {
@@ -89,7 +80,7 @@ H5P.SingleChoiceSetCFRD.SolutionView = (function ($, EventDispatcher, Alternativ
    * Hides the solution view
    */
   SolutionView.prototype.hide = function () {
-    this.$solutionView.removeClass('visible h5p-sc-solution-view--close-right');
+    this.$solutionView.removeClass('visible');
     this.trigger('hide', this);
   };
 

@@ -597,10 +597,6 @@ li.h5p-sc-alternative .h5p-sc-status {
   line-height: 1;
 }
 
-.h5p-single-choice-set .h5p-sc-solution-view--close-right .h5p-sc-close-solution-view {
-  left: auto;
-  right: 0;
-}
 .h5p-sc-solution-choices {
   font-size: 1.1em;
   margin: 0 auto;
