@@ -448,7 +448,6 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
     var scoreRatio = maxScore ? score / maxScore : 0;
     var resolved;
     var feedbackText;
-    var popupSettings = null;
 
     if (!self.choices.length) {
       return;
@@ -466,14 +465,6 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
       feedbackText = resolved.html
         .replace(':numcorrect', String(score))
         .replace(':maxscore', String(maxScore));
-      popupSettings = {
-        showAsPopup: true,
-        closeText: self.l10n.closeButtonLabel,
-        alwaysShowClose: true,
-        dismissible: true,
-        popupBackgroundColor: resolved.popupBackgroundColor,
-        plainText: resolved.plainText
-      };
     }
     else {
       feedbackText = Question.determineOverallFeedback(
@@ -484,7 +475,8 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
         .replace(':maxscore', maxScore.toString());
     }
 
-    self.setFeedback(feedbackText, score, maxScore, self.l10n.scoreBarLabel, undefined, popupSettings);
+    // Inline en la diapositiva de resultados (patrón upstream), sin popup.
+    self.setFeedback(feedbackText, score, maxScore, self.l10n.scoreBarLabel);
 
     if (score === self.options.choices.length) {
       self.hideButton('try-again');
