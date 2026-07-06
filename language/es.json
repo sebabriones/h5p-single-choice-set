@@ -434,7 +434,8 @@
           "label": "Habilitar botón \"Intentar de nuevo\""
         },
         {
-          "label": "Habilitar botón Mostrar solución"
+          "label": "Mostrar respuesta correcta al fallar",
+          "description": "Si está activado, la alternativa correcta se revela tras una respuesta incorrecta y en la diapositiva de resultados. Si está desactivado, solo se indica si la respuesta fue correcta o incorrecta."
         },
         {
           "label": "Porcentaje aprobatorio",

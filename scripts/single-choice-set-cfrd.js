@@ -84,8 +84,7 @@ function scheduleInstructionsAttach(instance, $fallbackContainer) {
  */
 function restoreResultSlideButtonLabels(instance) {
   var labels = {
-    'try-again': instance.l10n.retryButtonLabel,
-    'show-solution': instance.l10n.showSolutionButtonLabel
+    'try-again': instance.l10n.retryButtonLabel
   };
 
   if (!instance.resultSlide || !instance.resultSlide.$buttonContainer) {
@@ -139,6 +138,16 @@ function scheduleResultResize(instance) {
   });
 }
 
+/**
+ * @param {string} html
+ * @returns {string}
+ */
+function stripHtmlText(html) {
+  var decoder = document.createElement('div');
+  decoder.innerHTML = html || '';
+  return (decoder.textContent || decoder.innerText || '').replace(/[\n\r]+|[\s]{2,}/g, ' ').trim();
+}
+
 var PlayArea = H5P.SingleChoiceSetCFRD && H5P.SingleChoiceSetCFRD.PlayArea;
 var AlternativeLabelModule = H5P.SingleChoiceSetCFRD && H5P.SingleChoiceSetCFRD.AlternativeLabel;
 
@@ -177,11 +186,11 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
       },
       behaviour: {
         autoContinue: true,
-        timeoutCorrect: 2000,
-        timeoutWrong: 3000,
-        soundEffectsEnabled: true,
+        timeoutCorrect: 300,
+        timeoutWrong: 300,
+        soundEffectsEnabled: false,
         enableRetry: true,
-        enableSolutionsButton: true,
+        enableSolutionsButton: false,
         passPercentage: 100
       }
     }, options);
@@ -272,7 +281,8 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
         i,
         this.contentId,
         this.options.behaviour.autoContinue,
-        this.options.alternativeLabels
+        this.options.alternativeLabels,
+        isTruthy(this.options.behaviour.enableSolutionsButton)
       );
       choice.on('finished', this.handleQuestionFinished, this);
       choice.on('alternative-selected', this.handleAlternativeSelected, this);
@@ -286,7 +296,6 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
     this.resultSlide.on('retry', function() {
       self.resetTask(true);
     }, this);
-    this.resultSlide.on('view-solution', this.handleViewSolution, this);
     this.$slides.push(this.resultSlide.$resultSlide);
     this.on('resize', this.resize, this);
 
@@ -561,14 +570,13 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
 
     // Inline en la diapositiva de resultados (patrón upstream), sin popup.
     self.setFeedback(feedbackText, score, maxScore, self.l10n.scoreBarLabel);
+    self.renderResultsAnswerSummary(score, maxScore);
 
     if (score === self.options.choices.length) {
       self.hideButton('try-again');
-      self.hideButton('show-solution');
     }
     else {
       self.showButton('try-again');
-      self.showButton('show-solution');
     }
     self.handleQueuedButtonChanges();
     self.scoreTimeout = undefined;
@@ -581,32 +589,91 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
   };
 
   /**
-   * Handler invoked when view solution is selected
+   * Lists correct answers for wrongly answered questions on the results slide.
+   *
+   * @param {number} score
+   * @param {number} maxScore
    */
-  SingleChoiceSet.prototype.handleViewSolution = function () {
+  SingleChoiceSet.prototype.renderResultsAnswerSummary = function (score, maxScore) {
+    var self = this;
+
+    if (!self.resultSlide || !self.resultSlide.$feedbackContainer) {
+      return;
+    }
+
+    var $container = self.resultSlide.$feedbackContainer;
+    $container.find('.h5p-sc-results-answers').remove();
+
+    if (!isTruthy(self.options.behaviour.enableSolutionsButton) || score === maxScore) {
+      return;
+    }
+
+    var $summary = $('<dl>', {
+      'class': 'h5p-sc-results-answers'
+    });
+    var hasWrong = false;
+
+    self.options.choices.forEach(function (choice, index) {
+      if (!choice || !choice.answers || !choice.answers.length) {
+        return;
+      }
+
+      if (self.userResponses[index] === 0) {
+        return;
+      }
+
+      hasWrong = true;
+      var label = AlternativeLabel.getAlternativeLabel(0, self.options.alternativeLabels);
+      var answerText = AlternativeLabel.prependLabel(label, choice.answers[0]);
+      var questionLabel = self.l10n.solutionListQuestionNumber.replace(':num', index + 1);
+      var questionText = stripHtmlText(choice.question);
+
+      $summary.append($('<dt>', {
+        'class': 'h5p-sc-results-question',
+        text: questionLabel + ' ' + questionText
+      }));
+      $summary.append($('<dd>', {
+        'class': 'h5p-sc-results-answer',
+        html: answerText
+      }));
+    });
+
+    if (hasWrong) {
+      $container.append($summary);
+    }
+  };
+
+  /**
+   * Opens the solution view overlay on the results slide.
+   */
+  SingleChoiceSet.prototype.openSolutionView = function () {
     var self = this;
 
     var $tryAgainButton = $('.h5p-question-try-again', self.$container);
-    var $showSolutionButton = $('.h5p-question-show-solution', self.$container);
-    var buttons = [self.$muteButton, $tryAgainButton, $showSolutionButton];
+    var buttons = [self.$muteButton, $tryAgainButton];
 
-    // remove tabbable for buttons in result view
     buttons.forEach(function (button) {
       self.setTabbable(button, false);
     });
 
     self.solutionView.on('hide', function () {
-      // re-add tabbable for buttons in result view
       buttons.forEach(function (button) {
         self.setTabbable(button, true);
       });
       self.toggleAriaVisibility(true);
-      // Focus on first button when closing solution view
       self.focusButton();
     });
 
     self.solutionView.show();
     self.toggleAriaVisibility(false);
+  };
+
+  /**
+   * Handler invoked when view solution is selected
+   * @deprecated Use openSolutionView
+   */
+  SingleChoiceSet.prototype.handleViewSolution = function () {
+    this.openSolutionView();
   };
 
   /**
@@ -662,14 +729,6 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
         self.resetTask(true);
       }, self.results.corrects !== self.options.choices.length, {
         'aria-label': this.l10n.a11yRetry,
-      });
-    }
-
-    if (this.options.behaviour.enableSolutionsButton) {
-      this.addButton('show-solution', this.l10n.showSolutionButtonLabel, function () {
-        self.showSolutions();
-      }, self.results.corrects !== self.options.choices.length, {
-        'aria-label': this.l10n.a11yShowSolution,
       });
     }
   };
@@ -1157,7 +1216,7 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
   };
 
   SingleChoiceSet.prototype.showSolutions = function () {
-    this.handleViewSolution();
+    this.openSolutionView();
   };
 
   /**
@@ -1170,6 +1229,10 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
 
     // Close solution view if visible:
     this.solutionView.hide();
+
+    if (this.resultSlide && this.resultSlide.$feedbackContainer) {
+      this.resultSlide.$feedbackContainer.find('.h5p-sc-results-answers').remove();
+    }
 
     // Reset the user's answers
     var classes = ['h5p-sc-reveal-wrong', 'h5p-sc-reveal-correct', 'h5p-sc-selected', 'h5p-sc-drummed', 'h5p-sc-correct-answer'];
@@ -1226,6 +1289,7 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
    */
   SingleChoiceSet.prototype.readA11yFriendlyText = function (index, currentIndex) {
     var self = this;
+    var showCorrectAnswerWhenWrong = isTruthy(self.options.behaviour.enableSolutionsButton);
     var $currentSlide = self.$choices.find('.h5p-sc-current-slide');
     var $selected = $currentSlide.find('.h5p-sc-alternative').eq(currentIndex);
     var prefix = $selected.find('.h5p-sc-alternative-prefix').text();
@@ -1237,18 +1301,26 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
     var labeledCorrectText = AlternativeLabel.prependLabel(correctPrefix, correctText);
     var selectedOptionText = this.lastAnswerIsCorrect ? self.l10n.correctText : self.l10n.incorrectText;
 
-    if (!self.options.behaviour.autoContinue) {
-      selectedOptionText = this.lastAnswerIsCorrect ?
-        self.l10n.correctText + self.l10n.shouldSelect :
-        self.l10n.incorrectText + self.l10n.shouldNotSelect;
-      self.$choices.find('.h5p-sc-current-slide .h5p-sc-is-correct .h5p-sc-a11y').text(self.l10n.shouldSelect);
-      self.$choices.find('.h5p-sc-current-slide .h5p-sc-is-wrong .h5p-sc-a11y').text(self.l10n.shouldNotSelect);
-      self.$choices.find('.h5p-sc-current-slide .h5p-sc-alternative').eq(currentIndex).find('.h5p-sc-a11y').text(selectedOptionText);
+    selectedOptionText = this.lastAnswerIsCorrect ?
+      self.l10n.correctText + self.l10n.shouldSelect :
+      self.l10n.incorrectText + self.l10n.shouldNotSelect;
 
-      selectedOptionText = this.lastAnswerIsCorrect ?
-        self.l10n.correctText + ' ' + labeledSelectedText :
-        self.l10n.incorrectText + ' ' + labeledSelectedText + '. ' +
-          labeledCorrectText + '. ' + self.l10n.shouldSelect;
+    if (this.lastAnswerIsCorrect || showCorrectAnswerWhenWrong) {
+      self.$choices.find('.h5p-sc-current-slide .h5p-sc-is-correct .h5p-sc-a11y').text(self.l10n.shouldSelect);
+    }
+
+    self.$choices.find('.h5p-sc-current-slide .h5p-sc-is-wrong .h5p-sc-a11y').text(self.l10n.shouldNotSelect);
+    self.$choices.find('.h5p-sc-current-slide .h5p-sc-alternative').eq(currentIndex).find('.h5p-sc-a11y').text(selectedOptionText);
+
+    if (this.lastAnswerIsCorrect) {
+      selectedOptionText = self.l10n.correctText + ' ' + labeledSelectedText;
+    }
+    else if (showCorrectAnswerWhenWrong) {
+      selectedOptionText = self.l10n.incorrectText + ' ' + labeledSelectedText + '. ' +
+        labeledCorrectText + '. ' + self.l10n.shouldSelect;
+    }
+    else {
+      selectedOptionText = self.l10n.incorrectText + ' ' + labeledSelectedText;
     }
 
     self.read(selectedOptionText);
