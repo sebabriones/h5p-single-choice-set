@@ -884,9 +884,9 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
     }
 
     if ($slide.hasClass('h5p-sc-has-context')) {
-      var $questionColumn = $slide.find('.h5p-sc-question-column').first();
-      if ($questionColumn.length) {
-        $slide = $questionColumn;
+      var $layout = $slide.find('.h5p-sc-slide-layout').first();
+      if ($layout.length) {
+        return $layout.outerHeight(true);
       }
     }
 
