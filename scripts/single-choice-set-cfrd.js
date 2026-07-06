@@ -375,7 +375,10 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
       return;
     }
 
-    var feedbackText = determineOverallFeedback(self.options.overallFeedback , score / self.options.choices.length)
+    var feedbackText = Question.determineOverallFeedback(
+      self.options.overallFeedback,
+      score / self.options.choices.length
+    )
       .replace(':numcorrect', score)
       .replace(':maxscore', self.options.choices.length.toString());
 
@@ -445,7 +448,7 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
 
   /**
    * Register DOM elements before they are attached.
-   * Called from H5P.Question.
+   * Called from H5P.QuestionCFRD.
    */
   SingleChoiceSet.prototype.registerDomElements = function () {
     // Register task content area.
@@ -506,7 +509,7 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
       $button.attr('aria-pressed', self.muted);
     }
 
-    // Keep this out of H5P.Question, since we are moving the button & feedback
+    // Keep this out of H5P.QuestionCFRD, since we are moving the button & feedback
     // region to the last slide
     if (!this.options.behaviour.autoContinue) {
 
@@ -875,28 +878,5 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
     self.read(selectedOptionText);
   };
 
-  /**
-   * Determine the overall feedback to display for the question.
-   * Returns empty string if no matching range is found.
-   *
-   * @param {Object[]} feedbacks
-   * @param {number} scoreRatio
-   * @return {string}
-   */
-  var determineOverallFeedback = function (feedbacks, scoreRatio) {
-    scoreRatio = Math.floor(scoreRatio * 100);
-
-    for (var i = 0; i < feedbacks.length; i++) {
-      var feedback = feedbacks[i];
-      var hasFeedback = (feedback.feedback !== undefined && feedback.feedback.trim().length !== 0);
-
-      if (feedback.from <= scoreRatio && feedback.to >= scoreRatio && hasFeedback) {
-        return feedback.feedback;
-      }
-    }
-
-    return '';
-  };
-
   return SingleChoiceSet;
-})(H5P.jQuery, H5P.JoubelUI, H5P.Question, H5P.SingleChoiceSetCFRD.SingleChoice, H5P.SingleChoiceSetCFRD.SolutionView, H5P.SingleChoiceSetCFRD.ResultSlide, H5P.SingleChoiceSetCFRD.SoundEffects, H5P.SingleChoiceSetCFRD.XApiEventBuilder, H5P.SingleChoiceSetCFRD.StopWatch);
+})(H5P.jQuery, H5P.JoubelUICFRD, H5P.QuestionCFRD, H5P.SingleChoiceSetCFRD.SingleChoice, H5P.SingleChoiceSetCFRD.SolutionView, H5P.SingleChoiceSetCFRD.ResultSlide, H5P.SingleChoiceSetCFRD.SoundEffects, H5P.SingleChoiceSetCFRD.XApiEventBuilder, H5P.SingleChoiceSetCFRD.StopWatch);
