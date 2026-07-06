@@ -1,9 +1,9 @@
 var H5P = H5P || {};
-H5P.SingleChoiceSet = H5P.SingleChoiceSet || {};
+H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
 
-H5P.SingleChoiceSet.StopWatch = (function () {
+H5P.SingleChoiceSetCFRD.StopWatch = (function () {
   /**
-   * @class {H5P.SingleChoiceSet.StopWatch}
+   * @class {H5P.SingleChoiceSetCFRD.StopWatch}
    * @constructor
    */
   function StopWatch() {
@@ -17,7 +17,7 @@ H5P.SingleChoiceSet.StopWatch = (function () {
    * Starts the stop watch
    *
    * @public
-   * @return {H5P.SingleChoiceSet.StopWatch}
+   * @return {H5P.SingleChoiceSetCFRD.StopWatch}
    */
   StopWatch.prototype.start = function () {
     /**

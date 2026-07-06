@@ -463,30 +463,30 @@ li.h5p-sc-alternative .h5p-sc-status {
 }
 
 /* IV sepcific styles */
-.h5p-interactive-video .h5p-dialog[data-lib="H5P.SingleChoiceSet"] {
+.h5p-interactive-video .h5p-dialog[data-lib="H5P.SingleChoiceSetCFRD"] {
   width: 24.5em;
   overflow: hidden;
   padding: 0;
 }
 
-.h5p-interactive-video .h5p-dialog[data-lib="H5P.SingleChoiceSet"] .h5p-sc-sound-control {
+.h5p-interactive-video .h5p-dialog[data-lib="H5P.SingleChoiceSetCFRD"] .h5p-sc-sound-control {
   top: -2.075em;
   right: 2em;
 }
-.h5p-interactive-video .h5p-dialog[data-lib="H5P.SingleChoiceSet"] .h5p-sc-sound-control:after {
+.h5p-interactive-video .h5p-dialog[data-lib="H5P.SingleChoiceSetCFRD"] .h5p-sc-sound-control:after {
   font-size: 1.075em;
 }
 
-.h5p-interactive-video .h5p-dialog[data-lib="H5P.SingleChoiceSet"] .h5p-sc-question {
+.h5p-interactive-video .h5p-dialog[data-lib="H5P.SingleChoiceSetCFRD"] .h5p-sc-question {
   margin-right: 0;
 }
 
-.h5p-interactive-video .h5p-dialog[data-lib="H5P.SingleChoiceSet"] .h5p-sc-solution-view {
+.h5p-interactive-video .h5p-dialog[data-lib="H5P.SingleChoiceSetCFRD"] .h5p-sc-solution-view {
   top: 0;
   height: 100%;
 }
 
-.h5p-interactive-video.mobile .h5p-dialog[data-lib="H5P.SingleChoiceSet"] .h5p-dialog-interaction.h5p-single-choice-set {
+.h5p-interactive-video.mobile .h5p-dialog[data-lib="H5P.SingleChoiceSetCFRD"] .h5p-dialog-interaction.h5p-single-choice-set {
   height: 100%;
 }
 

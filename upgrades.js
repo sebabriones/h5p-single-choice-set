@@ -1,6 +1,6 @@
 var H5PUpgrades = H5PUpgrades || {};
 
-H5PUpgrades['H5P.SingleChoiceSet'] = (function () {
+H5PUpgrades['H5P.SingleChoiceSetCFRD'] = (function () {
   return {
     1: {
       7: function (options, finished) {

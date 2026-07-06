@@ -1,7 +1,7 @@
 var H5P = H5P || {};
-H5P.SingleChoiceSet = H5P.SingleChoiceSet || {};
+H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
 
-H5P.SingleChoiceSet.SolutionView = (function ($, EventDispatcher) {
+H5P.SingleChoiceSetCFRD.SolutionView = (function ($, EventDispatcher) {
   /**
    * Constructor function.
    */
