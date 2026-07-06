@@ -110,6 +110,578 @@
             "unit": "px"
           }
         ]
+      },
+      {
+        "name": "appearance",
+        "type": "group",
+        "label": "Instructions appearance",
+        "importance": "low",
+        "optional": true,
+        "fields": [
+          {
+            "name": "intro",
+            "type": "group",
+            "label": "Intro window",
+            "fields": [
+              {
+                "name": "useGradientBackground",
+                "type": "boolean",
+                "label": "Use gradient background",
+                "default": false
+              },
+              {
+                "name": "backgroundColor",
+                "type": "text",
+                "label": "Intro background color",
+                "default": "#f5f5f5",
+                "optional": true,
+                "widget": "showWhen",
+                "showWhen": {
+                  "widget": "colorSelector",
+                  "rules": [
+                    {
+                      "field": "useGradientBackground",
+                      "equals": false
+                    }
+                  ]
+                },
+                "spectrum": {
+                  "showInput": true
+                }
+              },
+              {
+                "name": "gradientBackground",
+                "type": "group",
+                "label": "Gradient background",
+                "importance": "low",
+                "widget": "showWhen",
+                "showWhen": {
+                  "rules": [
+                    {
+                      "field": "useGradientBackground",
+                      "equals": true
+                    }
+                  ]
+                },
+                "fields": [
+                  {
+                    "name": "angle",
+                    "type": "number",
+                    "label": "Gradient angle",
+                    "description": "Direction in degrees (0 = upward, 180 = downward).",
+                    "default": 180,
+                    "min": 0,
+                    "max": 360,
+                    "step": 1,
+                    "unit": "°"
+                  },
+                  {
+                    "name": "colorStart",
+                    "type": "text",
+                    "widget": "colorSelector",
+                    "label": "Gradient start color",
+                    "default": "#f5f5f5",
+                    "optional": true,
+                    "spectrum": {
+                      "showInput": true
+                    }
+                  },
+                  {
+                    "name": "colorEnd",
+                    "type": "text",
+                    "widget": "colorSelector",
+                    "label": "Gradient end color",
+                    "default": "#f5f5f5",
+                    "optional": true,
+                    "spectrum": {
+                      "showInput": true
+                    }
+                  }
+                ]
+              },
+              {
+                "name": "textColor",
+                "type": "text",
+                "widget": "colorSelector",
+                "label": "Intro text color",
+                "default": "#333333",
+                "optional": true,
+                "spectrum": {
+                  "showInput": true
+                }
+              },
+              {
+                "name": "button",
+                "type": "group",
+                "label": "Start button",
+                "fields": [
+                  {
+                    "name": "useGradientBackground",
+                    "type": "boolean",
+                    "label": "Use gradient background",
+                    "default": false
+                  },
+                  {
+                    "name": "backgroundColor",
+                    "type": "text",
+                    "label": "Button background color",
+                    "default": "#1a73d9",
+                    "optional": true,
+                    "widget": "showWhen",
+                    "showWhen": {
+                      "widget": "colorSelector",
+                      "rules": [
+                        {
+                          "field": "useGradientBackground",
+                          "equals": false
+                        }
+                      ]
+                    },
+                    "spectrum": {
+                      "showInput": true
+                    }
+                  },
+                  {
+                    "name": "gradientBackground",
+                    "type": "group",
+                    "label": "Gradient background",
+                    "importance": "low",
+                    "widget": "showWhen",
+                    "showWhen": {
+                      "rules": [
+                        {
+                          "field": "useGradientBackground",
+                          "equals": true
+                        }
+                      ]
+                    },
+                    "fields": [
+                      {
+                        "name": "angle",
+                        "type": "number",
+                        "label": "Gradient angle",
+                        "description": "Direction in degrees (0 = upward, 180 = downward).",
+                        "default": 180,
+                        "min": 0,
+                        "max": 360,
+                        "step": 1,
+                        "unit": "°"
+                      },
+                      {
+                        "name": "colorStart",
+                        "type": "text",
+                        "widget": "colorSelector",
+                        "label": "Gradient start color",
+                        "default": "#1a73d9",
+                        "optional": true,
+                        "spectrum": {
+                          "showInput": true
+                        }
+                      },
+                      {
+                        "name": "colorEnd",
+                        "type": "text",
+                        "widget": "colorSelector",
+                        "label": "Gradient end color",
+                        "default": "#1a73d9",
+                        "optional": true,
+                        "spectrum": {
+                          "showInput": true
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "name": "textColor",
+                    "type": "text",
+                    "widget": "colorSelector",
+                    "label": "Button text color",
+                    "default": "#ffffff",
+                    "optional": true,
+                    "spectrum": {
+                      "showInput": true
+                    }
+                  },
+                  {
+                    "name": "hoverBackgroundColor",
+                    "type": "text",
+                    "widget": "colorSelector",
+                    "label": "Button hover background color",
+                    "default": "#1356a3",
+                    "optional": true,
+                    "spectrum": {
+                      "showInput": true
+                    }
+                  },
+                  {
+                    "name": "hoverTextColor",
+                    "type": "text",
+                    "widget": "colorSelector",
+                    "label": "Button hover text color",
+                    "default": "#ffffff",
+                    "optional": true,
+                    "spectrum": {
+                      "showInput": true
+                    }
+                  },
+                  {
+                    "name": "useBorder",
+                    "type": "boolean",
+                    "label": "Use button border",
+                    "default": false
+                  },
+                  {
+                    "name": "borderSettings",
+                    "type": "group",
+                    "label": "Border settings",
+                    "importance": "low",
+                    "widget": "showWhen",
+                    "showWhen": {
+                      "rules": [
+                        {
+                          "field": "useBorder",
+                          "equals": true
+                        }
+                      ]
+                    },
+                    "fields": [
+                      {
+                        "name": "borderColor",
+                        "type": "text",
+                        "widget": "colorSelector",
+                        "label": "Button border color",
+                        "default": "#1a73d9",
+                        "optional": true,
+                        "spectrum": {
+                          "showInput": true
+                        }
+                      },
+                      {
+                        "name": "hoverBorderColor",
+                        "type": "text",
+                        "widget": "colorSelector",
+                        "label": "Button hover border color",
+                        "default": "#1356a3",
+                        "optional": true,
+                        "spectrum": {
+                          "showInput": true
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "name": "borderRadius",
+                    "type": "number",
+                    "label": "Button border radius",
+                    "description": "Corner roundness in rem units.",
+                    "default": 0,
+                    "min": 0,
+                    "max": 3,
+                    "decimals": 2,
+                    "unit": "rem"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "tab",
+            "type": "group",
+            "label": "Instructions tab",
+            "fields": [
+              {
+                "name": "useGradientBackground",
+                "type": "boolean",
+                "label": "Use gradient background",
+                "default": false
+              },
+              {
+                "name": "backgroundColor",
+                "type": "text",
+                "label": "Tab background color",
+                "default": "#f5f5f5",
+                "optional": true,
+                "widget": "showWhen",
+                "showWhen": {
+                  "widget": "colorSelector",
+                  "rules": [
+                    {
+                      "field": "useGradientBackground",
+                      "equals": false
+                    }
+                  ]
+                },
+                "spectrum": {
+                  "showInput": true
+                }
+              },
+              {
+                "name": "gradientBackground",
+                "type": "group",
+                "label": "Gradient background",
+                "importance": "low",
+                "widget": "showWhen",
+                "showWhen": {
+                  "rules": [
+                    {
+                      "field": "useGradientBackground",
+                      "equals": true
+                    }
+                  ]
+                },
+                "fields": [
+                  {
+                    "name": "angle",
+                    "type": "number",
+                    "label": "Gradient angle",
+                    "description": "Direction in degrees (0 = upward, 180 = downward).",
+                    "default": 180,
+                    "min": 0,
+                    "max": 360,
+                    "step": 1,
+                    "unit": "°"
+                  },
+                  {
+                    "name": "colorStart",
+                    "type": "text",
+                    "widget": "colorSelector",
+                    "label": "Gradient start color",
+                    "default": "#f5f5f5",
+                    "optional": true,
+                    "spectrum": {
+                      "showInput": true
+                    }
+                  },
+                  {
+                    "name": "colorEnd",
+                    "type": "text",
+                    "widget": "colorSelector",
+                    "label": "Gradient end color",
+                    "default": "#f5f5f5",
+                    "optional": true,
+                    "spectrum": {
+                      "showInput": true
+                    }
+                  }
+                ]
+              },
+              {
+                "name": "textColor",
+                "type": "text",
+                "widget": "colorSelector",
+                "label": "Tab text color",
+                "default": "#333333",
+                "optional": true,
+                "spectrum": {
+                  "showInput": true
+                }
+              },
+              {
+                "name": "contentBorderColor",
+                "type": "text",
+                "widget": "colorSelector",
+                "label": "Tab content border color",
+                "default": "#dbe2e8",
+                "optional": true,
+                "spectrum": {
+                  "showInput": true
+                }
+              },
+              {
+                "name": "buttonPosition",
+                "type": "select",
+                "label": "Tab button position",
+                "default": "left",
+                "options": [
+                  {
+                    "value": "left",
+                    "label": "Left"
+                  },
+                  {
+                    "value": "center",
+                    "label": "Center"
+                  },
+                  {
+                    "value": "right",
+                    "label": "Right"
+                  }
+                ]
+              },
+              {
+                "name": "button",
+                "type": "group",
+                "label": "Tab button",
+                "fields": [
+                  {
+                    "name": "useGradientBackground",
+                    "type": "boolean",
+                    "label": "Use gradient background",
+                    "default": false
+                  },
+                  {
+                    "name": "backgroundColor",
+                    "type": "text",
+                    "label": "Button background color",
+                    "default": "#1a73d9",
+                    "optional": true,
+                    "widget": "showWhen",
+                    "showWhen": {
+                      "widget": "colorSelector",
+                      "rules": [
+                        {
+                          "field": "useGradientBackground",
+                          "equals": false
+                        }
+                      ]
+                    },
+                    "spectrum": {
+                      "showInput": true
+                    }
+                  },
+                  {
+                    "name": "gradientBackground",
+                    "type": "group",
+                    "label": "Gradient background",
+                    "importance": "low",
+                    "widget": "showWhen",
+                    "showWhen": {
+                      "rules": [
+                        {
+                          "field": "useGradientBackground",
+                          "equals": true
+                        }
+                      ]
+                    },
+                    "fields": [
+                      {
+                        "name": "angle",
+                        "type": "number",
+                        "label": "Gradient angle",
+                        "description": "Direction in degrees (0 = upward, 180 = downward).",
+                        "default": 180,
+                        "min": 0,
+                        "max": 360,
+                        "step": 1,
+                        "unit": "°"
+                      },
+                      {
+                        "name": "colorStart",
+                        "type": "text",
+                        "widget": "colorSelector",
+                        "label": "Gradient start color",
+                        "default": "#1a73d9",
+                        "optional": true,
+                        "spectrum": {
+                          "showInput": true
+                        }
+                      },
+                      {
+                        "name": "colorEnd",
+                        "type": "text",
+                        "widget": "colorSelector",
+                        "label": "Gradient end color",
+                        "default": "#1a73d9",
+                        "optional": true,
+                        "spectrum": {
+                          "showInput": true
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "name": "textColor",
+                    "type": "text",
+                    "widget": "colorSelector",
+                    "label": "Button text color",
+                    "default": "#ffffff",
+                    "optional": true,
+                    "spectrum": {
+                      "showInput": true
+                    }
+                  },
+                  {
+                    "name": "hoverBackgroundColor",
+                    "type": "text",
+                    "widget": "colorSelector",
+                    "label": "Button hover background color",
+                    "default": "#1356a3",
+                    "optional": true,
+                    "spectrum": {
+                      "showInput": true
+                    }
+                  },
+                  {
+                    "name": "hoverTextColor",
+                    "type": "text",
+                    "widget": "colorSelector",
+                    "label": "Button hover text color",
+                    "default": "#ffffff",
+                    "optional": true,
+                    "spectrum": {
+                      "showInput": true
+                    }
+                  },
+                  {
+                    "name": "useBorder",
+                    "type": "boolean",
+                    "label": "Use button border",
+                    "default": false
+                  },
+                  {
+                    "name": "borderSettings",
+                    "type": "group",
+                    "label": "Border settings",
+                    "importance": "low",
+                    "widget": "showWhen",
+                    "showWhen": {
+                      "rules": [
+                        {
+                          "field": "useBorder",
+                          "equals": true
+                        }
+                      ]
+                    },
+                    "fields": [
+                      {
+                        "name": "borderColor",
+                        "type": "text",
+                        "widget": "colorSelector",
+                        "label": "Button border color",
+                        "default": "#1a73d9",
+                        "optional": true,
+                        "spectrum": {
+                          "showInput": true
+                        }
+                      },
+                      {
+                        "name": "hoverBorderColor",
+                        "type": "text",
+                        "widget": "colorSelector",
+                        "label": "Button hover border color",
+                        "default": "#1356a3",
+                        "optional": true,
+                        "spectrum": {
+                          "showInput": true
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "name": "borderRadius",
+                    "type": "number",
+                    "label": "Button border radius",
+                    "description": "Corner roundness in rem units.",
+                    "default": 0,
+                    "min": 0,
+                    "max": 3,
+                    "decimals": 2,
+                    "unit": "rem"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
       }
     ]
   },
@@ -153,6 +725,71 @@
           "importance": "high"
         },
         {
+          "name": "context",
+          "type": "group",
+          "label": "Context (optional)",
+          "importance": "low",
+          "optional": true,
+          "fields": [
+            {
+              "name": "text",
+              "type": "text",
+              "widget": "html",
+              "label": "Context text",
+              "importance": "medium",
+              "optional": true,
+              "description": "Optional supporting text shown beside the question.",
+              "tags": [
+                "p",
+                "br",
+                "strong",
+                "em",
+                "ul",
+                "ol",
+                "li",
+                "code"
+              ]
+            },
+            {
+              "name": "media",
+              "type": "group",
+              "label": "Context image",
+              "importance": "medium",
+              "optional": true,
+              "fields": [
+                {
+                  "name": "type",
+                  "type": "library",
+                  "label": "Image",
+                  "importance": "medium",
+                  "options": [
+                    "H5P.Image 1.1"
+                  ],
+                  "optional": true,
+                  "description": "Optional image shown beside the question."
+                },
+                {
+                  "name": "disableImageZooming",
+                  "type": "boolean",
+                  "label": "Disable image zooming",
+                  "importance": "low",
+                  "default": false,
+                  "optional": true,
+                  "widget": "showWhen",
+                  "showWhen": {
+                    "rules": [
+                      {
+                        "field": "type",
+                        "equals": "H5P.Image 1.1"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
           "name": "answers",
           "type": "list",
           "label": "Alternatives - first alternative is the correct one.",
@@ -186,6 +823,30 @@
     "importance": "low",
     "expanded": true,
     "fields": [
+      {
+        "name": "popupBackgroundColor",
+        "type": "text",
+        "widget": "colorSelector",
+        "label": "Popup background color",
+        "default": "#ffffff",
+        "importance": "low",
+        "optional": true,
+        "spectrum": {
+          "showInput": true
+        }
+      },
+      {
+        "name": "feedbackTextColor",
+        "type": "text",
+        "widget": "colorSelector",
+        "label": "Feedback text color",
+        "default": "#333333",
+        "importance": "low",
+        "optional": true,
+        "spectrum": {
+          "showInput": true
+        }
+      },
       {
         "name": "overallFeedback",
         "type": "list",
@@ -231,6 +892,93 @@
               "importance": "low",
               "placeholder": "Fill in the feedback",
               "optional": true
+            },
+            {
+              "name": "appearance",
+              "type": "group",
+              "label": "Appearance settings",
+              "importance": "low",
+              "expanded": false,
+              "optional": true,
+              "fields": [
+                {
+                  "name": "feedbackLeadText",
+                  "type": "text",
+                  "label": "Highlighted lead text",
+                  "importance": "low",
+                  "placeholder": "e.g. Correct! or Incorrect",
+                  "optional": true
+                },
+                {
+                  "name": "feedbackLeadBold",
+                  "type": "boolean",
+                  "label": "Bold lead text",
+                  "importance": "low",
+                  "default": true
+                },
+                {
+                  "name": "feedbackLeadTextColor",
+                  "type": "text",
+                  "widget": "colorSelector",
+                  "label": "Highlighted lead text color",
+                  "default": "#1a73d9",
+                  "importance": "low",
+                  "optional": true,
+                  "spectrum": {
+                    "showInput": true
+                  }
+                },
+                {
+                  "name": "feedbackTextAlign",
+                  "type": "select",
+                  "label": "Text alignment",
+                  "description": "Only used when no feedback image is set. With an image, text alignment follows image position (left/right: left aligned, above: centered).",
+                  "importance": "low",
+                  "default": "left",
+                  "options": [
+                    {
+                      "value": "left",
+                      "label": "Left"
+                    },
+                    {
+                      "value": "center",
+                      "label": "Center"
+                    },
+                    {
+                      "value": "right",
+                      "label": "Right"
+                    }
+                  ]
+                },
+                {
+                  "name": "feedbackImage",
+                  "type": "image",
+                  "label": "Feedback image",
+                  "importance": "low",
+                  "optional": true
+                },
+                {
+                  "name": "feedbackImagePosition",
+                  "type": "select",
+                  "label": "Image position",
+                  "importance": "low",
+                  "default": "left",
+                  "options": [
+                    {
+                      "value": "above",
+                      "label": "Above text"
+                    },
+                    {
+                      "value": "left",
+                      "label": "Left of text"
+                    },
+                    {
+                      "value": "right",
+                      "label": "Right of text"
+                    }
+                  ]
+                }
+              ]
             }
           ]
         }

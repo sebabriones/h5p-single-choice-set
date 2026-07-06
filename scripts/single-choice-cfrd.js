@@ -3,6 +3,73 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
 
 H5P.SingleChoiceSetCFRD.SingleChoice = (function ($, EventDispatcher, Alternative) {
   /**
+   * @param {string} html
+   * @returns {string}
+   */
+  function stripHtmlText(html) {
+    var decoder = document.createElement('div');
+    decoder.innerHTML = html || '';
+    return (decoder.textContent || decoder.innerText || '').replace(/[\n\r]+|[\s]{2,}/g, ' ').trim();
+  }
+
+  /**
+   * @param {object} context
+   * @returns {boolean}
+   */
+  function hasContextText(context) {
+    return !!(context && context.text && stripHtmlText(context.text));
+  }
+
+  /**
+   * @param {object} context
+   * @returns {boolean}
+   */
+  function hasContextImage(context) {
+    var media = context && context.media;
+    var type = media && media.type;
+    return !!(type && type.library && type.params && type.params.file);
+  }
+
+  /**
+   * @param {object} context
+   * @returns {string|null}
+   */
+  function getContextLayoutClass(context) {
+    var hasText = hasContextText(context);
+    var hasImage = hasContextImage(context);
+
+    if (!hasText && !hasImage) {
+      return null;
+    }
+
+    if (hasText && hasImage) {
+      return 'h5p-sc-context--both';
+    }
+
+    if (hasText) {
+      return 'h5p-sc-context--text-only';
+    }
+
+    return 'h5p-sc-context--image-only';
+  }
+
+  /**
+   * @param {object} context
+   * @param {number} contentId
+   * @param {H5P.jQuery} $container
+   */
+  function attachContextImage(context, contentId, $container) {
+    var media = context && context.media;
+    var library = media && media.type;
+
+    if (!library || !library.library || !$container || !$container.length) {
+      return;
+    }
+
+    H5P.newRunnable(library, contentId, $container);
+  }
+
+  /**
    * Constructor function.
    */
   function SingleChoice(options, index, id, isAutoConfinue) {
@@ -10,7 +77,8 @@ H5P.SingleChoiceSetCFRD.SingleChoice = (function ($, EventDispatcher, Alternativ
     // Extend defaults with provided options
     this.options = $.extend(true, {}, {
       question: '',
-      answers: []
+      answers: [],
+      context: {}
     }, options);
     this.isAutoConfinue = isAutoConfinue;
     // Keep provided id.
@@ -51,12 +119,25 @@ H5P.SingleChoiceSetCFRD.SingleChoice = (function ($, EventDispatcher, Alternativ
     });
 
     var questionId = 'single-choice-' + self.id + '-question-' + self.index;
+    var contextLayoutClass = getContextLayoutClass(self.options.context);
+    var hasContext = !!contextLayoutClass;
+    var contextTextId = 'single-choice-' + self.id + '-context-' + self.index;
 
-    this.$choice.append($('<div>', {
+    var $introduction = $('<div>', {
+      'class': 'h5p-question-introduction'
+    });
+
+    var questionAttrs = {
       'id': questionId,
       'class': 'h5p-sc-question',
       'html': this.options.question
-    }));
+    };
+
+    if (hasContext && hasContextText(self.options.context)) {
+      questionAttrs['aria-describedby'] = contextTextId;
+    }
+
+    $introduction.append($('<div>', questionAttrs));
 
     var $alternatives = $('<ul>', {
       'class': 'h5p-sc-alternatives',
@@ -176,11 +257,58 @@ H5P.SingleChoiceSetCFRD.SingleChoice = (function ($, EventDispatcher, Alternativ
       alternative.on('nextOption', handleNextOption, this);
       alternative.on('firstOption', handleFirstOption, this);
       alternative.on('lastOption', handleLastOption, this);
-
     }
 
-    this.$choice.append($alternatives);
+    if (hasContext) {
+      self.$choice.addClass('h5p-sc-has-context ' + contextLayoutClass);
+
+      var $layout = $('<div>', {
+        'class': 'h5p-sc-slide-layout'
+      });
+      var $context = $('<aside>', {
+        'class': 'h5p-sc-context',
+        'aria-label': 'Context'
+      });
+      var $questionColumn = $('<div>', {
+        'class': 'h5p-sc-question-column'
+      });
+
+      if (hasContextText(self.options.context)) {
+        $context.append($('<div>', {
+          'id': contextTextId,
+          'class': 'h5p-sc-context-text',
+          'html': self.options.context.text
+        }));
+      }
+
+      if (hasContextImage(self.options.context)) {
+        self.$contextMedia = $('<div>', {
+          'class': 'h5p-sc-context-media'
+        });
+        $context.append(self.$contextMedia);
+      }
+
+      $questionColumn.append($introduction);
+      $questionColumn.append($alternatives);
+      $layout.append($context);
+      $layout.append($questionColumn);
+      self.$choice.append($layout);
+    }
+    else {
+      this.$choice.append($('<div>', {
+        'id': questionId,
+        'class': 'h5p-sc-question',
+        'html': this.options.question
+      }));
+      this.$choice.append($alternatives);
+    }
+
     $container.append(this.$choice);
+
+    if (self.$contextMedia && self.$contextMedia.length) {
+      attachContextImage(self.options.context, self.id, self.$contextMedia);
+    }
+
     return this.$choice;
   };
 
@@ -255,7 +383,7 @@ H5P.SingleChoiceSetCFRD.SingleChoice = (function ($, EventDispatcher, Alternativ
       self.$choice.find('.h5p-sc-alternative.h5p-sc-selected').attr('aria-checked', true);
       self.$choice.find('.h5p-sc-alternative').attr('aria-disabled', true);
     }
-  }
+  };
 
   /**
    * Reset aria attributes
@@ -264,7 +392,7 @@ H5P.SingleChoiceSetCFRD.SingleChoice = (function ($, EventDispatcher, Alternativ
     var self = this;
     // A11y mode is enabled
     if (!self.isAutoConfinue) {
-      const alternative = self.$choice.find('.h5p-sc-alternative');
+      var alternative = self.$choice.find('.h5p-sc-alternative');
       alternative.removeAttr('aria-disabled');
       alternative.removeAttr('aria-checked');
     }

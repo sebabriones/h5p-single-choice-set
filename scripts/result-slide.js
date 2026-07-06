@@ -27,8 +27,7 @@ H5P.SingleChoiceSetCFRD.ResultSlide = (function ($, EventDispatcher) {
       .append(this.$buttonContainer);
 
     this.$resultSlide = $('<div>', {
-      'class': 'h5p-sc-slide h5p-sc-set-results',
-      'css': {left: (maxscore * 100) + '%'}
+      'class': 'h5p-sc-slide h5p-sc-set-results'
     }).append($resultContainer);
   }
 

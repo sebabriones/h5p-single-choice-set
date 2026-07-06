@@ -34,6 +34,7 @@ function getInstructionsOptions(instance) {
     displayMode: instructions.displayMode || 'both',
     introButtonLabel: instructions.introButtonLabel || 'Start',
     tabButtonLabel: instructions.tabButtonLabel || 'Instructions',
+    appearance: H5P.jQuery.extend(true, {}, instructions.appearance || {}),
     animation: H5P.jQuery.extend(true, {}, instructions.animation || {}),
     startCollapsed: instructions.startCollapsed === undefined ?
       true :
@@ -49,9 +50,11 @@ function scheduleInstructionsAttach(instance, $fallbackContainer) {
   [0, 200, 500].forEach(function (delay) {
     setTimeout(function () {
       var instructions = getInstructionsOptions(instance);
-      var $target = (instance.$container && instance.$container.length) ?
-        instance.$container :
-        $fallbackContainer;
+      var $target = (instance.$playArea && instance.$playArea.length) ?
+        instance.$playArea :
+        ((instance.$container && instance.$container.length) ?
+          instance.$container :
+          $fallbackContainer);
       var attached;
 
       if (!instructions || !$target || !$target.length) {
@@ -73,6 +76,70 @@ function scheduleInstructionsAttach(instance, $fallbackContainer) {
     }, delay);
   });
 }
+
+/**
+ * Restore full button labels on the results slide after QuestionCFRD truncation.
+ *
+ * @param {H5P.SingleChoiceSetCFRD} instance
+ */
+function restoreResultSlideButtonLabels(instance) {
+  var labels = {
+    'try-again': instance.l10n.retryButtonLabel,
+    'show-solution': instance.l10n.showSolutionButtonLabel
+  };
+
+  if (!instance.resultSlide || !instance.resultSlide.$buttonContainer) {
+    return;
+  }
+
+  instance.resultSlide.$buttonContainer.find('.h5p-joubelui-button.truncated').each(function () {
+    var $button = H5P.jQuery(this);
+    var id;
+
+    Object.keys(labels).some(function (buttonId) {
+      if ($button.hasClass('h5p-question-' + buttonId)) {
+        id = buttonId;
+        return true;
+      }
+      return false;
+    });
+
+    if (id && labels[id]) {
+      $button.html(labels[id]).removeClass('truncated').removeAttr('data-tooltip');
+    }
+  });
+}
+
+/**
+ * @param {H5P.SingleChoiceSetCFRD} instance
+ */
+function scheduleDeferredResize(instance) {
+  requestAnimationFrame(function () {
+    instance.trigger('resize');
+
+    requestAnimationFrame(function () {
+      instance.trigger('resize');
+    });
+  });
+
+  [50, 150, 350].forEach(function (delay) {
+    setTimeout(function () {
+      instance.trigger('resize');
+    }, delay);
+  });
+}
+
+/**
+ * @param {H5P.SingleChoiceSetCFRD} instance
+ */
+function scheduleResultResize(instance) {
+  requestAnimationFrame(function () {
+    instance.trigger('resize');
+    restoreResultSlideButtonLabels(instance);
+  });
+}
+
+var PlayArea = H5P.SingleChoiceSetCFRD && H5P.SingleChoiceSetCFRD.PlayArea;
 
 H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView, ResultSlide, SoundEffects, XApiEventBuilder, StopWatch) {
   /**
@@ -151,9 +218,17 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
       a11yRetry: 'Retry the task. Reset all responses and start the task over again.',
     }, options.l10n !== undefined ? options.l10n : {});
 
+    this.playAreaSize = PlayArea.getDesignSize();
+
+    this.$playArea = $('<div>', {
+      'class': 'h5p-sc-play-area'
+    });
+
     this.$container = $('<div>', {
       'class': 'h5p-sc-set-wrapper navigatable' + (!this.options.behaviour.autoContinue ? ' next-button-mode' : '')
     });
+
+    this.$playArea.append(this.$container);
 
     this.$slides = [];
     // An array containing the SingleChoice instances
@@ -179,14 +254,6 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
     this.options.choices = this.options.choices.filter(function (choice) {
       return choice !== undefined && !!choice.answers;
     });
-
-    var numQuestions = this.options.choices.length;
-
-    // Create progressbar
-    self.progressbar = UI.createProgressbar(numQuestions + 1, {
-      progressText: this.l10n.slideOfTotal
-    });
-    self.progressbar.setProgress(this.currentIndex);
 
     for (var i = 0; i < this.options.choices.length; i++) {
       var choice = new SingleChoice(this.options.choices[i], i, this.contentId, this.options.behaviour.autoContinue);
@@ -493,7 +560,7 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
       self.triggerXAPIScored(score, self.options.choices.length, 'completed', true, (100 * score / self.options.choices.length) >= self.options.behaviour.passPercentage);
     }
 
-    self.trigger('resize');
+    scheduleResultResize(self);
   };
 
   /**
@@ -536,7 +603,6 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
     if (self.$muteButton) {
       self.$muteButton.attr('aria-hidden', ariaHidden);
     }
-    self.progressbar.$progressbar.attr('aria-hidden', ariaHidden);
     self.$choices.attr('aria-hidden', ariaHidden);
   };
 
@@ -563,8 +629,9 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
       this.trigger('question-finished');
     }
 
-    scheduleInstructionsAttach(self, self.$container);
-    this.trigger('resize');
+    scheduleInstructionsAttach(self, self.$playArea);
+    self.observePlayAreaResize();
+    scheduleDeferredResize(self);
   };
 
   /**
@@ -596,7 +663,6 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
   SingleChoiceSet.prototype.createQuestion = function () {
     var self = this;
 
-    self.progressbar.appendTo(self.$container);
     self.$container.append(self.$choices);
 
     function toggleMute(event) {
@@ -650,20 +716,189 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
             }
           }
         },
-        'click': toggleMute,
-        prependTo: self.$container
+        'click': toggleMute
       });
+      self.syncMuteButtonPlacement();
     }
 
     // Append solution view - hidden by default:
     self.solutionView.appendTo(self.$container);
 
-    self.resize();
-
-    // Hide all other slides than the current one:
     self.$container.addClass('initialized');
+    scheduleDeferredResize(self);
 
-    return self.$container;
+    return self.$playArea;
+  };
+
+  /**
+   * Observe play area size changes for layout refresh.
+   */
+  SingleChoiceSet.prototype.observePlayAreaResize = function () {
+    var self = this;
+
+    if (!window.ResizeObserver || !self.$playArea || !self.$playArea.length) {
+      return;
+    }
+
+    if (self.playAreaResizeObserver) {
+      return;
+    }
+
+    self.playAreaResizeObserver = new ResizeObserver(function () {
+      self.trigger('resize');
+    });
+
+    self.playAreaResizeObserver.observe(self.$playArea[0]);
+  };
+
+  /**
+   * Keep mute control on the current question slide.
+   */
+  SingleChoiceSet.prototype.syncMuteButtonPlacement = function () {
+    var self = this;
+    var choice = self.choices[self.currentIndex];
+
+    if (!self.$muteButton || !choice || !choice.$choice || self.currentIndex >= self.choices.length) {
+      return;
+    }
+
+    choice.$choice.find('.h5p-question-introduction').first().append(self.$muteButton);
+  };
+
+  /**
+   * Play-area layout: one visible slide at a time (no horizontal carousel transform).
+   */
+  SingleChoiceSet.prototype.syncPlayAreaSlides = function () {
+    var self = this;
+
+    if (!self.$playArea || !self.$playArea.length) {
+      return;
+    }
+
+    self.$slides.forEach(function ($slide) {
+      $slide.css('left', '0');
+    });
+
+    self.$choices.css({
+      '-webkit-transform': '',
+      '-moz-transform': '',
+      '-ms-transform': '',
+      'transform': ''
+    });
+  };
+
+  /**
+   * @param {H5P.jQuery} $wrapper
+   * @param {H5P.jQuery} $choices
+   * @returns {number}
+   */
+  SingleChoiceSet.prototype.getCarouselChromeHeight = function ($wrapper, $choices) {
+    var chromeHeight = 0;
+
+    $wrapper.children().each(function () {
+      if (this !== $choices[0]) {
+        chromeHeight += $(this).outerHeight(true);
+      }
+    });
+
+    return chromeHeight;
+  };
+
+  /**
+   * @param {H5P.jQuery} $slide
+   * @returns {number}
+   */
+  SingleChoiceSet.prototype.measureNaturalSlideHeight = function ($slide) {
+    if (!$slide || !$slide.length || !$slide.is(':visible')) {
+      return 0;
+    }
+
+    if ($slide.hasClass('h5p-sc-has-context')) {
+      var $questionColumn = $slide.find('.h5p-sc-question-column').first();
+      if ($questionColumn.length) {
+        $slide = $questionColumn;
+      }
+    }
+
+    var $intro = $slide.find('.h5p-question-introduction').first();
+    if (!$intro.length) {
+      $intro = $slide.find('.h5p-sc-question').first();
+    }
+    var $alternatives = $slide.find('ul.h5p-sc-alternatives').first();
+    var height = 0;
+
+    if ($intro.length) {
+      height += $intro.outerHeight(true);
+    }
+
+    if ($alternatives.length) {
+      height += $alternatives.outerHeight(true);
+    }
+
+    if (height > 0) {
+      return height;
+    }
+
+    return $slide[0].scrollHeight;
+  };
+
+  /**
+   * Equalize slide heights inside the carousel.
+   */
+  SingleChoiceSet.prototype.syncSlideHeights = function () {
+    var self = this;
+    var $wrapper = self.$container;
+    var wrapperHeight = $wrapper.innerHeight() || 0;
+
+    if (wrapperHeight <= 0) {
+      scheduleDeferredResize(self);
+      return;
+    }
+
+    var $currentSlide = self.$slides[self.currentIndex];
+    var onResultSlide = $currentSlide && $currentSlide.hasClass('h5p-sc-set-results');
+
+    if (onResultSlide) {
+      self.$choices.removeClass('h5p-sc-set--scroll');
+      self.$choices.scrollTop(0);
+      self.syncPlayAreaSlides();
+      self.syncMuteButtonPlacement();
+      return;
+    }
+
+    var chromeHeight = self.getCarouselChromeHeight($wrapper, self.$choices);
+    var availableHeight = Math.max(0, wrapperHeight - chromeHeight);
+    var $current = self.$slides[self.currentIndex];
+    var maxNaturalHeight = self.measureNaturalSlideHeight($current);
+    var overflow = availableHeight > 0 && maxNaturalHeight > availableHeight + 1;
+
+    if (overflow) {
+      self.$choices.addClass('h5p-sc-set--scroll');
+      self.$choices.scrollTop(0);
+    }
+    else {
+      self.$choices.removeClass('h5p-sc-set--scroll');
+      self.$choices.scrollTop(0);
+    }
+
+    self.syncPlayAreaSlides();
+    self.syncMuteButtonPlacement();
+  };
+
+  /**
+   * Refresh instructions scale when available.
+   */
+  SingleChoiceSet.prototype.refreshInstructionsScale = function () {
+    var self = this;
+    var instructions = getInstructionsOptions(self);
+
+    if (!instructions || !self.$playArea || !self.$playArea.length) {
+      return;
+    }
+
+    if (H5P.Instructions && typeof H5P.Instructions.updateScale === 'function') {
+      H5P.Instructions.updateScale(self.$playArea, instructions);
+    }
   };
 
   /**
@@ -671,14 +906,36 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
    */
   SingleChoiceSet.prototype.resize = function () {
     var self = this;
-    var maxHeight = 0;
-    self.choices.forEach(function (choice) {
-      var choiceHeight = choice.$choice.outerHeight();
-      maxHeight = choiceHeight > maxHeight ? choiceHeight : maxHeight;
+
+    if (!self.$playArea || !self.$playArea.length) {
+      return;
+    }
+
+    if (!self.$playArea.is(':visible')) {
+      scheduleDeferredResize(self);
+      return;
+    }
+
+    var design = self.playAreaSize;
+    var $parent = self.$playArea.parent();
+    var width = self.$playArea.width();
+
+    if (width <= 0) {
+      width = $parent.width() || design.baseWidth;
+    }
+
+    var scale = PlayArea.getScale(width);
+    var fontSize = (design.baseFontSize * scale) + 'px';
+
+    self.$playArea.css({
+      fontSize: fontSize,
+      '--sc-scale': scale.toFixed(4),
+      width: '100%',
+      height: ''
     });
 
-    // Set minimum height for choices
-    self.$choices.css({minHeight: maxHeight + 'px'});
+    self.refreshInstructionsScale();
+    self.syncSlideHeights();
   };
 
   /**
@@ -698,14 +955,7 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
    * @public
    */
   SingleChoiceSet.prototype.recklessJump = function (index) {
-    var tX = 'translateX(' + (-index * 100) + '%)';
-    this.$choices.css({
-      '-webkit-transform': tX,
-      '-moz-transform': tX,
-      '-ms-transform': tX,
-      'transform': tX
-    });
-    this.progressbar.setProgress(index + 1);
+    this.syncPlayAreaSlides();
   };
 
   /**
@@ -726,35 +976,37 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
 
     self.toggleNextButton(false);
 
-    H5P.Transition.onTransitionEnd(self.$choices, function () {
-      $previousSlide.removeClass('h5p-sc-current-slide');
-
-      // on slides with answers focus on first alternative
-      // if content is root and not on result slide - always move focus
-      if (!isResultSlide && (moveFocus || self.isRoot())) {
-        $currentChoice.focusOnAlternative(0);
-      }
-      // on last slide, focus on try again button
-      else {
-        self.resultSlide.focusScore();
-      }
-    }, 600);
-
-    // if should show result slide
     if (isResultSlide) {
       self.setScore(self.results.corrects);
     }
 
     self.$container.toggleClass('navigatable', !isResultSlide);
 
-    // start timing of new slide
     this.startStopWatch(index);
 
-    // move to slide
+    $previousSlide.removeClass('h5p-sc-current-slide');
     $currentSlide.addClass('h5p-sc-current-slide');
     self.recklessJump(index);
+    self.$choices.scrollTop(0);
 
     self.currentIndex = index;
+    self.trigger('resize');
+
+    requestAnimationFrame(function () {
+      if (!isResultSlide && (moveFocus || self.isRoot())) {
+        $currentChoice.focusOnAlternative(0);
+      }
+      else if (isResultSlide) {
+        self.resultSlide.focusScore();
+      }
+
+      if (isResultSlide) {
+        scheduleResultResize(self);
+      }
+      else {
+        scheduleDeferredResize(self);
+      }
+    });
   };
 
   /**
@@ -929,10 +1181,8 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
     // Reset userResponses as well
     this.userResponses = [];
 
-    // Wait for transition, then remove feedback.
-    H5P.Transition.onTransitionEnd(this.$choices, function () {
-      self.removeFeedback();
-    }, 600);
+    self.removeFeedback();
+    scheduleDeferredResize(self);
   };
 
   /**
