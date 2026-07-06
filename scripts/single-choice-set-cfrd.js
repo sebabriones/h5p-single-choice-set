@@ -136,11 +136,49 @@ function scheduleResultResize(instance) {
   requestAnimationFrame(function () {
     instance.trigger('resize');
     restoreResultSlideButtonLabels(instance);
+    applyActionButtonAppearance(instance);
   });
 }
 
-var PlayArea = H5P.SingleChoiceSetCFRD && H5P.SingleChoiceSetCFRD.PlayArea;
-var AlternativeLabelModule = H5P.SingleChoiceSetCFRD && H5P.SingleChoiceSetCFRD.AlternativeLabel;
+/**
+ * Apply activity appearance CSS variables to the play area.
+ *
+ * @param {H5P.SingleChoiceSetCFRD} instance
+ */
+function applyActivityAppearance(instance) {
+  if (!AppearanceModule || !instance || !instance.$playArea || !instance.$playArea.length) {
+    return;
+  }
+
+  AppearanceModule.scheduleAppearance(
+    instance.$playArea,
+    instance.options.appearance,
+    instance.options.overallFeedback
+  );
+}
+
+/**
+ * Apply shared action button appearance (Retry, Show solution).
+ *
+ * @param {H5P.SingleChoiceSetCFRD} instance
+ */
+function applyActionButtonAppearance(instance) {
+  var actionButtons = instance.options.appearance && instance.options.appearance.actionButtons;
+
+  if (!actionButtons || typeof instance.setActionButtonAppearance !== 'function') {
+    return;
+  }
+
+  if (H5P.QuestionCFRD.hasActionButtonAppearance &&
+      H5P.QuestionCFRD.hasActionButtonAppearance(actionButtons)) {
+    instance.setActionButtonAppearance(actionButtons);
+  }
+}
+
+var SingleChoiceSetNamespace = H5P.SingleChoiceSetCFRD || {};
+var PlayArea = SingleChoiceSetNamespace.PlayArea;
+var AlternativeLabelModule = SingleChoiceSetNamespace.AlternativeLabel;
+var AppearanceModule = SingleChoiceSetNamespace.Appearance;
 
 H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView, ResultSlide, SoundEffects, XApiEventBuilder, StopWatch, AlternativeLabel) {
   AlternativeLabel = AlternativeLabel || {
@@ -170,6 +208,7 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
     this.options = $.extend(true, {}, {
       choices: [],
       overallFeedback: [],
+      appearance: {},
       alternativeLabels: {
         enabled: false,
         style: 'uppercase',
@@ -562,6 +601,7 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
 
     // Inline en la diapositiva de resultados (patrón upstream), sin popup.
     self.setFeedback(feedbackText, score, maxScore, self.l10n.scoreBarLabel);
+    applyActivityAppearance(self);
 
     if (score === self.options.choices.length) {
       self.hideButton('try-again');
@@ -658,6 +698,8 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
     }
 
     scheduleInstructionsAttach(self, self.$playArea);
+    applyActivityAppearance(self);
+    applyActionButtonAppearance(self);
     self.observePlayAreaResize();
     scheduleDeferredResize(self);
   };
@@ -1275,4 +1317,14 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
   };
 
   return SingleChoiceSet;
-})(H5P.jQuery, H5P.JoubelUICFRD, H5P.QuestionCFRD, H5P.SingleChoiceSetCFRD.SingleChoice, H5P.SingleChoiceSetCFRD.SolutionView, H5P.SingleChoiceSetCFRD.ResultSlide, H5P.SingleChoiceSetCFRD.SoundEffects, H5P.SingleChoiceSetCFRD.XApiEventBuilder, H5P.SingleChoiceSetCFRD.StopWatch, AlternativeLabelModule);
+})(H5P.jQuery, H5P.JoubelUICFRD, H5P.QuestionCFRD, SingleChoiceSetNamespace.SingleChoice, SingleChoiceSetNamespace.SolutionView, SingleChoiceSetNamespace.ResultSlide, SingleChoiceSetNamespace.SoundEffects, SingleChoiceSetNamespace.XApiEventBuilder, SingleChoiceSetNamespace.StopWatch, AlternativeLabelModule);
+
+if (PlayArea) {
+  H5P.SingleChoiceSetCFRD.PlayArea = PlayArea;
+}
+if (AlternativeLabelModule) {
+  H5P.SingleChoiceSetCFRD.AlternativeLabel = AlternativeLabelModule;
+}
+if (AppearanceModule) {
+  H5P.SingleChoiceSetCFRD.Appearance = AppearanceModule;
+}

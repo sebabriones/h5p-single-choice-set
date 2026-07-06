@@ -7,7 +7,7 @@
   "author": "sbriones (CFRD-UDEC)",
   "majorVersion": 1,
   "minorVersion": 0,
-  "patchVersion": 11,
+  "patchVersion": 15,
   "runnable": 1,
   "fullscreen": 0,
   "embedTypes": [
@@ -28,6 +28,9 @@
     },
     {
       "path": "scripts/alternative-label.js"
+    },
+    {
+      "path": "scripts/appearance.js"
     },
     {
       "path": "scripts/stop-watch.js"

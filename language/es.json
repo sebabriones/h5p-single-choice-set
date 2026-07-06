@@ -413,6 +413,196 @@
       ]
     },
     {
+      "label": "Apariencia",
+      "fields": [
+        {
+          "label": "Color de fondo del área de juego"
+        },
+        {
+          "label": "Colores de alternativas",
+          "fields": [
+            {
+              "label": "Color de fondo de alternativas"
+            },
+            {
+              "label": "Color de fondo de alternativas al pasar el cursor"
+            },
+            {
+              "label": "Color de progreso al seleccionar alternativa"
+            },
+            {
+              "label": "Color de texto de alternativas"
+            },
+            {
+              "label": "Radio de borde de alternativas",
+              "description": "Redondeo de esquinas en unidades em."
+            },
+            {
+              "label": "Usar borde en alternativas"
+            },
+            {
+              "label": "Ajustes del borde",
+              "fields": [
+                {
+                  "label": "Grosor del borde",
+                  "description": "Grosor en unidades em."
+                },
+                {
+                  "label": "Color del borde"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Área de pregunta",
+          "fields": [
+            {
+              "label": "Color de fondo de la pregunta",
+              "description": "Dejar vacío para fondo transparente."
+            },
+            {
+              "label": "Relleno interno de la pregunta",
+              "description": "Relleno interno en unidades em en todos los lados."
+            },
+            {
+              "label": "Relleno derecho de la pregunta",
+              "description": "Espacio mínimo en el lado derecho (para el control de sonido). Usa el mayor valor entre este y el relleno de la pregunta."
+            },
+            {
+              "label": "Radio de borde de la pregunta",
+              "description": "Redondeo de esquinas en unidades em."
+            },
+            {
+              "label": "Usar borde en la pregunta"
+            },
+            {
+              "label": "Ajustes del borde",
+              "fields": [
+                {
+                  "label": "Grosor del borde",
+                  "description": "Grosor en unidades em."
+                },
+                {
+                  "label": "Color del borde"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Colores de texto",
+          "fields": [
+            {
+              "label": "Color de texto de la pregunta"
+            },
+            {
+              "label": "Color de texto del contexto"
+            },
+            {
+              "label": "Color del prefijo de etiqueta de alternativa"
+            }
+          ]
+        },
+        {
+          "label": "Colores de respuesta correcta",
+          "fields": [
+            {
+              "label": "Color de fondo de respuesta correcta"
+            },
+            {
+              "label": "Color de texto de respuesta correcta"
+            }
+          ]
+        },
+        {
+          "label": "Colores de respuesta incorrecta",
+          "fields": [
+            {
+              "label": "Color de fondo de respuesta incorrecta"
+            },
+            {
+              "label": "Color de texto de respuesta incorrecta"
+            }
+          ]
+        },
+        {
+          "label": "Colores de iconos",
+          "fields": [
+            {
+              "label": "Color del icono de respuesta correcta",
+              "description": "Si no se define, usa el color de texto de respuesta correcta."
+            },
+            {
+              "label": "Color del icono de respuesta incorrecta",
+              "description": "Si no se define, usa el color de texto de respuesta incorrecta."
+            },
+            {
+              "label": "Color del icono en la lista de solución",
+              "description": "Marca de verificación mostrada en la vista de solución."
+            },
+            {
+              "label": "Color del icono de control de sonido"
+            }
+          ]
+        },
+        {
+          "label": "Botones de acción (Intentar de nuevo y Mostrar solución)",
+          "description": "Estilo compartido para los botones Intentar de nuevo y Mostrar solución. Los colores del borde solo aplican cuando el borde está activado.",
+          "fields": [
+            {
+              "label": "Usar fondo en degradado"
+            },
+            {
+              "label": "Color de fondo del botón"
+            },
+            {
+              "label": "Fondo en degradado",
+              "fields": [
+                {
+                  "label": "Ángulo del degradado",
+                  "description": "Dirección en grados (0 = hacia arriba, 180 = hacia abajo)."
+                },
+                {
+                  "label": "Color inicial del degradado"
+                },
+                {
+                  "label": "Color final del degradado"
+                }
+              ]
+            },
+            {
+              "label": "Color del texto del botón"
+            },
+            {
+              "label": "Color de fondo del botón al pasar el cursor"
+            },
+            {
+              "label": "Color del texto del botón al pasar el cursor"
+            },
+            {
+              "label": "Usar borde en el botón"
+            },
+            {
+              "label": "Ajustes del borde",
+              "fields": [
+                {
+                  "label": "Color del borde del botón"
+                },
+                {
+                  "label": "Color del borde del botón al pasar el cursor"
+                }
+              ]
+            },
+            {
+              "label": "Radio del borde del botón",
+              "description": "El valor por defecto es 2em (Joubel UI). Valores menores son más rectos; mayores, más redondeados."
+            }
+          ]
+        }
+      ]
+    },
+    {
       "label": "Configuración del comportamiento",
       "fields": [
         {

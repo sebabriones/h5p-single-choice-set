@@ -458,6 +458,196 @@
       ]
     },
     {
+      "label": "Appearance",
+      "fields": [
+        {
+          "label": "Play area background color"
+        },
+        {
+          "label": "Alternative colors",
+          "fields": [
+            {
+              "label": "Alternative background color"
+            },
+            {
+              "label": "Alternative hover background color"
+            },
+            {
+              "label": "Alternative selection progress color"
+            },
+            {
+              "label": "Alternative text color"
+            },
+            {
+              "label": "Alternative border radius",
+              "description": "Corner roundness in em units."
+            },
+            {
+              "label": "Use alternative border"
+            },
+            {
+              "label": "Border settings",
+              "fields": [
+                {
+                  "label": "Border width",
+                  "description": "Thickness in em units."
+                },
+                {
+                  "label": "Border color"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Question area",
+          "fields": [
+            {
+              "label": "Question background color",
+              "description": "Leave empty for a transparent background."
+            },
+            {
+              "label": "Question padding",
+              "description": "Inner padding in em units on all sides."
+            },
+            {
+              "label": "Question right padding",
+              "description": "Minimum space on the right side (for the sound control). Uses the larger value between this and question padding."
+            },
+            {
+              "label": "Question border radius",
+              "description": "Corner roundness in em units."
+            },
+            {
+              "label": "Use question border"
+            },
+            {
+              "label": "Border settings",
+              "fields": [
+                {
+                  "label": "Border width",
+                  "description": "Thickness in em units."
+                },
+                {
+                  "label": "Border color"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Text colors",
+          "fields": [
+            {
+              "label": "Question text color"
+            },
+            {
+              "label": "Context text color"
+            },
+            {
+              "label": "Alternative label prefix color"
+            }
+          ]
+        },
+        {
+          "label": "Correct answer colors",
+          "fields": [
+            {
+              "label": "Correct answer background color"
+            },
+            {
+              "label": "Correct answer text color"
+            }
+          ]
+        },
+        {
+          "label": "Wrong answer colors",
+          "fields": [
+            {
+              "label": "Wrong answer background color"
+            },
+            {
+              "label": "Wrong answer text color"
+            }
+          ]
+        },
+        {
+          "label": "Icon colors",
+          "fields": [
+            {
+              "label": "Correct answer icon color",
+              "description": "Defaults to the correct answer text color when not set."
+            },
+            {
+              "label": "Wrong answer icon color",
+              "description": "Defaults to the wrong answer text color when not set."
+            },
+            {
+              "label": "Solution list icon color",
+              "description": "Checkmark shown in the solution view."
+            },
+            {
+              "label": "Sound control icon color"
+            }
+          ]
+        },
+        {
+          "label": "Action buttons (Retry and Show solution)",
+          "description": "Shared style for Try again and Show solution buttons. Border colors apply only when border is enabled.",
+          "fields": [
+            {
+              "label": "Use gradient background"
+            },
+            {
+              "label": "Button background color"
+            },
+            {
+              "label": "Gradient background",
+              "fields": [
+                {
+                  "label": "Gradient angle",
+                  "description": "Direction in degrees (0 = upward, 180 = downward)."
+                },
+                {
+                  "label": "Gradient start color"
+                },
+                {
+                  "label": "Gradient end color"
+                }
+              ]
+            },
+            {
+              "label": "Button text color"
+            },
+            {
+              "label": "Button hover background color"
+            },
+            {
+              "label": "Button hover text color"
+            },
+            {
+              "label": "Use button border"
+            },
+            {
+              "label": "Border settings",
+              "fields": [
+                {
+                  "label": "Button border color"
+                },
+                {
+                  "label": "Button hover border color"
+                }
+              ]
+            },
+            {
+              "label": "Button border radius",
+              "description": "Default is 2em (Joubel UI). Lower values are sharper; higher values are more rounded."
+            }
+          ]
+        }
+      ]
+    },
+    {
       "label": "Behavioural settings",
       "fields": [
         {
