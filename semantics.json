@@ -1452,6 +1452,127 @@
         ]
       },
       {
+        "name": "solutionView",
+        "type": "group",
+        "label": "Solution view",
+        "importance": "low",
+        "optional": true,
+        "description": "Colors for the solution list overlay opened from the results slide.",
+        "fields": [
+          {
+            "name": "background",
+            "type": "text",
+            "widget": "colorSelector",
+            "label": "Solution view background color",
+            "default": "#ffffff",
+            "optional": true,
+            "spectrum": {
+              "showInput": true
+            }
+          },
+          {
+            "name": "headerBackground",
+            "type": "text",
+            "widget": "colorSelector",
+            "label": "Solution view header background color",
+            "description": "Defaults to the solution view background color when not set.",
+            "optional": true,
+            "spectrum": {
+              "showInput": true
+            }
+          },
+          {
+            "name": "headerBorderColor",
+            "type": "text",
+            "widget": "colorSelector",
+            "label": "Solution view header border color",
+            "default": "#dddddd",
+            "optional": true,
+            "spectrum": {
+              "showInput": true
+            }
+          },
+          {
+            "name": "titleColor",
+            "type": "text",
+            "widget": "colorSelector",
+            "label": "Solution view title color",
+            "description": "Defaults to the question text color when not set.",
+            "optional": true,
+            "spectrum": {
+              "showInput": true
+            }
+          },
+          {
+            "name": "questionColor",
+            "type": "text",
+            "widget": "colorSelector",
+            "label": "Solution view question color",
+            "description": "Defaults to the question text color when not set.",
+            "optional": true,
+            "spectrum": {
+              "showInput": true
+            }
+          },
+          {
+            "name": "answerColor",
+            "type": "text",
+            "widget": "colorSelector",
+            "label": "Solution view answer color",
+            "description": "Defaults to the correct answer text color when not set.",
+            "optional": true,
+            "spectrum": {
+              "showInput": true
+            }
+          },
+          {
+            "name": "dividerColor",
+            "type": "text",
+            "widget": "colorSelector",
+            "label": "Solution view divider color",
+            "description": "Separator between answers in the solution list.",
+            "default": "#cccccc",
+            "optional": true,
+            "spectrum": {
+              "showInput": true
+            }
+          },
+          {
+            "name": "closeButtonColor",
+            "type": "text",
+            "widget": "colorSelector",
+            "label": "Solution view close button color",
+            "default": "#1a73d9",
+            "optional": true,
+            "spectrum": {
+              "showInput": true
+            }
+          },
+          {
+            "name": "closeButtonHoverColor",
+            "type": "text",
+            "widget": "colorSelector",
+            "label": "Solution view close button hover color",
+            "default": "#1356a3",
+            "optional": true,
+            "spectrum": {
+              "showInput": true
+            }
+          },
+          {
+            "name": "closeButtonActiveColor",
+            "type": "text",
+            "widget": "colorSelector",
+            "label": "Solution view close button active color",
+            "default": "#104888",
+            "optional": true,
+            "spectrum": {
+              "showInput": true
+            }
+          }
+        ]
+      },
+      {
         "name": "actionButtons",
         "type": "group",
         "label": "Action buttons (Retry and Show solution)",

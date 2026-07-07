@@ -30,7 +30,17 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
     questionBorderWidth: '0',
     questionBorderColor: 'transparent',
     feedbackBackground: '#ffffff',
-    feedbackTextColor: '#333333'
+    feedbackTextColor: '#333333',
+    solutionBackground: '#ffffff',
+    solutionHeaderBackground: '#ffffff',
+    solutionHeaderBorder: '#dddddd',
+    solutionTitleColor: '#333333',
+    solutionQuestionColor: '#333333',
+    solutionAnswerColor: '#255c41',
+    solutionDividerColor: '#cccccc',
+    solutionCloseColor: '#1a73d9',
+    solutionCloseHoverColor: '#1356a3',
+    solutionCloseActiveColor: '#104888'
   };
 
   var CSS_VAR_KEYS = {
@@ -57,7 +67,17 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
     solutionIcon: '--sc-solution-icon-color',
     soundIcon: '--sc-sound-icon-color',
     feedbackBackground: '--sc-feedback-bg',
-    feedbackTextColor: '--sc-feedback-color'
+    feedbackTextColor: '--sc-feedback-color',
+    solutionBackground: '--sc-solution-bg',
+    solutionHeaderBackground: '--sc-solution-header-bg',
+    solutionHeaderBorder: '--sc-solution-header-border',
+    solutionTitleColor: '--sc-solution-title-color',
+    solutionQuestionColor: '--sc-solution-question-color',
+    solutionAnswerColor: '--sc-solution-answer-color',
+    solutionDividerColor: '--sc-solution-divider-color',
+    solutionCloseColor: '--sc-solution-close-color',
+    solutionCloseHoverColor: '--sc-solution-close-hover-color',
+    solutionCloseActiveColor: '--sc-solution-close-active-color'
   };
 
   var CSS_EM_VAR_KEYS = {
@@ -155,6 +175,7 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
     var wrong = (appearance && appearance.wrongColors) || {};
     var icons = (appearance && appearance.iconColors) || {};
     var questionArea = (appearance && appearance.questionArea) || {};
+    var solutionView = (appearance && appearance.solutionView) || {};
 
     return {
       playAreaBackground: appearance && appearance.playAreaBackground,
@@ -177,7 +198,17 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
       correctIcon: icons.correct,
       wrongIcon: icons.wrong,
       solutionIcon: icons.solution,
-      soundIcon: icons.sound
+      soundIcon: icons.sound,
+      solutionBackground: solutionView.background,
+      solutionHeaderBackground: solutionView.headerBackground,
+      solutionHeaderBorder: solutionView.headerBorderColor,
+      solutionTitleColor: solutionView.titleColor,
+      solutionQuestionColor: solutionView.questionColor,
+      solutionAnswerColor: solutionView.answerColor,
+      solutionDividerColor: solutionView.dividerColor,
+      solutionCloseColor: solutionView.closeButtonColor,
+      solutionCloseHoverColor: solutionView.closeButtonHoverColor,
+      solutionCloseActiveColor: solutionView.closeButtonActiveColor
     };
   }
 
@@ -202,6 +233,31 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
       fields.solutionIcon !== '') ?
       fields.solutionIcon :
       merged.correctText;
+
+    return merged;
+  }
+
+  /**
+   * @param {Object} merged
+   * @param {Object} fields
+   * @returns {Object}
+   */
+  function applySolutionViewDefaults(merged, fields) {
+    if (!fields.solutionHeaderBackground) {
+      merged.solutionHeaderBackground = merged.solutionBackground;
+    }
+
+    if (!fields.solutionTitleColor) {
+      merged.solutionTitleColor = merged.questionText;
+    }
+
+    if (!fields.solutionQuestionColor) {
+      merged.solutionQuestionColor = merged.questionText;
+    }
+
+    if (!fields.solutionAnswerColor) {
+      merged.solutionAnswerColor = merged.correctText;
+    }
 
     return merged;
   }
@@ -240,6 +296,7 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
     }
 
     applyIconDefaults(merged, fields);
+    applySolutionViewDefaults(merged, fields);
     applyBorderAppearance(merged, appearance);
 
     return merged;

@@ -547,6 +547,47 @@
           ]
         },
         {
+          "label": "Vista de solución",
+          "description": "Colores del panel de lista de soluciones abierto desde la diapositiva de resultados.",
+          "fields": [
+            {
+              "label": "Color de fondo de la vista de solución"
+            },
+            {
+              "label": "Color de fondo de la cabecera de la vista de solución",
+              "description": "Si no se define, usa el color de fondo de la vista de solución."
+            },
+            {
+              "label": "Color del borde de la cabecera de la vista de solución"
+            },
+            {
+              "label": "Color del título de la vista de solución",
+              "description": "Si no se define, usa el color de texto de la pregunta."
+            },
+            {
+              "label": "Color de las preguntas en la vista de solución",
+              "description": "Si no se define, usa el color de texto de la pregunta."
+            },
+            {
+              "label": "Color de las respuestas en la vista de solución",
+              "description": "Si no se define, usa el color de texto de respuesta correcta."
+            },
+            {
+              "label": "Color del separador en la vista de solución",
+              "description": "Separador entre respuestas en la lista de solución."
+            },
+            {
+              "label": "Color del botón cerrar de la vista de solución"
+            },
+            {
+              "label": "Color del botón cerrar al pasar el cursor"
+            },
+            {
+              "label": "Color del botón cerrar al activar"
+            }
+          ]
+        },
+        {
           "label": "Botones de acción (Intentar de nuevo y Mostrar solución)",
           "description": "Estilo compartido para los botones Intentar de nuevo y Mostrar solución. Los colores del borde solo aplican cuando el borde está activado.",
           "fields": [

@@ -592,6 +592,47 @@
           ]
         },
         {
+          "label": "Solution view",
+          "description": "Colors for the solution list overlay opened from the results slide.",
+          "fields": [
+            {
+              "label": "Solution view background color"
+            },
+            {
+              "label": "Solution view header background color",
+              "description": "Defaults to the solution view background color when not set."
+            },
+            {
+              "label": "Solution view header border color"
+            },
+            {
+              "label": "Solution view title color",
+              "description": "Defaults to the question text color when not set."
+            },
+            {
+              "label": "Solution view question color",
+              "description": "Defaults to the question text color when not set."
+            },
+            {
+              "label": "Solution view answer color",
+              "description": "Defaults to the correct answer text color when not set."
+            },
+            {
+              "label": "Solution view divider color",
+              "description": "Separator between answers in the solution list."
+            },
+            {
+              "label": "Solution view close button color"
+            },
+            {
+              "label": "Solution view close button hover color"
+            },
+            {
+              "label": "Solution view close button active color"
+            }
+          ]
+        },
+        {
           "label": "Action buttons (Retry and Show solution)",
           "description": "Shared style for Try again and Show solution buttons. Border colors apply only when border is enabled.",
           "fields": [
