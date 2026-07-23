@@ -934,7 +934,7 @@
     "defaultNum": 2,
     "widgets": [
       {
-        "name": "ListEditor",
+        "name": "VerticalTabs",
         "label": "Default"
       },
       {
