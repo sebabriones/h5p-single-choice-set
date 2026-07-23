@@ -13,6 +13,8 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
     alternativeHoverText: '#333333',
     questionText: '#333333',
     contextText: '#555555',
+    questionFontSize: 1,
+    contextFontSize: 1,
     labelPrefixText: '#333333',
     correctBackground: '#9dd8bb',
     correctText: '#255c41',
@@ -102,7 +104,9 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
     questionPadding: '--sc-question-padding',
     questionPaddingRight: '--sc-question-padding-right',
     questionBorderRadius: '--sc-question-border-radius',
-    alternativeBorderRadius: '--sc-alternative-border-radius'
+    alternativeBorderRadius: '--sc-alternative-border-radius',
+    questionFontSize: '--sc-question-font-size',
+    contextFontSize: '--sc-context-font-size'
   };
 
   var CSS_PX_VAR_KEYS = {
@@ -327,6 +331,8 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
       alternativeBorderRadius: alt.borderRadius,
       questionText: text.question,
       contextText: text.context,
+      questionFontSize: text.questionFontSize,
+      contextFontSize: text.contextFontSize,
       labelPrefixText: text.labelPrefix,
       questionBackground: questionArea.background,
       questionPadding: questionArea.padding,

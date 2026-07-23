@@ -615,13 +615,22 @@
           ]
         },
         {
-          "label": "Colores de texto",
+          "label": "Texto",
+          "description": "Colores y tamaños de letra del texto de la pregunta y del contexto.",
           "fields": [
             {
               "label": "Color de texto de la pregunta"
             },
             {
+              "label": "Tamaño de letra de la pregunta",
+              "description": "Tamaño relativo al área de juego (em). El valor por defecto es 1."
+            },
+            {
               "label": "Color de texto del contexto"
+            },
+            {
+              "label": "Tamaño de letra del contexto",
+              "description": "Tamaño relativo al área de juego (em). El valor por defecto es 1."
             },
             {
               "label": "Color del prefijo de etiqueta de alternativa"

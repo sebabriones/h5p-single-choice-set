@@ -1674,9 +1674,10 @@
       {
         "name": "textColors",
         "type": "group",
-        "label": "Text colors",
+        "label": "Text",
         "importance": "low",
         "optional": true,
+        "description": "Colors and font sizes for question and context text.",
         "fields": [
           {
             "name": "question",
@@ -1690,6 +1691,17 @@
             }
           },
           {
+            "name": "questionFontSize",
+            "type": "number",
+            "label": "Question font size",
+            "description": "Text size relative to the play area (em). Default is 1.",
+            "default": 1,
+            "min": 0.5,
+            "max": 3,
+            "decimals": 2,
+            "unit": "em"
+          },
+          {
             "name": "context",
             "type": "text",
             "widget": "colorSelector",
@@ -1699,6 +1711,17 @@
             "spectrum": {
               "showInput": true
             }
+          },
+          {
+            "name": "contextFontSize",
+            "type": "number",
+            "label": "Context font size",
+            "description": "Text size relative to the play area (em). Default is 1.",
+            "default": 1,
+            "min": 0.5,
+            "max": 3,
+            "decimals": 2,
+            "unit": "em"
           },
           {
             "name": "labelPrefix",

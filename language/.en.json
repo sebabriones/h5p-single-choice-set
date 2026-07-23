@@ -668,13 +668,22 @@
           ]
         },
         {
-          "label": "Text colors",
+          "label": "Text",
+          "description": "Colors and font sizes for question and context text.",
           "fields": [
             {
               "label": "Question text color"
             },
             {
+              "label": "Question font size",
+              "description": "Text size relative to the play area (em). Default is 1."
+            },
+            {
               "label": "Context text color"
+            },
+            {
+              "label": "Context font size",
+              "description": "Text size relative to the play area (em). Default is 1."
             },
             {
               "label": "Alternative label prefix color"
