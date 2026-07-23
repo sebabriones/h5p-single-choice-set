@@ -9,8 +9,8 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
     playAreaBackground: '#ffffff',
     alternativeBackground: '#dddddd',
     alternativeHoverBackground: '#ececec',
-    alternativeProgressBackground: '#cee0f4',
     alternativeText: '#333333',
+    alternativeHoverText: '#333333',
     questionText: '#333333',
     contextText: '#555555',
     labelPrefixText: '#333333',
@@ -26,9 +26,14 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
     alternativeBorderRadius: 0.25,
     alternativeBorderWidth: '0',
     alternativeBorderColor: 'transparent',
+    alternativeHoverBorderColor: 'transparent',
     alternativeBoxShadow: '0 0.1em 0 rgba(0,0,0,0.3)',
     questionBorderWidth: '0',
     questionBorderColor: 'transparent',
+    correctBorderWidth: '0',
+    correctBorderColor: 'transparent',
+    wrongBorderWidth: '0',
+    wrongBorderColor: 'transparent',
     feedbackBackground: '#ffffff',
     feedbackTextColor: '#333333',
     solutionBackground: '#ffffff',
@@ -47,21 +52,26 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
     playAreaBackground: '--sc-play-area-bg',
     alternativeBackground: '--sc-alternative-bg',
     alternativeHoverBackground: '--sc-alternative-hover-bg',
-    alternativeProgressBackground: '--sc-alternative-progress-bg',
     alternativeText: '--sc-alternative-color',
+    alternativeHoverText: '--sc-alternative-hover-color',
     questionText: '--sc-question-color',
     contextText: '--sc-context-color',
     labelPrefixText: '--sc-label-prefix-color',
     questionBackground: '--sc-question-bg',
     alternativeBorderWidth: '--sc-alternative-border-width',
     alternativeBorderColor: '--sc-alternative-border-color',
+    alternativeHoverBorderColor: '--sc-alternative-hover-border-color',
     alternativeBoxShadow: '--sc-alternative-box-shadow',
     questionBorderWidth: '--sc-question-border-width',
     questionBorderColor: '--sc-question-border-color',
     correctBackground: '--sc-correct-bg',
     correctText: '--sc-correct-color',
+    correctBorderWidth: '--sc-correct-border-width',
+    correctBorderColor: '--sc-correct-border-color',
     wrongBackground: '--sc-wrong-bg',
     wrongText: '--sc-wrong-color',
+    wrongBorderWidth: '--sc-wrong-border-width',
+    wrongBorderColor: '--sc-wrong-border-color',
     correctIcon: '--sc-correct-icon-color',
     wrongIcon: '--sc-wrong-icon-color',
     solutionIcon: '--sc-solution-icon-color',
@@ -88,8 +98,8 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
   };
 
   /**
-   * @param {number|string} value
-   * @param {number|string} fallback
+   * @param {*} value
+   * @param {*} fallback
    * @returns {string}
    */
   function toEm(value, fallback) {
@@ -113,6 +123,74 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
   }
 
   /**
+   * @param {*} value
+   * @param {string} fallback
+   * @returns {string}
+   */
+  function pickString(value, fallback) {
+    return (value === undefined || value === null || value === '') ?
+      fallback :
+      String(value);
+  }
+
+  /**
+   * @param {*} value
+   * @param {number} fallback
+   * @returns {number}
+   */
+  function normalizeAngle(value, fallback) {
+    var normalized = parseInt(value, 10);
+
+    if (isNaN(normalized)) {
+      normalized = fallback;
+    }
+
+    return Math.max(0, Math.min(360, normalized));
+  }
+
+  /**
+   * @param {number} angle
+   * @param {string} colorStart
+   * @param {string} colorEnd
+   * @returns {string}
+   */
+  function buildLinearGradient(angle, colorStart, colorEnd) {
+    return 'linear-gradient(' + angle + 'deg, ' + colorStart + ', ' + colorEnd + ')';
+  }
+
+  /**
+   * Resolve solid or gradient fill from editor fields.
+   *
+   * @param {Object} [group]
+   * @param {Object} options
+   * @param {string} options.solidKey
+   * @param {string} [options.useGradientKey]
+   * @param {string} [options.gradientKey]
+   * @param {string} options.fallbackSolid
+   * @returns {string}
+   */
+  function resolveFill(group, options) {
+    var useGradientKey = options.useGradientKey || 'useGradientBackground';
+    var gradientKey = options.gradientKey || 'gradientBackground';
+    var solid = pickString(group && group[options.solidKey], options.fallbackSolid);
+    var gradient;
+    var angle;
+    var colorStart;
+    var colorEnd;
+
+    if (!isTruthy(group && group[useGradientKey])) {
+      return solid;
+    }
+
+    gradient = (group && group[gradientKey]) || {};
+    angle = normalizeAngle(gradient.angle, 180);
+    colorStart = pickString(gradient.colorStart, solid);
+    colorEnd = pickString(gradient.colorEnd, colorStart);
+
+    return buildLinearGradient(angle, colorStart, colorEnd);
+  }
+
+  /**
    * @param {Object} merged
    * @param {Object} [appearance]
    * @returns {Object}
@@ -122,15 +200,22 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
     var altBorder = alt.borderSettings || {};
     var questionArea = (appearance && appearance.questionArea) || {};
     var questionBorder = questionArea.borderSettings || {};
+    var correct = (appearance && appearance.correctColors) || {};
+    var correctBorder = correct.borderSettings || {};
+    var wrong = (appearance && appearance.wrongColors) || {};
+    var wrongBorder = wrong.borderSettings || {};
 
     if (isTruthy(alt.useBorder)) {
       merged.alternativeBorderWidth = toEm(altBorder.borderWidth, 0.05);
       merged.alternativeBorderColor = altBorder.borderColor || '#999999';
+      merged.alternativeHoverBorderColor = altBorder.hoverBorderColor ||
+        merged.alternativeBorderColor;
       merged.alternativeBoxShadow = 'none';
     }
     else {
       merged.alternativeBorderWidth = '0';
       merged.alternativeBorderColor = 'transparent';
+      merged.alternativeHoverBorderColor = 'transparent';
       merged.alternativeBoxShadow = '0 0.1em 0 rgba(0,0,0,0.3)';
     }
 
@@ -141,6 +226,24 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
     else {
       merged.questionBorderWidth = '0';
       merged.questionBorderColor = 'transparent';
+    }
+
+    if (isTruthy(correct.useBorder)) {
+      merged.correctBorderWidth = toEm(correctBorder.borderWidth, 0.05);
+      merged.correctBorderColor = correctBorder.borderColor || '#255c41';
+    }
+    else {
+      merged.correctBorderWidth = merged.alternativeBorderWidth;
+      merged.correctBorderColor = merged.alternativeBorderColor;
+    }
+
+    if (isTruthy(wrong.useBorder)) {
+      merged.wrongBorderWidth = toEm(wrongBorder.borderWidth, 0.05);
+      merged.wrongBorderColor = wrongBorder.borderColor || '#b71c1c';
+    }
+    else {
+      merged.wrongBorderWidth = merged.alternativeBorderWidth;
+      merged.wrongBorderColor = merged.alternativeBorderColor;
     }
 
     return merged;
@@ -179,10 +282,18 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
 
     return {
       playAreaBackground: appearance && appearance.playAreaBackground,
-      alternativeBackground: alt.background,
-      alternativeHoverBackground: alt.hoverBackground,
-      alternativeProgressBackground: alt.progressBackground,
+      alternativeBackground: resolveFill(alt, {
+        solidKey: 'background',
+        fallbackSolid: APPEARANCE_DEFAULTS.alternativeBackground
+      }),
+      alternativeHoverBackground: resolveFill(alt, {
+        solidKey: 'hoverBackground',
+        useGradientKey: 'useHoverGradientBackground',
+        gradientKey: 'hoverGradientBackground',
+        fallbackSolid: APPEARANCE_DEFAULTS.alternativeHoverBackground
+      }),
       alternativeText: alt.text,
+      alternativeHoverText: alt.hoverText,
       alternativeBorderRadius: alt.borderRadius,
       questionText: text.question,
       contextText: text.context,
@@ -191,9 +302,15 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
       questionPadding: questionArea.padding,
       questionPaddingRight: questionArea.paddingRight,
       questionBorderRadius: questionArea.borderRadius,
-      correctBackground: correct.background,
+      correctBackground: resolveFill(correct, {
+        solidKey: 'background',
+        fallbackSolid: APPEARANCE_DEFAULTS.correctBackground
+      }),
       correctText: correct.text,
-      wrongBackground: wrong.background,
+      wrongBackground: resolveFill(wrong, {
+        solidKey: 'background',
+        fallbackSolid: APPEARANCE_DEFAULTS.wrongBackground
+      }),
       wrongText: wrong.text,
       correctIcon: icons.correct,
       wrongIcon: icons.wrong,
@@ -293,6 +410,10 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
 
     if (!fields.questionBackground) {
       merged.questionBackground = 'transparent';
+    }
+
+    if (!fields.alternativeHoverText) {
+      merged.alternativeHoverText = merged.alternativeText;
     }
 
     applyIconDefaults(merged, fields);

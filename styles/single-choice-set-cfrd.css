@@ -7,7 +7,6 @@
   --sc-play-area-bg: #ffffff;
   --sc-alternative-bg: #dddddd;
   --sc-alternative-hover-bg: #ececec;
-  --sc-alternative-progress-bg: #cee0f4;
   --sc-alternative-color: #333333;
   --sc-question-color: #333333;
   --sc-context-color: #555555;
@@ -352,6 +351,8 @@ ul.h5p-sc-alternatives li.h5p-sc-alternative {
 
 ul.h5p-sc-alternatives li.h5p-sc-alternative:hover {
   background: var(--sc-alternative-hover-bg);
+  color: var(--sc-alternative-hover-color);
+  border-color: var(--sc-alternative-hover-border-color);
 }
 
 ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative,
@@ -362,9 +363,26 @@ ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-reveal-wrong
 ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-reveal-wrong:active,
 ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-reveal-wrong:focus {
   background: var(--sc-alternative-bg);
+  color: var(--sc-alternative-color);
+  border-color: var(--sc-alternative-border-color);
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
+}
+
+/* During selection progress, match result text color immediately */
+ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-is-correct.h5p-sc-selected,
+ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-is-correct.h5p-sc-selected:hover,
+ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-is-correct.h5p-sc-selected:active,
+ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-is-correct.h5p-sc-selected:focus {
+  color: var(--sc-correct-color);
+}
+
+ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-is-wrong.h5p-sc-selected,
+ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-is-wrong.h5p-sc-selected:hover,
+ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-is-wrong.h5p-sc-selected:active,
+ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-is-wrong.h5p-sc-selected:focus {
+  color: var(--sc-wrong-color);
 }
 
 ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-reveal-correct,
@@ -373,6 +391,8 @@ ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-reveal-corre
 ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-reveal-correct:focus {
   background: var(--sc-correct-bg);
   color: var(--sc-correct-color);
+  border-width: var(--sc-correct-border-width);
+  border-color: var(--sc-correct-border-color);
 }
 
 ul.h5p-sc-alternatives li.h5p-sc-alternative.h5p-sc-is-correct.h5p-sc-selected.h5p-sc-reveal-correct .h5p-sc-progressbar {
@@ -388,7 +408,13 @@ ul.h5p-sc-alternatives li.h5p-sc-alternative.h5p-sc-reveal-wrong {
 ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-reveal-wrong.h5p-sc-selected,
 ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-reveal-wrong.h5p-sc-selected:hover,
 ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-reveal-wrong.h5p-sc-selected:active,
-ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-reveal-wrong.h5p-sc-selected:focus,
+ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-reveal-wrong.h5p-sc-selected:focus {
+  background: var(--sc-wrong-bg);
+  color: var(--sc-wrong-color);
+  border-width: var(--sc-wrong-border-width);
+  border-color: var(--sc-wrong-border-color);
+}
+
 ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-is-wrong.h5p-sc-selected.h5p-sc-reveal-wrong .h5p-sc-progressbar {
   background: var(--sc-wrong-bg);
   color: var(--sc-wrong-color);
@@ -400,10 +426,17 @@ li.h5p-sc-alternative .h5p-sc-progressbar {
   left: 0;
   height: 100%;
   width: 0%;
-  background: var(--sc-alternative-progress-bg);
   -webkit-border-radius: var(--sc-alternative-border-radius);
   -moz-border-radius: var(--sc-alternative-border-radius);
   border-radius: var(--sc-alternative-border-radius);
+}
+
+li.h5p-sc-alternative.h5p-sc-is-correct .h5p-sc-progressbar {
+  background: var(--sc-correct-bg);
+}
+
+li.h5p-sc-alternative.h5p-sc-is-wrong .h5p-sc-progressbar {
+  background: var(--sc-wrong-bg);
 }
 .h5p-sc-drummed .h5p-sc-progressbar {
   background: transparent;
@@ -448,6 +481,14 @@ li.h5p-sc-alternative .h5p-sc-alternative-prefix {
   font-weight: 600;
   line-height: inherit;
   color: var(--sc-label-prefix-color);
+}
+
+ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-is-correct.h5p-sc-selected .h5p-sc-alternative-prefix {
+  color: var(--sc-correct-color);
+}
+
+ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-is-wrong.h5p-sc-selected .h5p-sc-alternative-prefix {
+  color: var(--sc-wrong-color);
 }
 
 li.h5p-sc-alternative .h5p-sc-label {

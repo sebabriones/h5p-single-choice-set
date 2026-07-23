@@ -560,16 +560,52 @@
           "label": "Alternative colors",
           "fields": [
             {
+              "label": "Use gradient background"
+            },
+            {
               "label": "Alternative background color"
+            },
+            {
+              "label": "Gradient background",
+              "fields": [
+                {
+                  "label": "Gradient angle",
+                  "description": "Direction in degrees (0 = upward, 180 = downward)."
+                },
+                {
+                  "label": "Gradient start color"
+                },
+                {
+                  "label": "Gradient end color"
+                }
+              ]
+            },
+            {
+              "label": "Alternative text color"
+            },
+            {
+              "label": "Use gradient background on hover"
             },
             {
               "label": "Alternative hover background color"
             },
             {
-              "label": "Alternative selection progress color"
+              "label": "Hover gradient background",
+              "fields": [
+                {
+                  "label": "Gradient angle",
+                  "description": "Direction in degrees (0 = upward, 180 = downward)."
+                },
+                {
+                  "label": "Gradient start color"
+                },
+                {
+                  "label": "Gradient end color"
+                }
+              ]
             },
             {
-              "label": "Alternative text color"
+              "label": "Alternative hover text color"
             },
             {
               "label": "Alternative border radius",
@@ -587,6 +623,9 @@
                 },
                 {
                   "label": "Border color"
+                },
+                {
+                  "label": "Hover border color"
                 }
               ]
             }
@@ -646,10 +685,43 @@
           "label": "Correct answer colors",
           "fields": [
             {
+              "label": "Use gradient background"
+            },
+            {
               "label": "Correct answer background color"
             },
             {
+              "label": "Gradient background",
+              "fields": [
+                {
+                  "label": "Gradient angle",
+                  "description": "Direction in degrees (0 = upward, 180 = downward)."
+                },
+                {
+                  "label": "Gradient start color"
+                },
+                {
+                  "label": "Gradient end color"
+                }
+              ]
+            },
+            {
               "label": "Correct answer text color"
+            },
+            {
+              "label": "Use correct answer border"
+            },
+            {
+              "label": "Border settings",
+              "fields": [
+                {
+                  "label": "Border width",
+                  "description": "Thickness in em units."
+                },
+                {
+                  "label": "Border color"
+                }
+              ]
             }
           ]
         },
@@ -657,10 +729,43 @@
           "label": "Wrong answer colors",
           "fields": [
             {
+              "label": "Use gradient background"
+            },
+            {
               "label": "Wrong answer background color"
             },
             {
+              "label": "Gradient background",
+              "fields": [
+                {
+                  "label": "Gradient angle",
+                  "description": "Direction in degrees (0 = upward, 180 = downward)."
+                },
+                {
+                  "label": "Gradient start color"
+                },
+                {
+                  "label": "Gradient end color"
+                }
+              ]
+            },
+            {
               "label": "Wrong answer text color"
+            },
+            {
+              "label": "Use wrong answer border"
+            },
+            {
+              "label": "Border settings",
+              "fields": [
+                {
+                  "label": "Border width",
+                  "description": "Thickness in em units."
+                },
+                {
+                  "label": "Border color"
+                }
+              ]
             }
           ]
         },

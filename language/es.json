@@ -507,16 +507,52 @@
           "label": "Colores de alternativas",
           "fields": [
             {
+              "label": "Usar fondo en degradado"
+            },
+            {
               "label": "Color de fondo de alternativas"
+            },
+            {
+              "label": "Fondo en degradado",
+              "fields": [
+                {
+                  "label": "Ángulo del degradado",
+                  "description": "Dirección en grados (0 = hacia arriba, 180 = hacia abajo)."
+                },
+                {
+                  "label": "Color inicial del degradado"
+                },
+                {
+                  "label": "Color final del degradado"
+                }
+              ]
+            },
+            {
+              "label": "Color de texto de alternativas"
+            },
+            {
+              "label": "Usar fondo en degradado al pasar el cursor"
             },
             {
               "label": "Color de fondo de alternativas al pasar el cursor"
             },
             {
-              "label": "Color de progreso al seleccionar alternativa"
+              "label": "Fondo en degradado al pasar el cursor",
+              "fields": [
+                {
+                  "label": "Ángulo del degradado",
+                  "description": "Dirección en grados (0 = hacia arriba, 180 = hacia abajo)."
+                },
+                {
+                  "label": "Color inicial del degradado"
+                },
+                {
+                  "label": "Color final del degradado"
+                }
+              ]
             },
             {
-              "label": "Color de texto de alternativas"
+              "label": "Color de texto de alternativas al pasar el cursor"
             },
             {
               "label": "Radio de borde de alternativas",
@@ -534,6 +570,9 @@
                 },
                 {
                   "label": "Color del borde"
+                },
+                {
+                  "label": "Color del borde al pasar el cursor"
                 }
               ]
             }
@@ -593,10 +632,43 @@
           "label": "Colores de respuesta correcta",
           "fields": [
             {
+              "label": "Usar fondo en degradado"
+            },
+            {
               "label": "Color de fondo de respuesta correcta"
             },
             {
+              "label": "Fondo en degradado",
+              "fields": [
+                {
+                  "label": "Ángulo del degradado",
+                  "description": "Dirección en grados (0 = hacia arriba, 180 = hacia abajo)."
+                },
+                {
+                  "label": "Color inicial del degradado"
+                },
+                {
+                  "label": "Color final del degradado"
+                }
+              ]
+            },
+            {
               "label": "Color de texto de respuesta correcta"
+            },
+            {
+              "label": "Usar borde en respuesta correcta"
+            },
+            {
+              "label": "Ajustes del borde",
+              "fields": [
+                {
+                  "label": "Grosor del borde",
+                  "description": "Grosor en unidades em."
+                },
+                {
+                  "label": "Color del borde"
+                }
+              ]
             }
           ]
         },
@@ -604,10 +676,43 @@
           "label": "Colores de respuesta incorrecta",
           "fields": [
             {
+              "label": "Usar fondo en degradado"
+            },
+            {
               "label": "Color de fondo de respuesta incorrecta"
             },
             {
+              "label": "Fondo en degradado",
+              "fields": [
+                {
+                  "label": "Ángulo del degradado",
+                  "description": "Dirección en grados (0 = hacia arriba, 180 = hacia abajo)."
+                },
+                {
+                  "label": "Color inicial del degradado"
+                },
+                {
+                  "label": "Color final del degradado"
+                }
+              ]
+            },
+            {
               "label": "Color de texto de respuesta incorrecta"
+            },
+            {
+              "label": "Usar borde en respuesta incorrecta"
+            },
+            {
+              "label": "Ajustes del borde",
+              "fields": [
+                {
+                  "label": "Grosor del borde",
+                  "description": "Grosor en unidades em."
+                },
+                {
+                  "label": "Color del borde"
+                }
+              ]
             }
           ]
         },
