@@ -88,6 +88,28 @@
                   "default": "#333333"
                 },
                 {
+                  "label": "Text padding",
+                  "description": "Inner spacing around the intro text and start button, in rem.",
+                  "fields": [
+                    {
+                      "label": "Top",
+                      "default": 2
+                    },
+                    {
+                      "label": "Right",
+                      "default": 2
+                    },
+                    {
+                      "label": "Bottom",
+                      "default": 2
+                    },
+                    {
+                      "label": "Left",
+                      "default": 2
+                    }
+                  ]
+                },
+                {
                   "label": "Start button",
                   "fields": [
                     {
@@ -121,8 +143,30 @@
                       "default": "#ffffff"
                     },
                     {
+                      "label": "Use gradient background on hover",
+                      "default": false
+                    },
+                    {
                       "label": "Button hover background color",
                       "default": "#1356a3"
+                    },
+                    {
+                      "label": "Hover gradient background",
+                      "fields": [
+                        {
+                          "label": "Gradient angle",
+                          "description": "Direction in degrees (0 = upward, 180 = downward).",
+                          "default": 180
+                        },
+                        {
+                          "label": "Gradient start color",
+                          "default": "#1356a3"
+                        },
+                        {
+                          "label": "Gradient end color",
+                          "default": "#1356a3"
+                        }
+                      ]
                     },
                     {
                       "label": "Button hover text color",
@@ -149,6 +193,11 @@
                       "label": "Button border radius",
                       "description": "Corner roundness in rem units.",
                       "default": 0
+                    },
+                    {
+                      "label": "Button width",
+                      "description": "Maximum width of the Start button in rem. The button never exceeds 100% of the available space.",
+                      "default": 18
                     }
                   ]
                 }
@@ -186,6 +235,28 @@
                 {
                   "label": "Tab text color",
                   "default": "#333333"
+                },
+                {
+                  "label": "Text padding",
+                  "description": "Inner spacing of the tab content panel, in rem.",
+                  "fields": [
+                    {
+                      "label": "Top",
+                      "default": 1
+                    },
+                    {
+                      "label": "Right",
+                      "default": 1.5
+                    },
+                    {
+                      "label": "Bottom",
+                      "default": 1
+                    },
+                    {
+                      "label": "Left",
+                      "default": 1.5
+                    }
+                  ]
                 },
                 {
                   "label": "Tab content border color",
@@ -240,8 +311,30 @@
                       "default": "#ffffff"
                     },
                     {
+                      "label": "Use gradient background on hover",
+                      "default": false
+                    },
+                    {
                       "label": "Button hover background color",
                       "default": "#1356a3"
+                    },
+                    {
+                      "label": "Hover gradient background",
+                      "fields": [
+                        {
+                          "label": "Gradient angle",
+                          "description": "Direction in degrees (0 = upward, 180 = downward).",
+                          "default": 180
+                        },
+                        {
+                          "label": "Gradient start color",
+                          "default": "#1356a3"
+                        },
+                        {
+                          "label": "Gradient end color",
+                          "default": "#1356a3"
+                        }
+                      ]
                     },
                     {
                       "label": "Button hover text color",
