@@ -930,8 +930,10 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
 
     var $currentSlide = self.$slides[self.currentIndex];
     var onResultSlide = $currentSlide && $currentSlide.hasClass('h5p-sc-set-results');
+    var hasContext = $currentSlide && $currentSlide.hasClass('h5p-sc-has-context');
 
-    if (onResultSlide) {
+    if (onResultSlide || hasContext) {
+      // With context, scroll lives in context/question columns (not the whole set).
       self.$choices.removeClass('h5p-sc-set--scroll');
       self.$choices.scrollTop(0);
       self.syncPlayAreaSlides();
