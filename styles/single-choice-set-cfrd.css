@@ -41,6 +41,10 @@
   --sc-solution-close-color: #1a73d9;
   --sc-solution-close-hover-color: #1356a3;
   --sc-solution-close-active-color: #104888;
+  --sc-scrollbar-width: 8px;
+  --sc-scrollbar-track: #e8e8e8;
+  --sc-scrollbar-thumb: #b0b0b0;
+  --sc-scrollbar-thumb-hover: #888888;
 }
 
 .h5p-sc-play-area {
@@ -880,23 +884,53 @@ li.h5p-sc-alternative .h5p-sc-status {
   margin-bottom: 0;
 }
 
-/* Scrollbar style */
+/* Scrollbar (configurable from appearance) */
+.h5p-sc-play-area .h5p-sc-context,
+.h5p-sc-play-area .h5p-sc-question-column,
+.h5p-sc-play-area .h5p-sc-has-context .h5p-sc-question-column ul.h5p-sc-alternatives,
+.h5p-sc-play-area .h5p-sc-set.h5p-sc-set--scroll,
+.h5p-sc-play-area .h5p-sc-set-results .h5p-sc-result-container,
+.h5p-single-choice-set .h5p-sc-solution-choices {
+  scrollbar-width: thin;
+  scrollbar-color: var(--sc-scrollbar-thumb) var(--sc-scrollbar-track);
+}
+
+.h5p-sc-play-area .h5p-sc-context::-webkit-scrollbar,
+.h5p-sc-play-area .h5p-sc-question-column::-webkit-scrollbar,
+.h5p-sc-play-area .h5p-sc-has-context .h5p-sc-question-column ul.h5p-sc-alternatives::-webkit-scrollbar,
+.h5p-sc-play-area .h5p-sc-set.h5p-sc-set--scroll::-webkit-scrollbar,
+.h5p-sc-play-area .h5p-sc-set-results .h5p-sc-result-container::-webkit-scrollbar,
 .h5p-single-choice-set .h5p-sc-solution-choices::-webkit-scrollbar {
-  width: 0.5em;
-  background: var(--sc-solution-bg);
+  width: var(--sc-scrollbar-width);
 }
 
+.h5p-sc-play-area .h5p-sc-context::-webkit-scrollbar-track,
+.h5p-sc-play-area .h5p-sc-question-column::-webkit-scrollbar-track,
+.h5p-sc-play-area .h5p-sc-has-context .h5p-sc-question-column ul.h5p-sc-alternatives::-webkit-scrollbar-track,
+.h5p-sc-play-area .h5p-sc-set.h5p-sc-set--scroll::-webkit-scrollbar-track,
+.h5p-sc-play-area .h5p-sc-set-results .h5p-sc-result-container::-webkit-scrollbar-track,
+.h5p-single-choice-set .h5p-sc-solution-choices::-webkit-scrollbar-track {
+  background: var(--sc-scrollbar-track);
+  border-radius: 4px;
+}
+
+.h5p-sc-play-area .h5p-sc-context::-webkit-scrollbar-thumb,
+.h5p-sc-play-area .h5p-sc-question-column::-webkit-scrollbar-thumb,
+.h5p-sc-play-area .h5p-sc-has-context .h5p-sc-question-column ul.h5p-sc-alternatives::-webkit-scrollbar-thumb,
+.h5p-sc-play-area .h5p-sc-set.h5p-sc-set--scroll::-webkit-scrollbar-thumb,
+.h5p-sc-play-area .h5p-sc-set-results .h5p-sc-result-container::-webkit-scrollbar-thumb,
 .h5p-single-choice-set .h5p-sc-solution-choices::-webkit-scrollbar-thumb {
-  background: var(--sc-solution-divider-color);
+  background: var(--sc-scrollbar-thumb);
+  border-radius: 4px;
 }
 
+.h5p-sc-play-area .h5p-sc-context::-webkit-scrollbar-thumb:hover,
+.h5p-sc-play-area .h5p-sc-question-column::-webkit-scrollbar-thumb:hover,
+.h5p-sc-play-area .h5p-sc-has-context .h5p-sc-question-column ul.h5p-sc-alternatives::-webkit-scrollbar-thumb:hover,
+.h5p-sc-play-area .h5p-sc-set.h5p-sc-set--scroll::-webkit-scrollbar-thumb:hover,
+.h5p-sc-play-area .h5p-sc-set-results .h5p-sc-result-container::-webkit-scrollbar-thumb:hover,
 .h5p-single-choice-set .h5p-sc-solution-choices::-webkit-scrollbar-thumb:hover {
-  background: var(--sc-solution-close-hover-color);
-}
-
-.h5p-single-choice-set .h5p-sc-solution-choices::-webkit-scrollbar-thumb:active,
-.h5p-single-choice-set .h5p-sc-solution-choices::-webkit-scrollbar-thumb:focus {
-  background: var(--sc-solution-close-active-color);
+  background: var(--sc-scrollbar-thumb-hover);
 }
 
 /* IV sepcific styles */

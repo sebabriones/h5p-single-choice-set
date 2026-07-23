@@ -830,6 +830,29 @@
               "description": "El valor por defecto es 2em (Joubel UI). Valores menores son más rectos; mayores, más redondeados."
             }
           ]
+        },
+        {
+          "label": "Barra de desplazamiento",
+          "description": "Colores de las barras de desplazamiento del área de pregunta, alternativas, panel de contexto y vista de solución.",
+          "fields": [
+            {
+              "label": "Ancho de la barra de desplazamiento",
+              "description": "Ancho en píxeles."
+            },
+            {
+              "label": "Mostrar pista de la barra de desplazamiento",
+              "description": "Si está activado, se muestra la pista detrás del control y se puede configurar su color."
+            },
+            {
+              "label": "Color de la pista de la barra de desplazamiento"
+            },
+            {
+              "label": "Color del control de la barra de desplazamiento"
+            },
+            {
+              "label": "Color del control al pasar el cursor"
+            }
+          ]
         }
       ]
     },

@@ -45,7 +45,12 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
     solutionDividerColor: '#cccccc',
     solutionCloseColor: '#1a73d9',
     solutionCloseHoverColor: '#1356a3',
-    solutionCloseActiveColor: '#104888'
+    solutionCloseActiveColor: '#104888',
+    scrollbarWidth: 8,
+    scrollbarShowTrack: true,
+    scrollbarTrack: '#e8e8e8',
+    scrollbarThumb: '#b0b0b0',
+    scrollbarThumbHover: '#888888'
   };
 
   var CSS_VAR_KEYS = {
@@ -87,7 +92,10 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
     solutionDividerColor: '--sc-solution-divider-color',
     solutionCloseColor: '--sc-solution-close-color',
     solutionCloseHoverColor: '--sc-solution-close-hover-color',
-    solutionCloseActiveColor: '--sc-solution-close-active-color'
+    solutionCloseActiveColor: '--sc-solution-close-active-color',
+    scrollbarTrack: '--sc-scrollbar-track',
+    scrollbarThumb: '--sc-scrollbar-thumb',
+    scrollbarThumbHover: '--sc-scrollbar-thumb-hover'
   };
 
   var CSS_EM_VAR_KEYS = {
@@ -95,6 +103,10 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
     questionPaddingRight: '--sc-question-padding-right',
     questionBorderRadius: '--sc-question-border-radius',
     alternativeBorderRadius: '--sc-alternative-border-radius'
+  };
+
+  var CSS_PX_VAR_KEYS = {
+    scrollbarWidth: '--sc-scrollbar-width'
   };
 
   /**
@@ -112,6 +124,23 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
     }
 
     return num + 'em';
+  }
+
+  /**
+   * @param {number|string} value
+   * @param {number|string} fallback
+   * @returns {string}
+   */
+  function toPx(value, fallback) {
+    var num = (value !== undefined && value !== null && value !== '') ?
+      Number(value) :
+      Number(fallback);
+
+    if (isNaN(num)) {
+      num = Number(fallback);
+    }
+
+    return num + 'px';
   }
 
   /**
@@ -279,6 +308,7 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
     var icons = (appearance && appearance.iconColors) || {};
     var questionArea = (appearance && appearance.questionArea) || {};
     var solutionView = (appearance && appearance.solutionView) || {};
+    var scrollbar = (appearance && appearance.scrollbar) || {};
 
     return {
       playAreaBackground: appearance && appearance.playAreaBackground,
@@ -325,7 +355,12 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
       solutionDividerColor: solutionView.dividerColor,
       solutionCloseColor: solutionView.closeButtonColor,
       solutionCloseHoverColor: solutionView.closeButtonHoverColor,
-      solutionCloseActiveColor: solutionView.closeButtonActiveColor
+      solutionCloseActiveColor: solutionView.closeButtonActiveColor,
+      scrollbarWidth: scrollbar.width,
+      scrollbarShowTrack: scrollbar.showTrack,
+      scrollbarTrack: scrollbar.track,
+      scrollbarThumb: scrollbar.thumb,
+      scrollbarThumbHover: scrollbar.thumbHover
     };
   }
 
@@ -420,6 +455,10 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
     applySolutionViewDefaults(merged, fields);
     applyBorderAppearance(merged, appearance);
 
+    if (merged.scrollbarShowTrack === false) {
+      merged.scrollbarTrack = 'transparent';
+    }
+
     return merged;
   }
 
@@ -431,6 +470,10 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
   function getCssVarValue(merged, key) {
     if (Object.prototype.hasOwnProperty.call(CSS_EM_VAR_KEYS, key)) {
       return toEm(merged[key], APPEARANCE_DEFAULTS[key]);
+    }
+
+    if (Object.prototype.hasOwnProperty.call(CSS_PX_VAR_KEYS, key)) {
+      return toPx(merged[key], APPEARANCE_DEFAULTS[key]);
     }
 
     return merged[key];
@@ -468,6 +511,12 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
       for (key in CSS_EM_VAR_KEYS) {
         if (Object.prototype.hasOwnProperty.call(CSS_EM_VAR_KEYS, key)) {
           el.style.setProperty(CSS_EM_VAR_KEYS[key], getCssVarValue(merged, key));
+        }
+      }
+
+      for (key in CSS_PX_VAR_KEYS) {
+        if (Object.prototype.hasOwnProperty.call(CSS_PX_VAR_KEYS, key)) {
+          el.style.setProperty(CSS_PX_VAR_KEYS[key], getCssVarValue(merged, key));
         }
       }
     }

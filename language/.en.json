@@ -883,6 +883,29 @@
               "description": "Default is 2em (Joubel UI). Lower values are sharper; higher values are more rounded."
             }
           ]
+        },
+        {
+          "label": "Scrollbar",
+          "description": "Colors for the scrollbars in the question area, alternatives, context panel and solution view.",
+          "fields": [
+            {
+              "label": "Scrollbar width",
+              "description": "Width in pixels."
+            },
+            {
+              "label": "Show scrollbar track",
+              "description": "When enabled, the track behind the scrollbar thumb is visible and its color can be configured."
+            },
+            {
+              "label": "Scrollbar track color"
+            },
+            {
+              "label": "Scrollbar thumb color"
+            },
+            {
+              "label": "Scrollbar thumb hover color"
+            }
+          ]
         }
       ]
     },
