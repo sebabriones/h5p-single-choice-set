@@ -9,6 +9,17 @@ function isTruthy(value) {
 }
 
 /**
+ * True when this instance is nested (Course Presentation, popup, etc.).
+ * Bubbling trigger('resize') back to the parent causes layout loops.
+ *
+ * @param {H5P.SingleChoiceSetCFRD} instance
+ * @returns {boolean}
+ */
+function isEmbeddedInstance(instance) {
+  return !!(instance && typeof instance.isRoot === 'function' && !instance.isRoot());
+}
+
+/**
  * @param {H5P.SingleChoiceSetCFRD} instance
  * @returns {Object|null}
  */
@@ -47,6 +58,10 @@ function getInstructionsOptions(instance) {
  * @param {H5P.jQuery} $fallbackContainer
  */
 function scheduleInstructionsAttach(instance, $fallbackContainer) {
+  if (isEmbeddedInstance(instance)) {
+    return;
+  }
+
   [0, 200, 500].forEach(function (delay) {
     setTimeout(function () {
       var instructions = getInstructionsOptions(instance);
@@ -117,6 +132,24 @@ function restoreResultSlideButtonLabels(instance) {
  * @param {H5P.SingleChoiceSetCFRD} instance
  */
 function scheduleDeferredResize(instance) {
+  if (!instance) {
+    return;
+  }
+
+  if (isEmbeddedInstance(instance)) {
+    if (instance._embeddedResizeScheduled) {
+      return;
+    }
+    instance._embeddedResizeScheduled = true;
+    requestAnimationFrame(function () {
+      instance._embeddedResizeScheduled = false;
+      if (typeof instance.resize === 'function') {
+        instance.resize();
+      }
+    });
+    return;
+  }
+
   requestAnimationFrame(function () {
     instance.trigger('resize');
 
@@ -137,7 +170,14 @@ function scheduleDeferredResize(instance) {
  */
 function scheduleResultResize(instance) {
   requestAnimationFrame(function () {
-    instance.trigger('resize');
+    if (isEmbeddedInstance(instance)) {
+      if (typeof instance.resize === 'function') {
+        instance.resize();
+      }
+    }
+    else {
+      instance.trigger('resize');
+    }
     restoreResultSlideButtonLabels(instance);
     applyActionButtonAppearance(instance);
   });
@@ -817,6 +857,10 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
       return;
     }
 
+    if (isEmbeddedInstance(self)) {
+      return;
+    }
+
     self.playAreaResizeObserver = new ResizeObserver(function () {
       self.trigger('resize');
     });
@@ -987,7 +1031,9 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
     }
 
     if (!self.$playArea.is(':visible')) {
-      scheduleDeferredResize(self);
+      if (!isEmbeddedInstance(self)) {
+        scheduleDeferredResize(self);
+      }
       return;
     }
 
@@ -1000,11 +1046,18 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
     }
 
     var scale = PlayArea.getScale(width);
-    var fontSize = (design.baseFontSize * scale) + 'px';
+    var scaleKey = scale.toFixed(4);
+
+    if (self._lastPlayAreaScale === scaleKey && self._lastPlayAreaWidth === width) {
+      return;
+    }
+
+    self._lastPlayAreaScale = scaleKey;
+    self._lastPlayAreaWidth = width;
 
     self.$playArea.css({
-      fontSize: fontSize,
-      '--sc-scale': scale.toFixed(4),
+      fontSize: (design.baseFontSize * scale) + 'px',
+      '--sc-scale': scaleKey,
       width: '100%',
       height: ''
     });
@@ -1065,7 +1118,13 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
     self.$choices.scrollTop(0);
 
     self.currentIndex = index;
-    self.trigger('resize');
+    if (isEmbeddedInstance(self)) {
+      self._lastPlayAreaScale = null;
+      self.resize();
+    }
+    else {
+      self.trigger('resize');
+    }
 
     requestAnimationFrame(function () {
       if (!isResultSlide && (moveFocus || self.isRoot())) {
