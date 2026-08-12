@@ -363,10 +363,20 @@
             ]
           },
           {
-            "label": "Alternativas - la primera alternativa es la correcta.",
+            "label": "Alternativas",
+            "description": "Si el barajado de alternativas está activo, la primera alternativa es la correcta. Si el barajado está desactivado, marque la alternativa correcta con la casilla \"Correcta\".",
             "entity": "respuesta",
             "field": {
-              "label": "Alternativa"
+              "label": "Alternativa",
+              "fields": [
+                {
+                  "label": "Texto"
+                },
+                {
+                  "label": "Correcta",
+                  "description": "Solo aplica cuando el barajado de alternativas está desactivado."
+                }
+              ]
             }
           }
         ]
@@ -868,6 +878,10 @@
     {
       "label": "Configuración del comportamiento",
       "fields": [
+        {
+          "label": "Barajar alternativas",
+          "description": "Actívelo para barajar el orden de las alternativas en cada pregunta. Si está desactivado, las alternativas se muestran en el orden ingresado y debe marcarse la alternativa correcta."
+        },
         {
           "label": "Continuar automáticamente",
           "description": "Automáticamente ir a la siguiente pregunta cuando es seleccionada alternativa. Esto necesita estar desactivado para hacer el contenido completamente accesible al usar un lector de pantalla."

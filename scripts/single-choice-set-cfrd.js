@@ -338,7 +338,13 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
      * The solution dialog
      * @type {SolutionView}
      */
-    this.solutionView = new SolutionView(contentId, this.options.choices, this.l10n, this.options.alternativeLabels);
+    this.solutionView = new SolutionView(
+      contentId,
+      this.options.choices,
+      this.l10n,
+      this.options.alternativeLabels,
+      this.options.behaviour.randomAnswers !== false
+    );
 
     this.$choices = $('<div>', {
       'class': 'h5p-sc-set h5p-sc-animate'
@@ -356,7 +362,8 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
         this.contentId,
         this.options.behaviour.autoContinue,
         this.options.alternativeLabels,
-        isTruthy(this.options.behaviour.enableSolutionsButton)
+        isTruthy(this.options.behaviour.enableSolutionsButton),
+        this.options.behaviour.randomAnswers !== false
       );
       choice.on('finished', this.handleQuestionFinished, this);
       choice.on('alternative-selected', this.handleAlternativeSelected, this);
@@ -537,22 +544,25 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
   SingleChoiceSet.prototype.createXApiAnsweredEvent = function (question, userAnswer, duration) {
     var self = this;
     var types = XApiEventBuilder.interactionTypes;
+    var AnswerUtils = H5P.SingleChoiceSetCFRD;
+    var randomAnswers = self.options.behaviour.randomAnswers !== false;
+    var correctIndex = AnswerUtils.getCorrectAnswerIndex(question.answers, randomAnswers);
 
     // creates the definition object
     var definition = XApiEventBuilder.createDefinition()
       .interactionType(types.CHOICE)
       .description(question.question)
-      .correctResponsesPattern(self.getXApiCorrectResponsePattern())
-      .optional( self.getXApiChoices(question.answers))
+      .correctResponsesPattern(self.getXApiCorrectResponsePattern(question.answers))
+      .optional(self.getXApiChoices(question.answers))
       .build();
 
     // create the result object
     var result = XApiEventBuilder.createResult()
       .response(userAnswer.toString())
       .duration(duration)
-      .score((userAnswer === 0) ? 1 : 0, 1)
+      .score((userAnswer === correctIndex) ? 1 : 0, 1)
       .completion(true)
-      .success(userAnswer === 0)
+      .success(userAnswer === correctIndex)
       .build();
 
     return XApiEventBuilder.create()
@@ -569,20 +579,25 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
    *
    * @return {string[]}
    */
-  SingleChoiceSet.prototype.getXApiCorrectResponsePattern = function () {
-    return [XApiEventBuilder.createCorrectResponsePattern([(0).toString()])]; // is always '0' for SCS
+  SingleChoiceSet.prototype.getXApiCorrectResponsePattern = function (answers) {
+    var AnswerUtils = H5P.SingleChoiceSetCFRD;
+    var randomAnswers = this.options.behaviour.randomAnswers !== false;
+    var correctIndex = AnswerUtils.getCorrectAnswerIndex(answers, randomAnswers);
+
+    return [XApiEventBuilder.createCorrectResponsePattern([correctIndex.toString()])];
   };
 
   /**
    * Returns the choices array for xApi statements
    *
-   * @param {String[]} answers
+   * @param {Array} answers
    *
    * @return {{ choices: []}}
    */
   SingleChoiceSet.prototype.getXApiChoices = function (answers) {
+    var AnswerUtils = H5P.SingleChoiceSetCFRD;
     var choices = answers.map(function (answer, index) {
-      return XApiEventBuilder.createChoice(index.toString(), answer);
+      return XApiEventBuilder.createChoice(index.toString(), AnswerUtils.getAnswerText(answer));
     });
 
     return {
@@ -1392,3 +1407,14 @@ if (AlternativeLabelModule) {
 if (AppearanceModule) {
   H5P.SingleChoiceSetCFRD.Appearance = AppearanceModule;
 }
+
+[
+  'getAnswerText',
+  'getCorrectAnswerIndex',
+  'getCorrectAnswerText',
+  'normalizeAnswersForStorage'
+].forEach(function (utilName) {
+  if (typeof SingleChoiceSetNamespace[utilName] === 'function') {
+    H5P.SingleChoiceSetCFRD[utilName] = SingleChoiceSetNamespace[utilName];
+  }
+});

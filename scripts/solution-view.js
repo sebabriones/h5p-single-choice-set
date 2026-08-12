@@ -14,13 +14,14 @@ H5P.SingleChoiceSetCFRD.SolutionView = (function ($, EventDispatcher, Alternativ
   /**
    * Constructor function.
    */
-  function SolutionView(id, choices, l10n, alternativeLabels) {
+  function SolutionView(id, choices, l10n, alternativeLabels, randomAnswers) {
     EventDispatcher.call(this);
     var self = this;
     self.id = id;
     this.choices = choices;
     self.l10n = l10n;
     self.alternativeLabels = alternativeLabels;
+    self.randomAnswers = randomAnswers !== false;
 
     this.$solutionView = $('<div>', {
       'class': 'h5p-sc-solution-view'
@@ -97,6 +98,8 @@ H5P.SingleChoiceSetCFRD.SolutionView = (function ($, EventDispatcher, Alternativ
 
     this.choices.forEach(function (choice, index) {
       if (choice.question && choice.answers && choice.answers.length !== 0) {
+        var AnswerUtils = H5P.SingleChoiceSetCFRD;
+        var correctIndex = AnswerUtils.getCorrectAnswerIndex(choice.answers, self.randomAnswers);
         var $question = self.addAriaPunctuation($('<dt>', {
           'class': 'h5p-sc-solution-question',
           html: '<span class="h5p-hidden-read">' + self.l10n.solutionListQuestionNumber.replace(':num', index + 1) + '</span>' + choice.question
@@ -104,8 +107,8 @@ H5P.SingleChoiceSetCFRD.SolutionView = (function ($, EventDispatcher, Alternativ
 
         self.$choices.append($question);
 
-        var answerHtml = choice.answers[0];
-        var correctLabel = AlternativeLabel.getAlternativeLabel(0, self.alternativeLabels);
+        var answerHtml = AnswerUtils.getAnswerText(choice.answers[correctIndex]);
+        var correctLabel = AlternativeLabel.getAlternativeLabel(correctIndex, self.alternativeLabels);
 
         if (correctLabel) {
           answerHtml = AlternativeLabel.prependLabel(correctLabel, answerHtml);

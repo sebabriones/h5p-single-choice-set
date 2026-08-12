@@ -7,7 +7,7 @@
   "author": "sbriones (CFRD-UDEC)",
   "majorVersion": 1,
   "minorVersion": 0,
-  "patchVersion": 30,
+  "patchVersion": 34,
   "runnable": 1,
   "fullscreen": 0,
   "embedTypes": [
@@ -37,6 +37,9 @@
     },
     {
       "path": "scripts/sound-effects.js"
+    },
+    {
+      "path": "scripts/answer-utils.js"
     },
     {
       "path": "scripts/xapi-event-builder.js"

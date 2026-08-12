@@ -413,10 +413,20 @@
             ]
           },
           {
-            "label": "Alternatives - first alternative is the correct one.",
+            "label": "Alternatives",
+            "description": "If alternative shuffling is enabled, the first alternative is the correct one. If shuffling is disabled, mark the correct alternative using the \"Correct\" checkbox.",
             "entity": "answer",
             "field": {
-              "label": "Alternative"
+              "label": "Alternative",
+              "fields": [
+                {
+                  "label": "Text"
+                },
+                {
+                  "label": "Correct",
+                  "description": "Only applies when alternative shuffling is disabled."
+                }
+              ]
             }
           }
         ]
@@ -921,6 +931,10 @@
     {
       "label": "Behavioural settings",
       "fields": [
+        {
+          "label": "Randomize alternatives",
+          "description": "Enable to randomize the order of alternatives for each question. When disabled, alternatives are shown in the entered order and the correct alternative must be marked."
+        },
         {
           "label": "Auto continue",
           "description": "Automatically go to next question when alternative is selected. This needs to be turned off to make the content fully accessible when using a screen reader."

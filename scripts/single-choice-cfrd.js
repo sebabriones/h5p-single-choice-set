@@ -72,8 +72,9 @@ H5P.SingleChoiceSetCFRD.SingleChoice = (function ($, EventDispatcher, Alternativ
   /**
    * Constructor function.
    */
-  function SingleChoice(options, index, id, isAutoConfinue, alternativeLabels, showCorrectAnswerWhenWrong) {
+  function SingleChoice(options, index, id, isAutoConfinue, alternativeLabels, showCorrectAnswerWhenWrong, randomAnswers) {
     EventDispatcher.call(this);
+    var AnswerUtils = H5P.SingleChoiceSetCFRD;
     // Extend defaults with provided options
     this.options = $.extend(true, {}, {
       question: '',
@@ -88,15 +89,23 @@ H5P.SingleChoiceSetCFRD.SingleChoice = (function ($, EventDispatcher, Alternativ
     this.id = id;
     this.answered = false;
 
-    for (var i = 0; i < this.options.answers.length; i++) {
-      this.options.answers[i] = {
-        text: this.options.answers[i],
-        correct: i === 0,
+    var rawAnswers = this.options.answers || [];
+    var correctIndex = AnswerUtils.getCorrectAnswerIndex(rawAnswers, randomAnswers);
+    var normalizedAnswers = [];
+
+    for (var i = 0; i < rawAnswers.length; i++) {
+      normalizedAnswers.push({
+        text: AnswerUtils.getAnswerText(rawAnswers[i]),
+        correct: i === correctIndex,
         answerIndex: i
-      };
+      });
     }
-    // Randomize alternatives
-    this.options.answers = H5P.shuffleArray(this.options.answers);
+
+    this.options.answers = normalizedAnswers;
+
+    if (randomAnswers !== false) {
+      this.options.answers = H5P.shuffleArray(this.options.answers);
+    }
   }
 
   SingleChoice.prototype = Object.create(EventDispatcher.prototype);

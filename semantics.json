@@ -1031,7 +1031,8 @@
         {
           "name": "answers",
           "type": "list",
-          "label": "Alternatives - first alternative is the correct one.",
+          "label": "Alternatives",
+          "description": "If alternative shuffling is enabled, the first alternative is the correct one. If shuffling is disabled, mark the correct alternative using the \"Correct\" checkbox.",
           "importance": "medium",
           "entity": "answer",
           "min": 2,
@@ -1039,17 +1040,33 @@
           "defaultNum": 2,
           "field": {
             "name": "answer",
-            "type": "text",
-            "widget": "html",
-            "tags": [
-              "p",
-              "br",
-              "strong",
-              "em",
-              "code"
-            ],
+            "type": "group",
             "label": "Alternative",
-            "importance": "medium"
+            "importance": "medium",
+            "fields": [
+              {
+                "name": "text",
+                "type": "text",
+                "widget": "html",
+                "tags": [
+                  "p",
+                  "br",
+                  "strong",
+                  "em",
+                  "code"
+                ],
+                "label": "Text",
+                "importance": "medium"
+              },
+              {
+                "name": "correct",
+                "type": "boolean",
+                "label": "Correct",
+                "description": "Only applies when alternative shuffling is disabled.",
+                "importance": "low",
+                "default": false
+              }
+            ]
           }
         }
       ]
@@ -2449,6 +2466,14 @@
     "label": "Behavioural settings",
     "importance": "low",
     "fields": [
+      {
+        "name": "randomAnswers",
+        "type": "boolean",
+        "label": "Randomize alternatives",
+        "description": "Enable to randomize the order of alternatives for each question. When disabled, alternatives are shown in the entered order and the correct alternative must be marked.",
+        "importance": "low",
+        "default": true
+      },
       {
         "name": "autoContinue",
         "type": "boolean",
