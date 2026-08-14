@@ -1046,17 +1046,17 @@
             "fields": [
               {
                 "name": "text",
-                "type": "text",
-                "widget": "html",
-                "tags": [
-                  "p",
-                  "br",
-                  "strong",
-                  "em",
-                  "code"
-                ],
+            "type": "text",
+            "widget": "html",
+            "tags": [
+              "p",
+              "br",
+              "strong",
+              "em",
+              "code"
+            ],
                 "label": "Text",
-                "importance": "medium"
+            "importance": "medium"
               },
               {
                 "name": "correct",

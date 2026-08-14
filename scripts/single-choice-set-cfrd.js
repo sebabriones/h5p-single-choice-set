@@ -1053,28 +1053,27 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
     }
 
     var design = self.playAreaSize;
-    var $parent = self.$playArea.parent();
-    var width = self.$playArea.width();
+    var layout = PlayArea.getLayoutDimensions(self.$playArea[0]);
+    var scaleKey = layout.scale.toFixed(4);
 
-    if (width <= 0) {
-      width = $parent.width() || design.baseWidth;
-    }
-
-    var scale = PlayArea.getScale(width);
-    var scaleKey = scale.toFixed(4);
-
-    if (self._lastPlayAreaScale === scaleKey && self._lastPlayAreaWidth === width) {
+    if (
+      self._lastPlayAreaScale === scaleKey &&
+      self._lastPlayAreaWidth === layout.width &&
+      self._lastPlayAreaHeightPx === layout.heightPx
+    ) {
       return;
     }
 
     self._lastPlayAreaScale = scaleKey;
-    self._lastPlayAreaWidth = width;
+    self._lastPlayAreaWidth = layout.width;
+    self._lastPlayAreaHeightPx = layout.heightPx;
 
     self.$playArea.css({
-      fontSize: (design.baseFontSize * scale) + 'px',
+      fontSize: layout.fontSize + 'px',
       '--sc-scale': scaleKey,
-      width: '100%',
-      height: ''
+      width: layout.widthPx,
+      maxWidth: '100%',
+      height: layout.heightPx
     });
 
     self.refreshInstructionsScale();

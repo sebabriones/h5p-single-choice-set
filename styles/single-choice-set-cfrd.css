@@ -59,7 +59,6 @@
   position: relative;
   box-sizing: border-box;
   width: 100%;
-  aspect-ratio: 16 / 9;
   padding: var(--sc-spacing-m);
   display: flex;
   flex-direction: column;
