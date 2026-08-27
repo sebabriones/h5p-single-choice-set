@@ -1331,6 +1331,12 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
 
     self.removeFeedback();
     scheduleDeferredResize(self);
+
+    // Nuevo intento: sin delete, setActivityStarted es no-op.
+    delete self.activityStartTime;
+    if (typeof self.setActivityStarted === 'function') {
+      self.setActivityStarted();
+    }
   };
 
   /**
