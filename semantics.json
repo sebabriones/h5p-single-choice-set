@@ -292,6 +292,7 @@
             {
               "name": "feedback",
               "type": "text",
+              "maxLength": 2048,
               "label": "Feedback for defined score range",
               "importance": "low",
               "placeholder": "Fill in the feedback",
