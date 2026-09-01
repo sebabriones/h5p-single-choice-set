@@ -72,7 +72,7 @@ H5P.SingleChoiceSetCFRD.SingleChoice = (function ($, EventDispatcher, Alternativ
   /**
    * Constructor function.
    */
-  function SingleChoice(options, index, id, isAutoConfinue, alternativeLabels, showCorrectAnswerWhenWrong, randomAnswers) {
+  function SingleChoice(options, index, id, isAutoConfinue, alternativeLabels, showCorrectAnswerWhenWrong, randomAnswers, appearance) {
     EventDispatcher.call(this);
     var AnswerUtils = H5P.SingleChoiceSetCFRD;
     // Extend defaults with provided options
@@ -84,6 +84,7 @@ H5P.SingleChoiceSetCFRD.SingleChoice = (function ($, EventDispatcher, Alternativ
     this.isAutoConfinue = isAutoConfinue;
     this.alternativeLabels = AlternativeLabel.normalizeSettings(alternativeLabels);
     this.showCorrectAnswerWhenWrong = !!showCorrectAnswerWhenWrong;
+    this.appearance = appearance || {};
     // Keep provided id.
     this.index = index;
     this.id = id;
@@ -170,6 +171,9 @@ H5P.SingleChoiceSetCFRD.SingleChoice = (function ($, EventDispatcher, Alternativ
       });
     });
 
+    $alternatives.css('--sc-alt-count', this.alternatives.length);
+
+    var AppearanceModule = H5P.SingleChoiceSetCFRD.Appearance;
     /**
      * Handles click on an alternative
      */
@@ -267,6 +271,14 @@ H5P.SingleChoiceSetCFRD.SingleChoice = (function ($, EventDispatcher, Alternativ
       }
 
       alternative.appendTo($alternatives);
+
+      if (AppearanceModule && typeof AppearanceModule.getDistinctColorsForAlternative === 'function') {
+        var distinctColors = AppearanceModule.getDistinctColorsForAlternative(self.appearance, i);
+        if (distinctColors) {
+          alternative.applyDistinctColors(distinctColors);
+        }
+      }
+
       alternative.on('focus', handleFocus.bind(this, alternative, i), this);
       alternative.on('alternative-selected', handleAlternativeSelected, this);
       alternative.on('previousOption', handlePreviousOption, this);

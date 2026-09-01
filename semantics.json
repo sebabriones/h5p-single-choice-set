@@ -1343,11 +1343,246 @@
         }
       },
       {
+        "name": "alternatives",
+        "type": "group",
+        "label": "Alternatives",
+        "importance": "low",
+        "optional": true,
+        "fields": [
+          {
+            "name": "layout",
+            "type": "select",
+            "label": "Alternatives layout",
+            "description": "Horizontal places each alternative in its own column (best with short text).",
+            "default": "vertical",
+            "options": [
+              {
+                "value": "vertical",
+                "label": "Single column"
+              },
+              {
+                "value": "horizontal",
+                "label": "One column per alternative"
+              }
+            ]
+          },
+          {
+            "name": "shape",
+            "type": "select",
+            "label": "Alternative shape",
+            "description": "Circle works best with short labels. Pill and box respect the alternative border radius setting.",
+            "default": "box",
+            "options": [
+              {
+                "value": "box",
+                "label": "Box"
+              },
+              {
+                "value": "pill",
+                "label": "Pill"
+              },
+              {
+                "value": "circle",
+                "label": "Circle"
+              }
+            ]
+          },
+          {
+            "name": "horizontalMaxWidth",
+            "type": "number",
+            "label": "Maximum width per alternative",
+            "description": "Only used in horizontal layout. Limits how wide each alternative column can grow.",
+            "default": 9,
+            "min": 4,
+            "max": 20,
+            "decimals": 1,
+            "unit": "em",
+            "widget": "showWhen",
+            "showWhen": {
+              "rules": [
+                {
+                  "field": "layout",
+                  "equals": "horizontal"
+                }
+              ]
+            }
+          },
+          {
+            "name": "showFeedbackIcons",
+            "type": "boolean",
+            "label": "Show correct/wrong icons on alternatives",
+            "description": "Displays a check or cross icon after answering. Turn off for circular alternatives or when colors alone are enough feedback.",
+            "default": true
+          },
+          {
+            "name": "borderRadius",
+            "type": "number",
+            "label": "Alternative border radius",
+            "description": "Corner roundness in em units. Applies to box shape; pill and circle use their own rounding.",
+            "default": 0.25,
+            "min": 0,
+            "max": 3,
+            "decimals": 2,
+            "unit": "em"
+          },
+          {
+            "name": "useBorder",
+            "type": "boolean",
+            "label": "Use alternative border",
+            "default": false
+          },
+          {
+            "name": "borderSettings",
+            "type": "group",
+            "label": "Border settings",
+            "importance": "low",
+            "widget": "showWhen",
+            "showWhen": {
+              "rules": [
+                {
+                  "field": "useBorder",
+                  "equals": true
+                }
+              ]
+            },
+            "fields": [
+              {
+                "name": "borderWidth",
+                "type": "number",
+                "label": "Border width",
+                "description": "Thickness in em units.",
+                "default": 0.05,
+                "min": 0,
+                "max": 0.5,
+                "decimals": 2,
+                "unit": "em"
+              },
+              {
+                "name": "borderColor",
+                "type": "text",
+                "widget": "colorSelector",
+                "label": "Border color",
+                "default": "#999999",
+                "optional": true,
+                "spectrum": {
+                  "showInput": true
+                }
+              },
+              {
+                "name": "hoverBorderColor",
+                "type": "text",
+                "widget": "colorSelector",
+                "label": "Hover border color",
+                "default": "#999999",
+                "optional": true,
+                "spectrum": {
+                  "showInput": true
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "colorMode",
+        "type": "select",
+        "label": "Alternative color mode",
+        "description": "Choose whether all alternatives share the same colors or each position has its own base color.",
+        "default": "uniform",
+        "options": [
+          {
+            "value": "uniform",
+            "label": "Uniform colors"
+          },
+          {
+            "value": "perPosition",
+            "label": "Color per position"
+          }
+        ]
+      },
+      {
+        "name": "distinctColors",
+        "type": "list",
+        "label": "Alternative colors by position",
+        "importance": "low",
+        "entity": "alternative color",
+        "min": 1,
+        "max": 4,
+        "defaultNum": 4,
+        "optional": true,
+        "widget": "showWhen",
+        "showWhen": {
+          "rules": [
+            {
+              "field": "colorMode",
+              "equals": "perPosition"
+            }
+          ]
+        },
+        "field": {
+          "name": "distinctColor",
+          "type": "group",
+          "label": "Alternative color",
+          "importance": "low",
+          "fields": [
+            {
+              "name": "background",
+              "type": "text",
+              "widget": "colorSelector",
+              "label": "Background color",
+              "optional": true,
+              "spectrum": {
+                "showInput": true
+              }
+            },
+            {
+              "name": "text",
+              "type": "text",
+              "widget": "colorSelector",
+              "label": "Text color",
+              "optional": true,
+              "spectrum": {
+                "showInput": true
+              }
+            },
+            {
+              "name": "hoverBackground",
+              "type": "text",
+              "widget": "colorSelector",
+              "label": "Hover background color",
+              "optional": true,
+              "spectrum": {
+                "showInput": true
+              }
+            },
+            {
+              "name": "hoverText",
+              "type": "text",
+              "widget": "colorSelector",
+              "label": "Hover text color",
+              "optional": true,
+              "spectrum": {
+                "showInput": true
+              }
+            }
+          ]
+        }
+      },
+      {
         "name": "alternativeColors",
         "type": "group",
         "label": "Alternative colors",
         "importance": "low",
         "optional": true,
+        "widget": "showWhen",
+        "showWhen": {
+          "rules": [
+            {
+              "field": "colorMode",
+              "equals": "uniform"
+            }
+          ]
+        },
         "fields": [
           {
             "name": "useGradientBackground",
@@ -1522,73 +1757,6 @@
             "spectrum": {
               "showInput": true
             }
-          },
-          {
-            "name": "borderRadius",
-            "type": "number",
-            "label": "Alternative border radius",
-            "description": "Corner roundness in em units.",
-            "default": 0.25,
-            "min": 0,
-            "max": 3,
-            "decimals": 2,
-            "unit": "em"
-          },
-          {
-            "name": "useBorder",
-            "type": "boolean",
-            "label": "Use alternative border",
-            "default": false
-          },
-          {
-            "name": "borderSettings",
-            "type": "group",
-            "label": "Border settings",
-            "importance": "low",
-            "widget": "showWhen",
-            "showWhen": {
-              "rules": [
-                {
-                  "field": "useBorder",
-                  "equals": true
-                }
-              ]
-            },
-            "fields": [
-              {
-                "name": "borderWidth",
-                "type": "number",
-                "label": "Border width",
-                "description": "Thickness in em units.",
-                "default": 0.05,
-                "min": 0,
-                "max": 0.5,
-                "decimals": 2,
-                "unit": "em"
-              },
-              {
-                "name": "borderColor",
-                "type": "text",
-                "widget": "colorSelector",
-                "label": "Border color",
-                "default": "#999999",
-                "optional": true,
-                "spectrum": {
-                  "showInput": true
-                }
-              },
-              {
-                "name": "hoverBorderColor",
-                "type": "text",
-                "widget": "colorSelector",
-                "label": "Hover border color",
-                "default": "#999999",
-                "optional": true,
-                "spectrum": {
-                  "showInput": true
-                }
-              }
-            ]
           }
         ]
       },

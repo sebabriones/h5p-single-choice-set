@@ -149,6 +149,25 @@ H5P.SingleChoiceSetCFRD.Alternative = (function ($, EventDispatcher, Alternative
     return this.$alternative;
   };
 
+  /**
+   * Apply per-alternative base colors.
+   *
+   * @param {{background: string, text: string, hoverBackground: string, hoverText: string}} colors
+   */
+  Alternative.prototype.applyDistinctColors = function (colors) {
+    if (!colors || !this.$alternative) {
+      return;
+    }
+
+    this.$alternative.addClass('h5p-sc-alternative--distinct-color');
+    this.$alternative.css({
+      '--sc-alternative-bg': colors.background,
+      '--sc-alternative-color': colors.text,
+      '--sc-alternative-hover-bg': colors.hoverBackground,
+      '--sc-alternative-hover-color': colors.hoverText
+    });
+  };
+
   return Alternative;
 
 })(H5P.jQuery, H5P.EventDispatcher, H5P.SingleChoiceSetCFRD.AlternativeLabel);

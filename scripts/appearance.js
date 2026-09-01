@@ -224,13 +224,37 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
   }
 
   /**
+   * @param {Object} [appearance]
+   * @returns {{borderRadius: *, useBorder: *, borderSettings: Object}}
+   */
+  function resolveAlternativeStyleSource(appearance) {
+    var alternatives = (appearance && appearance.alternatives) ||
+      (appearance && appearance.alternativesPresentation) ||
+      {};
+    var altColors = (appearance && appearance.alternativeColors) || {};
+    var borderRadius = alternatives.borderRadius;
+
+    if (borderRadius === undefined || borderRadius === null || borderRadius === '') {
+      borderRadius = altColors.borderRadius;
+    }
+
+    return {
+      borderRadius: borderRadius,
+      useBorder: alternatives.useBorder !== undefined ?
+        alternatives.useBorder :
+        altColors.useBorder,
+      borderSettings: alternatives.borderSettings || altColors.borderSettings || {}
+    };
+  }
+
+  /**
    * @param {Object} merged
    * @param {Object} [appearance]
    * @returns {Object}
    */
   function applyBorderAppearance(merged, appearance) {
-    var alt = (appearance && appearance.alternativeColors) || {};
-    var altBorder = alt.borderSettings || {};
+    var altStyle = resolveAlternativeStyleSource(appearance);
+    var altBorder = altStyle.borderSettings || {};
     var questionArea = (appearance && appearance.questionArea) || {};
     var questionBorder = questionArea.borderSettings || {};
     var correct = (appearance && appearance.correctColors) || {};
@@ -238,7 +262,7 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
     var wrong = (appearance && appearance.wrongColors) || {};
     var wrongBorder = wrong.borderSettings || {};
 
-    if (isTruthy(alt.useBorder)) {
+    if (isTruthy(altStyle.useBorder)) {
       merged.alternativeBorderWidth = toEm(altBorder.borderWidth, 0.05);
       merged.alternativeBorderColor = altBorder.borderColor || '#999999';
       merged.alternativeHoverBorderColor = altBorder.hoverBorderColor ||
@@ -306,6 +330,7 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
    */
   function readAppearanceFields(appearance) {
     var alt = (appearance && appearance.alternativeColors) || {};
+    var altStyle = resolveAlternativeStyleSource(appearance);
     var text = (appearance && appearance.textColors) || {};
     var correct = (appearance && appearance.correctColors) || {};
     var wrong = (appearance && appearance.wrongColors) || {};
@@ -328,7 +353,7 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
       }),
       alternativeText: alt.text,
       alternativeHoverText: alt.hoverText,
-      alternativeBorderRadius: alt.borderRadius,
+      alternativeBorderRadius: altStyle.borderRadius,
       questionText: text.question,
       contextText: text.context,
       questionFontSize: text.questionFontSize,
@@ -368,6 +393,171 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
       scrollbarThumb: scrollbar.thumb,
       scrollbarThumbHover: scrollbar.thumbHover
     };
+  }
+
+  /**
+   * @param {Object} [appearance]
+   * @returns {Object}
+   */
+  function resolveAlternativesBlock(appearance) {
+    return (appearance && appearance.alternatives) ||
+      (appearance && appearance.alternativesPresentation) ||
+      {};
+  }
+
+  /**
+   * @param {Object} [appearance]
+   * @returns {string}
+   */
+  function resolveColorMode(appearance) {
+    var alternatives = resolveAlternativesBlock(appearance);
+
+    if (appearance && appearance.colorMode === 'perPosition') {
+      return 'perPosition';
+    }
+
+    if (appearance && appearance.colorMode === 'uniform') {
+      return 'uniform';
+    }
+
+    if (isTruthy(alternatives.useDistinctColors)) {
+      return 'perPosition';
+    }
+
+    return 'uniform';
+  }
+
+  /**
+   * @param {Object} [appearance]
+   * @returns {Array}
+   */
+  function resolveDistinctColorsList(appearance) {
+    if (appearance && Array.isArray(appearance.distinctColors)) {
+      return appearance.distinctColors;
+    }
+
+    return resolveAlternativesBlock(appearance).distinctColors || [];
+  }
+
+  /**
+   * @param {Object} [appearance]
+   * @returns {{layout: string, shape: string, colorMode: string, horizontalMaxWidth: number, showFeedbackIcons: boolean}}
+   */
+  function getAlternativesPresentation(appearance) {
+    var presentation = resolveAlternativesBlock(appearance);
+    var layout = presentation.layout === 'horizontal' ? 'horizontal' : 'vertical';
+    var shape = presentation.shape;
+    var horizontalMaxWidth = Number(presentation.horizontalMaxWidth);
+
+    if (shape !== 'pill' && shape !== 'circle') {
+      shape = 'box';
+    }
+
+    if (isNaN(horizontalMaxWidth) || horizontalMaxWidth < 4) {
+      horizontalMaxWidth = 9;
+    }
+    else if (horizontalMaxWidth > 20) {
+      horizontalMaxWidth = 20;
+    }
+
+    return {
+      layout: layout,
+      shape: shape,
+      colorMode: resolveColorMode(appearance),
+      horizontalMaxWidth: horizontalMaxWidth,
+      showFeedbackIcons: presentation.showFeedbackIcons !== false
+    };
+  }
+
+  /**
+   * @param {Object} [appearance]
+   * @param {number} index
+   * @param {Object} [mergedAppearance]
+   * @returns {{background: string, text: string, hoverBackground: string, hoverText: string}|null}
+   */
+  function getDistinctColorsForAlternative(appearance, index, mergedAppearance) {
+    var merged = mergedAppearance || mergeAppearance(appearance);
+    var entry;
+    var background;
+    var text;
+    var hoverBackground;
+    var hoverText;
+
+    if (resolveColorMode(appearance) !== 'perPosition') {
+      return null;
+    }
+
+    entry = resolveDistinctColorsList(appearance)[index];
+    if (!entry) {
+      return null;
+    }
+
+    background = pickString(entry.background, merged.alternativeBackground);
+    text = pickString(entry.text, merged.alternativeText);
+    hoverBackground = pickString(entry.hoverBackground, merged.alternativeHoverBackground);
+    hoverText = pickString(entry.hoverText, merged.alternativeHoverText);
+
+    if (!entry.background && !entry.text && !entry.hoverBackground && !entry.hoverText) {
+      return null;
+    }
+
+    return {
+      background: background,
+      text: text,
+      hoverBackground: hoverBackground,
+      hoverText: hoverText
+    };
+  }
+
+  /**
+   * @param {jQuery} $container
+   * @param {Object} [appearance]
+   */
+  function applyAlternativesPresentation($container, appearance) {
+    var presentation;
+    var i;
+    var el;
+
+    if (!$container || !$container.length) {
+      return;
+    }
+
+    presentation = getAlternativesPresentation(appearance);
+
+    for (i = 0; i < $container.length; i++) {
+      el = $container[i];
+
+      if (!el || !el.classList) {
+        continue;
+      }
+
+      el.classList.remove(
+        'h5p-sc-alts-layout-vertical',
+        'h5p-sc-alts-layout-horizontal',
+        'h5p-sc-alts-shape-box',
+        'h5p-sc-alts-shape-pill',
+        'h5p-sc-alts-shape-circle',
+        'h5p-sc-alts-hide-feedback-icons'
+      );
+      el.classList.add('h5p-sc-alts-layout-' + presentation.layout);
+      el.classList.add('h5p-sc-alts-shape-' + presentation.shape);
+
+      if (!presentation.showFeedbackIcons) {
+        el.classList.add('h5p-sc-alts-hide-feedback-icons');
+      }
+
+      if (el.style) {
+        if (presentation.layout === 'horizontal') {
+          el.style.setProperty(
+            '--sc-alt-horizontal-max',
+            toEm(presentation.horizontalMaxWidth, 9)
+          );
+        }
+        else {
+          el.style.removeProperty('--sc-alt-horizontal-max');
+        }
+      }
+    }
   }
 
   /**
@@ -538,6 +728,7 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
   function scheduleAppearance($container, appearance, overallFeedback) {
     var apply = function () {
       applyAppearanceVars($container, appearance, overallFeedback);
+      applyAlternativesPresentation($container, appearance);
     };
 
     apply();
@@ -550,6 +741,9 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
     APPEARANCE_DEFAULTS: APPEARANCE_DEFAULTS,
     mergeAppearance: mergeAppearance,
     applyAppearanceVars: applyAppearanceVars,
-    scheduleAppearance: scheduleAppearance
+    scheduleAppearance: scheduleAppearance,
+    getAlternativesPresentation: getAlternativesPresentation,
+    getDistinctColorsForAlternative: getDistinctColorsForAlternative,
+    applyAlternativesPresentation: applyAlternativesPresentation
   };
 })();

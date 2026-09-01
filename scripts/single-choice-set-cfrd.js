@@ -363,7 +363,8 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
         this.options.behaviour.autoContinue,
         this.options.alternativeLabels,
         isTruthy(this.options.behaviour.enableSolutionsButton),
-        this.options.behaviour.randomAnswers !== false
+        this.options.behaviour.randomAnswers !== false,
+        this.options.appearance
       );
       choice.on('finished', this.handleQuestionFinished, this);
       choice.on('alternative-selected', this.handleAlternativeSelected, this);

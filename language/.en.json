@@ -567,6 +567,101 @@
           "label": "Play area background color"
         },
         {
+          "label": "Alternatives",
+          "fields": [
+            {
+              "label": "Alternatives layout",
+              "description": "Horizontal places each alternative in its own column (best with short text).",
+              "options": [
+                {
+                  "label": "Single column"
+                },
+                {
+                  "label": "One column per alternative"
+                }
+              ]
+            },
+            {
+              "label": "Alternative shape",
+              "description": "Circle works best with short labels. Pill and box respect the alternative border radius setting.",
+              "options": [
+                {
+                  "label": "Box"
+                },
+                {
+                  "label": "Pill"
+                },
+                {
+                  "label": "Circle"
+                }
+              ]
+            },
+            {
+              "label": "Maximum width per alternative",
+              "description": "Only used in horizontal layout. Limits how wide each alternative column can grow."
+            },
+            {
+              "label": "Show correct/wrong icons on alternatives",
+              "description": "Displays a check or cross icon after answering. Turn off for circular alternatives or when colors alone are enough feedback."
+            },
+            {
+              "label": "Alternative border radius",
+              "description": "Corner roundness in em units. Applies to box shape; pill and circle use their own rounding."
+            },
+            {
+              "label": "Use alternative border"
+            },
+            {
+              "label": "Border settings",
+              "fields": [
+                {
+                  "label": "Border width",
+                  "description": "Thickness in em units."
+                },
+                {
+                  "label": "Border color"
+                },
+                {
+                  "label": "Hover border color"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Alternative color mode",
+          "description": "Choose whether all alternatives share the same colors or each position has its own base color.",
+          "options": [
+            {
+              "label": "Uniform colors"
+            },
+            {
+              "label": "Color per position"
+            }
+          ]
+        },
+        {
+          "label": "Alternative colors by position",
+          "entity": "alternative color",
+          "field": {
+            "label": "Alternative color",
+            "fields": [
+              {
+                "label": "Background color"
+              },
+              {
+                "label": "Text color"
+              },
+              {
+                "label": "Hover background color"
+              },
+              {
+                "label": "Hover text color"
+              }
+            ]
+          }
+        },
+        {
           "label": "Alternative colors",
           "fields": [
             {
@@ -616,28 +711,6 @@
             },
             {
               "label": "Alternative hover text color"
-            },
-            {
-              "label": "Alternative border radius",
-              "description": "Corner roundness in em units."
-            },
-            {
-              "label": "Use alternative border"
-            },
-            {
-              "label": "Border settings",
-              "fields": [
-                {
-                  "label": "Border width",
-                  "description": "Thickness in em units."
-                },
-                {
-                  "label": "Border color"
-                },
-                {
-                  "label": "Hover border color"
-                }
-              ]
             }
           ]
         },

@@ -514,6 +514,101 @@
           "label": "Color de fondo del área de juego"
         },
         {
+          "label": "Alternativas",
+          "fields": [
+            {
+              "label": "Disposición de alternativas",
+              "description": "Horizontal coloca cada alternativa en su propia columna (mejor con textos cortos).",
+              "options": [
+                {
+                  "label": "Una sola columna"
+                },
+                {
+                  "label": "Una columna por alternativa"
+                }
+              ]
+            },
+            {
+              "label": "Forma de alternativas",
+              "description": "Círculo funciona mejor con etiquetas cortas. Píldora y caja respetan el radio de borde configurado en alternativas.",
+              "options": [
+                {
+                  "label": "Caja"
+                },
+                {
+                  "label": "Píldora"
+                },
+                {
+                  "label": "Círculo"
+                }
+              ]
+            },
+            {
+              "label": "Ancho máximo por alternativa",
+              "description": "Solo se usa en disposición horizontal. Limita cuánto puede crecer cada columna de alternativa."
+            },
+            {
+              "label": "Mostrar iconos de acierto o error en alternativas",
+              "description": "Muestra un icono de verificación o cruz tras responder. Desactívelo para alternativas circulares o cuando los colores bastan como retroalimentación."
+            },
+            {
+              "label": "Radio de borde de alternativas",
+              "description": "Redondeo de esquinas en unidades em. Aplica a la forma caja; píldora y círculo usan su propio redondeo."
+            },
+            {
+              "label": "Usar borde en alternativas"
+            },
+            {
+              "label": "Ajustes del borde",
+              "fields": [
+                {
+                  "label": "Grosor del borde",
+                  "description": "Grosor en unidades em."
+                },
+                {
+                  "label": "Color del borde"
+                },
+                {
+                  "label": "Color del borde al pasar el cursor"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Modo de color de alternativas",
+          "description": "Elija si todas las alternativas comparten los mismos colores o cada posición tiene su color base.",
+          "options": [
+            {
+              "label": "Colores uniformes"
+            },
+            {
+              "label": "Color por posición"
+            }
+          ]
+        },
+        {
+          "label": "Colores por posición de alternativa",
+          "entity": "color de alternativa",
+          "field": {
+            "label": "Color de alternativa",
+            "fields": [
+              {
+                "label": "Color de fondo"
+              },
+              {
+                "label": "Color de texto"
+              },
+              {
+                "label": "Color de fondo al pasar el cursor"
+              },
+              {
+                "label": "Color de texto al pasar el cursor"
+              }
+            ]
+          }
+        },
+        {
           "label": "Colores de alternativas",
           "fields": [
             {
@@ -563,28 +658,6 @@
             },
             {
               "label": "Color de texto de alternativas al pasar el cursor"
-            },
-            {
-              "label": "Radio de borde de alternativas",
-              "description": "Redondeo de esquinas en unidades em."
-            },
-            {
-              "label": "Usar borde en alternativas"
-            },
-            {
-              "label": "Ajustes del borde",
-              "fields": [
-                {
-                  "label": "Grosor del borde",
-                  "description": "Grosor en unidades em."
-                },
-                {
-                  "label": "Color del borde"
-                },
-                {
-                  "label": "Color del borde al pasar el cursor"
-                }
-              ]
             }
           ]
         },

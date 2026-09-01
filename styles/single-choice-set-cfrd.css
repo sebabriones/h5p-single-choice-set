@@ -571,6 +571,10 @@ li.h5p-sc-alternative .h5p-sc-status {
   color: var(--sc-wrong-icon-color);
 }
 
+.h5p-sc-play-area.h5p-sc-alts-hide-feedback-icons .h5p-sc-status {
+  display: none;
+}
+
 .h5p-sc-alternative .h5p-sc-a11y{
   position:absolute;
   left:-10000px;
@@ -1012,4 +1016,68 @@ li.h5p-sc-alternative .h5p-sc-status {
 .h5p-course-presentation .h5p-popup-overlay.h5p-singlechoiceset .h5p-popup-container {
   min-height: initial;
   max-height: none;
+}
+
+/* Alternatives layout & shape (CFRD) */
+.h5p-sc-play-area.h5p-sc-alts-layout-horizontal ul.h5p-sc-alternatives {
+  display: grid;
+  grid-template-columns: repeat(var(--sc-alt-count, 2), minmax(0, var(--sc-alt-horizontal-max, 1fr)));
+  gap: var(--sc-spacing-s, 0.5em);
+  align-items: stretch;
+  justify-content: center;
+}
+
+.h5p-sc-play-area.h5p-sc-alts-layout-horizontal ul.h5p-sc-alternatives li.h5p-sc-alternative {
+  margin: 0;
+  min-height: 100%;
+}
+
+.h5p-sc-play-area.h5p-sc-alts-layout-horizontal li.h5p-sc-alternative .h5p-sc-alternative-body {
+  justify-content: center;
+  text-align: center;
+}
+
+.h5p-sc-play-area.h5p-sc-alts-shape-pill ul.h5p-sc-alternatives li.h5p-sc-alternative,
+.h5p-sc-play-area.h5p-sc-alts-shape-pill ul.h5p-sc-alternatives li.h5p-sc-alternative .h5p-sc-progressbar {
+  border-radius: 999em;
+}
+
+.h5p-sc-play-area.h5p-sc-alts-shape-circle ul.h5p-sc-alternatives li.h5p-sc-alternative {
+  aspect-ratio: 1;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--sc-spacing-s, 0.5em);
+}
+
+.h5p-sc-play-area.h5p-sc-alts-shape-circle ul.h5p-sc-alternatives li.h5p-sc-alternative .h5p-sc-progressbar {
+  border-radius: 50%;
+}
+
+.h5p-sc-play-area.h5p-sc-alts-shape-circle li.h5p-sc-alternative .h5p-sc-alternative-body {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+}
+
+.h5p-sc-play-area.h5p-sc-alts-shape-circle.h5p-sc-alts-layout-vertical ul.h5p-sc-alternatives li.h5p-sc-alternative {
+  width: min(100%, 9em);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.h5p-sc-play-area.h5p-sc-alts-shape-circle li.h5p-sc-alternative .h5p-sc-label {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+}
+
+.h5p-sc-play-area li.h5p-sc-alternative.h5p-sc-alternative--distinct-color:hover {
+  background: var(--sc-alternative-hover-bg);
+  color: var(--sc-alternative-hover-color);
 }
