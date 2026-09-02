@@ -143,8 +143,10 @@
   overflow: hidden;
 }
 
-.h5p-sc-play-area:has(.h5p-instructions-tab-root) .h5p-sc-set-wrapper {
-  padding-top: calc(2.75rem * var(--sc-scale, 1));
+/* Reserve room for the instructions tab (marker set by H5P.Instructions). */
+.h5p-has-instructions-tab .h5p-sc-set-wrapper,
+.h5p-container:has(.h5p-instructions-tab-root) .h5p-sc-set-wrapper {
+  padding-top: max(calc(3.25rem * var(--sc-scale, 1)), var(--h5p-ins-tab-clearance, 2.75rem));
   box-sizing: border-box;
 }
 
@@ -159,6 +161,17 @@
 
 .h5p-sc-has-context .h5p-sc-slide-layout {
   padding-top: var(--sc-spacing-m, 1em);
+  box-sizing: border-box;
+}
+
+.h5p-has-instructions-tab .h5p-sc-has-context .h5p-sc-slide-layout,
+.h5p-container:has(.h5p-instructions-tab-root) .h5p-sc-has-context .h5p-sc-slide-layout {
+  padding-top: 0;
+}
+
+.h5p-has-instructions-tab .h5p-sc-has-context .h5p-sc-context,
+.h5p-container:has(.h5p-instructions-tab-root) .h5p-sc-has-context .h5p-sc-context {
+  padding-top: var(--sc-spacing-s, 0.5em);
   box-sizing: border-box;
 }
 
