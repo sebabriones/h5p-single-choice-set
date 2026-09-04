@@ -601,8 +601,31 @@
               "description": "Only used in horizontal layout. Limits how wide each alternative column can grow."
             },
             {
+              "label": "Space between alternatives",
+              "description": "Gap between alternatives in em units. Applies to both single-column and multi-column layouts."
+            },
+            {
               "label": "Show correct/wrong icons on alternatives",
-              "description": "Displays a check or cross icon after answering. Turn off for circular alternatives or when colors alone are enough feedback."
+              "description": "Displays a check or cross icon after answering. Turn off when colors alone are enough feedback. Not available for circular alternatives."
+            },
+            {
+              "label": "Feedback icon size",
+              "description": "Relative size of the correct/wrong icon in em units. Smaller values avoid growing short alternatives."
+            },
+            {
+              "label": "Feedback icon vertical alignment",
+              "description": "Vertical position of the correct/wrong icon within multi-line alternatives.",
+              "options": [
+                {
+                  "label": "Top"
+                },
+                {
+                  "label": "Center"
+                },
+                {
+                  "label": "Bottom"
+                }
+              ]
             },
             {
               "label": "Alternative border radius",
@@ -647,13 +670,49 @@
             "label": "Alternative color",
             "fields": [
               {
+                "label": "Use gradient background"
+              },
+              {
                 "label": "Background color"
+              },
+              {
+                "label": "Gradient background",
+                "fields": [
+                  {
+                    "label": "Gradient angle",
+                    "description": "Direction in degrees (0 = upward, 180 = downward)."
+                  },
+                  {
+                    "label": "Gradient start color"
+                  },
+                  {
+                    "label": "Gradient end color"
+                  }
+                ]
               },
               {
                 "label": "Text color"
               },
               {
+                "label": "Use gradient background on hover"
+              },
+              {
                 "label": "Hover background color"
+              },
+              {
+                "label": "Hover gradient background",
+                "fields": [
+                  {
+                    "label": "Gradient angle",
+                    "description": "Direction in degrees (0 = upward, 180 = downward)."
+                  },
+                  {
+                    "label": "Gradient start color"
+                  },
+                  {
+                    "label": "Gradient end color"
+                  }
+                ]
               },
               {
                 "label": "Hover text color"

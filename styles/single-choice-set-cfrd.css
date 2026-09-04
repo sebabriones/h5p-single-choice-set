@@ -21,6 +21,7 @@
   --sc-wrong-icon-color: #b71c1c;
   --sc-solution-icon-color: #255c41;
   --sc-sound-icon-color: #757575;
+  --sc-feedback-icon-size: 1em;
   --sc-question-bg: transparent;
   --sc-question-padding: 0em;
   --sc-question-padding-right: 1.777em;
@@ -56,6 +57,7 @@
   --sc-spacing-xs: calc(0.4rem * var(--sc-scale, 1));
   --sc-spacing-question: calc(0.888888889rem * var(--sc-scale, 1));
   --sc-spacing-alt-pad-x: calc(1.2rem * var(--sc-scale, 1));
+  --sc-alt-gap: calc(0.5rem * var(--sc-scale, 1));
   position: relative;
   box-sizing: border-box;
   width: 100%;
@@ -385,6 +387,9 @@ ul.h5p-sc-alternatives {
 }
 ul.h5p-sc-alternatives li.h5p-sc-alternative {
   position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.35em;
   cursor: pointer;
   box-sizing: border-box;
   list-style: none;
@@ -398,14 +403,19 @@ ul.h5p-sc-alternatives li.h5p-sc-alternative {
   -moz-border-radius: var(--sc-alternative-border-radius);
   border-radius: var(--sc-alternative-border-radius);
   box-shadow: var(--sc-alternative-box-shadow);
-
-  transition: -webkit-transform 0.5s ease-in-out, width 0.5s ease-in-out;
-  transition: transform 0.5s ease-in-out, width 0.5s ease-in-out;
 }
 
 .h5p-sc-play-area ul.h5p-sc-alternatives li.h5p-sc-alternative {
-  margin: var(--sc-spacing-s, 0.5em) 0;
+  margin: var(--sc-alt-gap, var(--sc-spacing-s, 0.5em)) 0;
   padding: var(--sc-spacing-xs, 0.4em) var(--sc-spacing-alt-pad-x, 1.2em);
+}
+
+.h5p-sc-play-area ul.h5p-sc-alternatives li.h5p-sc-alternative:first-child {
+  margin-top: 0;
+}
+
+.h5p-sc-play-area ul.h5p-sc-alternatives li.h5p-sc-alternative:last-child {
+  margin-bottom: 0;
 }
 
 ul.h5p-sc-alternatives li.h5p-sc-alternative:hover {
@@ -454,14 +464,9 @@ ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-reveal-corre
   border-color: var(--sc-correct-border-color);
 }
 
-ul.h5p-sc-alternatives li.h5p-sc-alternative.h5p-sc-is-correct.h5p-sc-selected.h5p-sc-reveal-correct .h5p-sc-progressbar {
+ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-is-correct.h5p-sc-selected.h5p-sc-reveal-correct .h5p-sc-progressbar {
   background: var(--sc-correct-bg);
   color: var(--sc-correct-color);
-}
-
-ul.h5p-sc-alternatives li.h5p-sc-alternative.h5p-sc-reveal-wrong {
-  -webkit-transform: scale(.95);
-  transform: scale(.95);
 }
 
 ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-reveal-wrong.h5p-sc-selected,
@@ -481,13 +486,20 @@ ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-is-wrong.h5p
 
 li.h5p-sc-alternative .h5p-sc-progressbar {
   position: absolute;
-  top: 0;
-  left: 0;
+  inset: 0;
+  width: 100%;
   height: 100%;
-  width: 0%;
-  -webkit-border-radius: var(--sc-alternative-border-radius);
-  -moz-border-radius: var(--sc-alternative-border-radius);
-  border-radius: var(--sc-alternative-border-radius);
+  /* No own border-radius: parent overflow:hidden + border-radius clips the fill. */
+  border-radius: 0;
+  -webkit-transform: scaleX(0);
+  -moz-transform: scaleX(0);
+  -ms-transform: scaleX(0);
+  transform: scaleX(0);
+  -webkit-transform-origin: left center;
+  -moz-transform-origin: left center;
+  -ms-transform-origin: left center;
+  transform-origin: left center;
+  pointer-events: none;
 }
 
 li.h5p-sc-alternative.h5p-sc-is-correct .h5p-sc-progressbar {
@@ -499,32 +511,63 @@ li.h5p-sc-alternative.h5p-sc-is-wrong .h5p-sc-progressbar {
 }
 .h5p-sc-drummed .h5p-sc-progressbar {
   background: transparent;
-  transition: background 1s;
+  transition: background 0.3s, opacity 0.3s;
+  opacity: 0;
 }
-/* Using animation instead of transition on width made this much
-   smoother on iPad */
+/* Fill the whole alternative with a scale transform (smoother than width %). */
 li.h5p-sc-alternative.h5p-sc-selected .h5p-sc-progressbar {
-  -webkit-animation: progress 0.6s;
-  -moz-animation: progress 0.6s;
-  -o-animation: progress 0.6s;
-  animation: progress 0.6s;
+  -webkit-animation: sc-progress-fill 0.6s ease-out;
+  -moz-animation: sc-progress-fill 0.6s ease-out;
+  -o-animation: sc-progress-fill 0.6s ease-out;
+  animation: sc-progress-fill 0.6s ease-out;
 
   -webkit-animation-fill-mode: forwards;
   -moz-animation-fill-mode: forwards;
   -o-animation-fill-mode: forwards;
   animation-fill-mode: forwards;
 }
-@-webkit-keyframes progress {
-    from { } to { width: 100% }
+@-webkit-keyframes sc-progress-fill {
+  from { -webkit-transform: scaleX(0); }
+  to { -webkit-transform: scaleX(1); }
 }
-@-moz-keyframes progress {
-    from { } to { width: 100% }
+@-moz-keyframes sc-progress-fill {
+  from { -moz-transform: scaleX(0); }
+  to { -moz-transform: scaleX(1); }
 }
-@-ms-keyframes progress {
-    from { } to { width: 100% }
+@keyframes sc-progress-fill {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
 }
-@keyframes progress {
-    from { } to { width: 100% }
+
+/* Circle alternatives: expand from center so the fill covers the whole shape. */
+.h5p-sc-play-area.h5p-sc-alts-shape-circle li.h5p-sc-alternative .h5p-sc-progressbar {
+  border-radius: 50%;
+  -webkit-transform: scale(0);
+  -moz-transform: scale(0);
+  -ms-transform: scale(0);
+  transform: scale(0);
+  -webkit-transform-origin: center center;
+  -moz-transform-origin: center center;
+  -ms-transform-origin: center center;
+  transform-origin: center center;
+}
+.h5p-sc-play-area.h5p-sc-alts-shape-circle li.h5p-sc-alternative.h5p-sc-selected .h5p-sc-progressbar {
+  -webkit-animation-name: sc-progress-fill-circle;
+  -moz-animation-name: sc-progress-fill-circle;
+  -o-animation-name: sc-progress-fill-circle;
+  animation-name: sc-progress-fill-circle;
+}
+@-webkit-keyframes sc-progress-fill-circle {
+  from { -webkit-transform: scale(0); }
+  to { -webkit-transform: scale(1); }
+}
+@-moz-keyframes sc-progress-fill-circle {
+  from { -moz-transform: scale(0); }
+  to { -moz-transform: scale(1); }
+}
+@keyframes sc-progress-fill-circle {
+  from { transform: scale(0); }
+  to { transform: scale(1); }
 }
 li.h5p-sc-alternative .h5p-sc-alternative-body {
   display: flex;
@@ -566,14 +609,31 @@ li.h5p-sc-alternative .h5p-sc-label p:last-child {
 }
 li.h5p-sc-alternative .h5p-sc-status {
   font-family: H5PFontAwesome4;
-  font-size: 1.5em;
-  width: 1.5em;
-  height: 1.5em;
-  line-height: 1.5;
-  position: absolute;
-  top: 0;
-  right: 0;
+  font-size: var(--sc-feedback-icon-size, 1em);
+  line-height: 1;
+  flex: 0 0 auto;
+  align-self: flex-start;
+  position: relative;
+  top: auto;
+  right: auto;
+  width: 0;
+  height: 0;
+  overflow: hidden;
   text-align: center;
+  z-index: 1;
+  pointer-events: none;
+}
+.h5p-sc-play-area.h5p-sc-feedback-icon-valign-center li.h5p-sc-alternative .h5p-sc-status {
+  align-self: center;
+}
+.h5p-sc-play-area.h5p-sc-feedback-icon-valign-bottom li.h5p-sc-alternative .h5p-sc-status {
+  align-self: flex-end;
+}
+/* Expand icon slot only after feedback is revealed (avoids empty gap before answer). */
+li.h5p-sc-alternative.h5p-sc-drummed .h5p-sc-status {
+  width: var(--sc-feedback-icon-size, 1em);
+  height: var(--sc-feedback-icon-size, 1em);
+  overflow: visible;
 }
 .h5p-sc-alternative.h5p-sc-is-correct.h5p-sc-drummed .h5p-sc-status:after{
   content: "\f00c";
@@ -1035,7 +1095,7 @@ li.h5p-sc-alternative .h5p-sc-status {
 .h5p-sc-play-area.h5p-sc-alts-layout-horizontal ul.h5p-sc-alternatives {
   display: grid;
   grid-template-columns: repeat(var(--sc-alt-count, 2), minmax(0, var(--sc-alt-horizontal-max, 1fr)));
-  gap: var(--sc-spacing-s, 0.5em);
+  gap: var(--sc-alt-gap, var(--sc-spacing-s, 0.5em));
   align-items: stretch;
   justify-content: center;
 }
@@ -1050,8 +1110,7 @@ li.h5p-sc-alternative .h5p-sc-status {
   text-align: center;
 }
 
-.h5p-sc-play-area.h5p-sc-alts-shape-pill ul.h5p-sc-alternatives li.h5p-sc-alternative,
-.h5p-sc-play-area.h5p-sc-alts-shape-pill ul.h5p-sc-alternatives li.h5p-sc-alternative .h5p-sc-progressbar {
+.h5p-sc-play-area.h5p-sc-alts-shape-pill ul.h5p-sc-alternatives li.h5p-sc-alternative {
   border-radius: 999em;
 }
 
@@ -1059,14 +1118,12 @@ li.h5p-sc-alternative .h5p-sc-status {
   aspect-ratio: 1;
   border-radius: 50%;
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   text-align: center;
   padding: var(--sc-spacing-s, 0.5em);
-}
-
-.h5p-sc-play-area.h5p-sc-alts-shape-circle ul.h5p-sc-alternatives li.h5p-sc-alternative .h5p-sc-progressbar {
-  border-radius: 50%;
+  gap: 0;
 }
 
 .h5p-sc-play-area.h5p-sc-alts-shape-circle li.h5p-sc-alternative .h5p-sc-alternative-body {
@@ -1075,6 +1132,22 @@ li.h5p-sc-alternative .h5p-sc-status {
   justify-content: center;
   text-align: center;
   width: 100%;
+  min-width: 0;
+}
+
+/* Keep circle text centered: icon overlays without shifting flex layout. */
+.h5p-sc-play-area.h5p-sc-alts-shape-circle li.h5p-sc-alternative .h5p-sc-status,
+.h5p-sc-play-area.h5p-sc-alts-shape-circle li.h5p-sc-alternative.h5p-sc-drummed .h5p-sc-status {
+  position: absolute;
+  top: 0.35em;
+  right: 0.35em;
+  left: auto;
+  align-self: auto;
+  width: 1.15em;
+  height: 1.15em;
+  font-size: 1.15em;
+  line-height: 1.15;
+  overflow: visible;
 }
 
 .h5p-sc-play-area.h5p-sc-alts-shape-circle.h5p-sc-alts-layout-vertical ul.h5p-sc-alternatives li.h5p-sc-alternative {

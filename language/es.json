@@ -548,8 +548,31 @@
               "description": "Solo se usa en disposición horizontal. Limita cuánto puede crecer cada columna de alternativa."
             },
             {
+              "label": "Espacio entre alternativas",
+              "description": "Separación entre alternativas en unidades em. Aplica tanto a una sola columna como a una columna por alternativa."
+            },
+            {
               "label": "Mostrar iconos de acierto o error en alternativas",
-              "description": "Muestra un icono de verificación o cruz tras responder. Desactívelo para alternativas circulares o cuando los colores bastan como retroalimentación."
+              "description": "Muestra un icono de verificación o cruz tras responder. Desactívelo cuando los colores bastan como retroalimentación. No aplica a alternativas circulares."
+            },
+            {
+              "label": "Tamaño del icono de retroalimentación",
+              "description": "Tamaño relativo del icono de acierto o error en unidades em. Valores más pequeños evitan agrandar alternativas cortas."
+            },
+            {
+              "label": "Alineación vertical del icono de retroalimentación",
+              "description": "Posición vertical del icono de acierto o error en alternativas de varias líneas.",
+              "options": [
+                {
+                  "label": "Arriba"
+                },
+                {
+                  "label": "Centro"
+                },
+                {
+                  "label": "Abajo"
+                }
+              ]
             },
             {
               "label": "Radio de borde de alternativas",
@@ -594,13 +617,49 @@
             "label": "Color de alternativa",
             "fields": [
               {
+                "label": "Usar fondo en degradado"
+              },
+              {
                 "label": "Color de fondo"
+              },
+              {
+                "label": "Fondo en degradado",
+                "fields": [
+                  {
+                    "label": "Ángulo del degradado",
+                    "description": "Dirección en grados (0 = hacia arriba, 180 = hacia abajo)."
+                  },
+                  {
+                    "label": "Color inicial del degradado"
+                  },
+                  {
+                    "label": "Color final del degradado"
+                  }
+                ]
               },
               {
                 "label": "Color de texto"
               },
               {
+                "label": "Usar fondo en degradado al pasar el cursor"
+              },
+              {
                 "label": "Color de fondo al pasar el cursor"
+              },
+              {
+                "label": "Fondo en degradado al pasar el cursor",
+                "fields": [
+                  {
+                    "label": "Ángulo del degradado",
+                    "description": "Dirección en grados (0 = hacia arriba, 180 = hacia abajo)."
+                  },
+                  {
+                    "label": "Color inicial del degradado"
+                  },
+                  {
+                    "label": "Color final del degradado"
+                  }
+                ]
               },
               {
                 "label": "Color de texto al pasar el cursor"

@@ -441,13 +441,16 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
 
   /**
    * @param {Object} [appearance]
-   * @returns {{layout: string, shape: string, colorMode: string, horizontalMaxWidth: number, showFeedbackIcons: boolean}}
+   * @returns {{layout: string, shape: string, colorMode: string, horizontalMaxWidth: number, gap: number, showFeedbackIcons: boolean, feedbackIconSize: number, feedbackIconVerticalAlign: string}}
    */
   function getAlternativesPresentation(appearance) {
     var presentation = resolveAlternativesBlock(appearance);
     var layout = presentation.layout === 'horizontal' ? 'horizontal' : 'vertical';
     var shape = presentation.shape;
     var horizontalMaxWidth = Number(presentation.horizontalMaxWidth);
+    var gap = Number(presentation.gap);
+    var feedbackIconSize = Number(presentation.feedbackIconSize);
+    var feedbackIconVerticalAlign = presentation.feedbackIconVerticalAlign;
 
     if (shape !== 'pill' && shape !== 'circle') {
       shape = 'box';
@@ -460,12 +463,34 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
       horizontalMaxWidth = 20;
     }
 
+    if (isNaN(gap) || gap < 0) {
+      gap = 0.5;
+    }
+    else if (gap > 3) {
+      gap = 3;
+    }
+
+    if (isNaN(feedbackIconSize) || feedbackIconSize < 0.5) {
+      feedbackIconSize = 1;
+    }
+    else if (feedbackIconSize > 3) {
+      feedbackIconSize = 3;
+    }
+
+    if (feedbackIconVerticalAlign !== 'center' && feedbackIconVerticalAlign !== 'bottom') {
+      feedbackIconVerticalAlign = 'top';
+    }
+
     return {
       layout: layout,
       shape: shape,
       colorMode: resolveColorMode(appearance),
       horizontalMaxWidth: horizontalMaxWidth,
-      showFeedbackIcons: presentation.showFeedbackIcons !== false
+      gap: gap,
+      // Circle never shows feedback icons (editor hides the option; force off for legacy content).
+      showFeedbackIcons: shape !== 'circle' && presentation.showFeedbackIcons !== false,
+      feedbackIconSize: feedbackIconSize,
+      feedbackIconVerticalAlign: feedbackIconVerticalAlign
     };
   }
 
@@ -482,6 +507,7 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
     var text;
     var hoverBackground;
     var hoverText;
+    var hasAnyColor;
 
     if (resolveColorMode(appearance) !== 'perPosition') {
       return null;
@@ -492,12 +518,26 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
       return null;
     }
 
-    background = pickString(entry.background, merged.alternativeBackground);
+    background = resolveFill(entry, {
+      solidKey: 'background',
+      fallbackSolid: merged.alternativeBackground
+    });
     text = pickString(entry.text, merged.alternativeText);
-    hoverBackground = pickString(entry.hoverBackground, merged.alternativeHoverBackground);
+    hoverBackground = resolveFill(entry, {
+      solidKey: 'hoverBackground',
+      useGradientKey: 'useHoverGradientBackground',
+      gradientKey: 'hoverGradientBackground',
+      fallbackSolid: merged.alternativeHoverBackground
+    });
     hoverText = pickString(entry.hoverText, merged.alternativeHoverText);
 
-    if (!entry.background && !entry.text && !entry.hoverBackground && !entry.hoverText) {
+    hasAnyColor = entry.background || entry.text || entry.hoverBackground || entry.hoverText ||
+      isTruthy(entry.useGradientBackground) || isTruthy(entry.useHoverGradientBackground) ||
+      (entry.gradientBackground && (entry.gradientBackground.colorStart || entry.gradientBackground.colorEnd)) ||
+      (entry.hoverGradientBackground &&
+        (entry.hoverGradientBackground.colorStart || entry.hoverGradientBackground.colorEnd));
+
+    if (!hasAnyColor) {
       return null;
     }
 
@@ -537,10 +577,16 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
         'h5p-sc-alts-shape-box',
         'h5p-sc-alts-shape-pill',
         'h5p-sc-alts-shape-circle',
-        'h5p-sc-alts-hide-feedback-icons'
+        'h5p-sc-alts-hide-feedback-icons',
+        'h5p-sc-feedback-icon-valign-top',
+        'h5p-sc-feedback-icon-valign-center',
+        'h5p-sc-feedback-icon-valign-bottom'
       );
       el.classList.add('h5p-sc-alts-layout-' + presentation.layout);
       el.classList.add('h5p-sc-alts-shape-' + presentation.shape);
+      el.classList.add(
+        'h5p-sc-feedback-icon-valign-' + presentation.feedbackIconVerticalAlign
+      );
 
       if (!presentation.showFeedbackIcons) {
         el.classList.add('h5p-sc-alts-hide-feedback-icons');
@@ -556,6 +602,12 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
         else {
           el.style.removeProperty('--sc-alt-horizontal-max');
         }
+
+        el.style.setProperty('--sc-alt-gap', toEm(presentation.gap, 0.5));
+        el.style.setProperty(
+          '--sc-feedback-icon-size',
+          toEm(presentation.feedbackIconSize, 1)
+        );
       }
     }
   }

@@ -1408,11 +1408,81 @@
             }
           },
           {
+            "name": "gap",
+            "type": "number",
+            "label": "Space between alternatives",
+            "description": "Gap between alternatives in em units. Applies to both single-column and multi-column layouts.",
+            "default": 0.5,
+            "min": 0,
+            "max": 3,
+            "decimals": 2,
+            "unit": "em"
+          },
+          {
             "name": "showFeedbackIcons",
             "type": "boolean",
             "label": "Show correct/wrong icons on alternatives",
-            "description": "Displays a check or cross icon after answering. Turn off for circular alternatives or when colors alone are enough feedback.",
-            "default": true
+            "description": "Displays a check or cross icon after answering. Turn off when colors alone are enough feedback. Not available for circular alternatives.",
+            "default": true,
+            "widget": "showWhen",
+            "showWhen": {
+              "rules": [
+                {
+                  "field": "shape",
+                  "equals": ["box", "pill"]
+                }
+              ]
+            }
+          },
+          {
+            "name": "feedbackIconSize",
+            "type": "number",
+            "label": "Feedback icon size",
+            "description": "Relative size of the correct/wrong icon in em units. Smaller values avoid growing short alternatives.",
+            "default": 1,
+            "min": 0.5,
+            "max": 3,
+            "decimals": 2,
+            "unit": "em",
+            "widget": "showWhen",
+            "showWhen": {
+              "rules": [
+                {
+                  "field": "shape",
+                  "equals": ["box", "pill"]
+                }
+              ]
+            }
+          },
+          {
+            "name": "feedbackIconVerticalAlign",
+            "type": "select",
+            "label": "Feedback icon vertical alignment",
+            "description": "Vertical position of the correct/wrong icon within multi-line alternatives.",
+            "default": "top",
+            "options": [
+              {
+                "value": "top",
+                "label": "Top"
+              },
+              {
+                "value": "center",
+                "label": "Center"
+              },
+              {
+                "value": "bottom",
+                "label": "Bottom"
+              }
+            ],
+            "widget": "showWhen",
+            "showWhen": {
+              "rules": [
+                {
+                  "field": "shape",
+                  "equals": ["box", "pill"]
+                }
+              ]
+            }
           },
           {
             "name": "borderRadius",
@@ -1512,10 +1582,11 @@
         "optional": true,
         "widget": "showWhen",
         "showWhen": {
+          "detach": true,
           "rules": [
             {
               "field": "colorMode",
-              "equals": "perPosition"
+              "equals": ["perPosition"]
             }
           ]
         },
@@ -1526,14 +1597,77 @@
           "importance": "low",
           "fields": [
             {
+              "name": "useGradientBackground",
+              "type": "boolean",
+              "label": "Use gradient background",
+              "default": false
+            },
+            {
               "name": "background",
               "type": "text",
-              "widget": "colorSelector",
               "label": "Background color",
               "optional": true,
               "spectrum": {
                 "showInput": true
+              },
+              "widget": "showWhen",
+              "showWhen": {
+                "widget": "colorSelector",
+                "rules": [
+                  {
+                    "field": "useGradientBackground",
+                    "equals": false
+                  }
+                ]
               }
+            },
+            {
+              "name": "gradientBackground",
+              "type": "group",
+              "label": "Gradient background",
+              "importance": "low",
+              "widget": "showWhen",
+              "showWhen": {
+                "rules": [
+                  {
+                    "field": "useGradientBackground",
+                    "equals": true
+                  }
+                ]
+              },
+              "fields": [
+                {
+                  "name": "angle",
+                  "type": "number",
+                  "label": "Gradient angle",
+                  "description": "Direction in degrees (0 = upward, 180 = downward).",
+                  "default": 180,
+                  "min": 0,
+                  "max": 360,
+                  "step": 1,
+                  "unit": "°"
+                },
+                {
+                  "name": "colorStart",
+                  "type": "text",
+                  "widget": "colorSelector",
+                  "label": "Gradient start color",
+                  "optional": true,
+                  "spectrum": {
+                    "showInput": true
+                  }
+                },
+                {
+                  "name": "colorEnd",
+                  "type": "text",
+                  "widget": "colorSelector",
+                  "label": "Gradient end color",
+                  "optional": true,
+                  "spectrum": {
+                    "showInput": true
+                  }
+                }
+              ]
             },
             {
               "name": "text",
@@ -1546,14 +1680,77 @@
               }
             },
             {
+              "name": "useHoverGradientBackground",
+              "type": "boolean",
+              "label": "Use gradient background on hover",
+              "default": false
+            },
+            {
               "name": "hoverBackground",
               "type": "text",
-              "widget": "colorSelector",
               "label": "Hover background color",
               "optional": true,
               "spectrum": {
                 "showInput": true
+              },
+              "widget": "showWhen",
+              "showWhen": {
+                "widget": "colorSelector",
+                "rules": [
+                  {
+                    "field": "useHoverGradientBackground",
+                    "equals": false
+                  }
+                ]
               }
+            },
+            {
+              "name": "hoverGradientBackground",
+              "type": "group",
+              "label": "Hover gradient background",
+              "importance": "low",
+              "widget": "showWhen",
+              "showWhen": {
+                "rules": [
+                  {
+                    "field": "useHoverGradientBackground",
+                    "equals": true
+                  }
+                ]
+              },
+              "fields": [
+                {
+                  "name": "angle",
+                  "type": "number",
+                  "label": "Gradient angle",
+                  "description": "Direction in degrees (0 = upward, 180 = downward).",
+                  "default": 180,
+                  "min": 0,
+                  "max": 360,
+                  "step": 1,
+                  "unit": "°"
+                },
+                {
+                  "name": "colorStart",
+                  "type": "text",
+                  "widget": "colorSelector",
+                  "label": "Gradient start color",
+                  "optional": true,
+                  "spectrum": {
+                    "showInput": true
+                  }
+                },
+                {
+                  "name": "colorEnd",
+                  "type": "text",
+                  "widget": "colorSelector",
+                  "label": "Gradient end color",
+                  "optional": true,
+                  "spectrum": {
+                    "showInput": true
+                  }
+                }
+              ]
             },
             {
               "name": "hoverText",
@@ -1576,10 +1773,11 @@
         "optional": true,
         "widget": "showWhen",
         "showWhen": {
+          "detach": true,
           "rules": [
             {
               "field": "colorMode",
-              "equals": "uniform"
+              "equals": ["uniform"]
             }
           ]
         },
