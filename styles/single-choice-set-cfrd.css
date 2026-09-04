@@ -395,19 +395,20 @@ ul.h5p-sc-alternatives li.h5p-sc-alternative {
   list-style: none;
   margin: .5em 0;
   padding: .4em 1.2em;
-  background: var(--sc-alternative-bg);
-  color: var(--sc-alternative-color);
   overflow: hidden;
-  border: var(--sc-alternative-border-width) solid var(--sc-alternative-border-color);
-  -webkit-border-radius: var(--sc-alternative-border-radius);
-  -moz-border-radius: var(--sc-alternative-border-radius);
-  border-radius: var(--sc-alternative-border-radius);
-  box-shadow: var(--sc-alternative-box-shadow);
 }
 
+/* Higher specificity than upstream H5P.SingleChoiceSet-1.11 (same classes, hardcoded #ddd / 0.25em). */
 .h5p-sc-play-area ul.h5p-sc-alternatives li.h5p-sc-alternative {
   margin: var(--sc-alt-gap, var(--sc-spacing-s, 0.5em)) 0;
   padding: var(--sc-spacing-xs, 0.4em) var(--sc-spacing-alt-pad-x, 1.2em);
+  background: var(--sc-alternative-bg);
+  color: var(--sc-alternative-color);
+  border: var(--sc-alternative-border-width) solid var(--sc-alternative-border-color);
+  box-shadow: var(--sc-alternative-box-shadow);
+  -webkit-border-radius: var(--sc-alternative-border-radius);
+  -moz-border-radius: var(--sc-alternative-border-radius);
+  border-radius: var(--sc-alternative-border-radius);
 }
 
 .h5p-sc-play-area ul.h5p-sc-alternatives li.h5p-sc-alternative:first-child {
@@ -418,19 +419,19 @@ ul.h5p-sc-alternatives li.h5p-sc-alternative {
   margin-bottom: 0;
 }
 
-ul.h5p-sc-alternatives li.h5p-sc-alternative:hover {
+.h5p-sc-play-area ul.h5p-sc-alternatives li.h5p-sc-alternative:hover {
   background: var(--sc-alternative-hover-bg);
   color: var(--sc-alternative-hover-color);
   border-color: var(--sc-alternative-hover-border-color);
 }
 
-ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative,
-ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative:hover,
-ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative:active,
-ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative:focus,
-ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-reveal-wrong:hover,
-ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-reveal-wrong:active,
-ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-reveal-wrong:focus {
+.h5p-sc-play-area ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative,
+.h5p-sc-play-area ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative:hover,
+.h5p-sc-play-area ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative:active,
+.h5p-sc-play-area ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative:focus,
+.h5p-sc-play-area ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-reveal-wrong:hover,
+.h5p-sc-play-area ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-reveal-wrong:active,
+.h5p-sc-play-area ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-reveal-wrong:focus {
   background: var(--sc-alternative-bg);
   color: var(--sc-alternative-color);
   border-color: var(--sc-alternative-border-color);
@@ -440,51 +441,51 @@ ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-reveal-wrong
 }
 
 /* During selection progress, match result text color immediately */
-ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-is-correct.h5p-sc-selected,
-ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-is-correct.h5p-sc-selected:hover,
-ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-is-correct.h5p-sc-selected:active,
-ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-is-correct.h5p-sc-selected:focus {
+.h5p-sc-play-area ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-is-correct.h5p-sc-selected,
+.h5p-sc-play-area ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-is-correct.h5p-sc-selected:hover,
+.h5p-sc-play-area ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-is-correct.h5p-sc-selected:active,
+.h5p-sc-play-area ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-is-correct.h5p-sc-selected:focus {
   color: var(--sc-correct-color);
 }
 
-ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-is-wrong.h5p-sc-selected,
-ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-is-wrong.h5p-sc-selected:hover,
-ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-is-wrong.h5p-sc-selected:active,
-ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-is-wrong.h5p-sc-selected:focus {
+.h5p-sc-play-area ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-is-wrong.h5p-sc-selected,
+.h5p-sc-play-area ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-is-wrong.h5p-sc-selected:hover,
+.h5p-sc-play-area ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-is-wrong.h5p-sc-selected:active,
+.h5p-sc-play-area ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-is-wrong.h5p-sc-selected:focus {
   color: var(--sc-wrong-color);
 }
 
-ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-reveal-correct,
-ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-reveal-correct:hover,
-ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-reveal-correct:active,
-ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-reveal-correct:focus {
+.h5p-sc-play-area ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-reveal-correct,
+.h5p-sc-play-area ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-reveal-correct:hover,
+.h5p-sc-play-area ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-reveal-correct:active,
+.h5p-sc-play-area ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-reveal-correct:focus {
   background: var(--sc-correct-bg);
   color: var(--sc-correct-color);
   border-width: var(--sc-correct-border-width);
   border-color: var(--sc-correct-border-color);
 }
 
-ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-is-correct.h5p-sc-selected.h5p-sc-reveal-correct .h5p-sc-progressbar {
+.h5p-sc-play-area ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-is-correct.h5p-sc-selected.h5p-sc-reveal-correct .h5p-sc-progressbar {
   background: var(--sc-correct-bg);
   color: var(--sc-correct-color);
 }
 
-ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-reveal-wrong.h5p-sc-selected,
-ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-reveal-wrong.h5p-sc-selected:hover,
-ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-reveal-wrong.h5p-sc-selected:active,
-ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-reveal-wrong.h5p-sc-selected:focus {
+.h5p-sc-play-area ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-reveal-wrong.h5p-sc-selected,
+.h5p-sc-play-area ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-reveal-wrong.h5p-sc-selected:hover,
+.h5p-sc-play-area ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-reveal-wrong.h5p-sc-selected:active,
+.h5p-sc-play-area ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-reveal-wrong.h5p-sc-selected:focus {
   background: var(--sc-wrong-bg);
   color: var(--sc-wrong-color);
   border-width: var(--sc-wrong-border-width);
   border-color: var(--sc-wrong-border-color);
 }
 
-ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-is-wrong.h5p-sc-selected.h5p-sc-reveal-wrong .h5p-sc-progressbar {
+.h5p-sc-play-area ul.h5p-sc-alternatives.h5p-sc-selected li.h5p-sc-alternative.h5p-sc-is-wrong.h5p-sc-selected.h5p-sc-reveal-wrong .h5p-sc-progressbar {
   background: var(--sc-wrong-bg);
   color: var(--sc-wrong-color);
 }
 
-li.h5p-sc-alternative .h5p-sc-progressbar {
+.h5p-sc-play-area li.h5p-sc-alternative .h5p-sc-progressbar {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -502,20 +503,20 @@ li.h5p-sc-alternative .h5p-sc-progressbar {
   pointer-events: none;
 }
 
-li.h5p-sc-alternative.h5p-sc-is-correct .h5p-sc-progressbar {
+.h5p-sc-play-area li.h5p-sc-alternative.h5p-sc-is-correct .h5p-sc-progressbar {
   background: var(--sc-correct-bg);
 }
 
-li.h5p-sc-alternative.h5p-sc-is-wrong .h5p-sc-progressbar {
+.h5p-sc-play-area li.h5p-sc-alternative.h5p-sc-is-wrong .h5p-sc-progressbar {
   background: var(--sc-wrong-bg);
 }
-.h5p-sc-drummed .h5p-sc-progressbar {
+.h5p-sc-play-area .h5p-sc-drummed .h5p-sc-progressbar {
   background: transparent;
   transition: background 0.3s, opacity 0.3s;
   opacity: 0;
 }
 /* Fill the whole alternative with a scale transform (smoother than width %). */
-li.h5p-sc-alternative.h5p-sc-selected .h5p-sc-progressbar {
+.h5p-sc-play-area li.h5p-sc-alternative.h5p-sc-selected .h5p-sc-progressbar {
   -webkit-animation: sc-progress-fill 0.6s ease-out;
   -moz-animation: sc-progress-fill 0.6s ease-out;
   -o-animation: sc-progress-fill 0.6s ease-out;
