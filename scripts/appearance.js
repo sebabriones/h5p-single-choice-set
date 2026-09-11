@@ -738,10 +738,13 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
     var key;
     var i;
     var el;
+    var playAreaBg;
 
     if (!$container || !$container.length) {
       return merged;
     }
+
+    playAreaBg = getCssVarValue(merged, 'playAreaBackground');
 
     for (i = 0; i < $container.length; i++) {
       el = $container[i];
@@ -767,6 +770,9 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
           el.style.setProperty(CSS_PX_VAR_KEYS[key], getCssVarValue(merged, key));
         }
       }
+
+      // Direct background so stylesheet defaults on .h5p-single-choice-set cannot win.
+      el.style.backgroundColor = playAreaBg;
     }
 
     return merged;

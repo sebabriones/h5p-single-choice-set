@@ -1,6 +1,12 @@
 var H5P = H5P || {};
 
 /**
+ * Keep helpers out of the global scope.
+ * Course Presentation editor loads many CFRD libs; shared names like
+ * applyActivityAppearance would otherwise overwrite each other (e.g. Mark The Words).
+ */
+(function () {
+/**
  * @param {*} value
  * @returns {boolean}
  */
@@ -184,20 +190,98 @@ function scheduleResultResize(instance) {
 }
 
 /**
- * Apply activity appearance CSS variables to the play area.
+ * Resolve the question root (.h5p-single-choice-set) for stylesheet overrides.
+ *
+ * @param {H5P.SingleChoiceSetCFRD} instance
+ * @returns {H5P.jQuery|null}
+ */
+function getQuestionRoot(instance) {
+  if (instance.$questionRoot && instance.$questionRoot.length) {
+    return instance.$questionRoot;
+  }
+
+  if (instance.$playArea && instance.$playArea.length) {
+    return instance.$playArea.closest('.h5p-single-choice-set, .h5p-question');
+  }
+
+  return null;
+}
+
+/**
+ * Resolve Appearance at call time.
+ * In Course Presentation editor, preloadedJs order can leave the parse-time
+ * closure empty while H5P.SingleChoiceSetCFRD.Appearance is already attached.
+ *
+ * @returns {Object|null}
+ */
+function getAppearanceModule() {
+  if (H5P.SingleChoiceSetCFRD && H5P.SingleChoiceSetCFRD.Appearance) {
+    return H5P.SingleChoiceSetCFRD.Appearance;
+  }
+
+  return AppearanceModule || null;
+}
+
+/**
+ * Schedule CSS custom properties on a container (no layout class side-effects).
+ *
+ * @param {H5P.jQuery} $container
+ * @param {Object} [appearance]
+ * @param {Object|Array} [overallFeedback]
+ */
+function scheduleAppearanceVarsOnly($container, appearance, overallFeedback) {
+  var mod;
+  var apply;
+
+  mod = getAppearanceModule();
+  if (!mod || !$container || !$container.length) {
+    return;
+  }
+
+  apply = function () {
+    mod.applyAppearanceVars($container, appearance, overallFeedback);
+  };
+
+  apply();
+  setTimeout(apply, 0);
+  setTimeout(apply, 50);
+  setTimeout(apply, 200);
+}
+
+/**
+ * Apply activity appearance CSS variables to the play area and question root.
+ * Root overrides are required so .h5p-single-choice-set stylesheet defaults
+ * do not win when the instance is embedded (e.g. Course Presentation editor).
  *
  * @param {H5P.SingleChoiceSetCFRD} instance
  */
 function applyActivityAppearance(instance) {
-  if (!AppearanceModule || !instance || !instance.$playArea || !instance.$playArea.length) {
+  var mod;
+  var appearance;
+  var overallFeedback;
+  var $root;
+
+  mod = getAppearanceModule();
+  if (!mod || !instance) {
     return;
   }
 
-  AppearanceModule.scheduleAppearance(
-    instance.$playArea,
-    instance.options.appearance,
-    instance.options.overallFeedback
-  );
+  appearance = instance.options && instance.options.appearance;
+  overallFeedback = instance.options && instance.options.overallFeedback;
+
+  if (instance.$playArea && instance.$playArea.length) {
+    mod.scheduleAppearance(
+      instance.$playArea,
+      appearance,
+      overallFeedback
+    );
+  }
+
+  $root = getQuestionRoot(instance);
+  if ($root && $root.length) {
+    // Vars only — do not add h5p-sc-alts-* classes on the question wrapper.
+    scheduleAppearanceVarsOnly($root, appearance, overallFeedback);
+  }
 }
 
 /**
@@ -419,6 +503,30 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
 
   SingleChoiceSet.prototype = Object.create(Question.prototype);
   SingleChoiceSet.prototype.constructor = SingleChoiceSet;
+
+  /**
+   * Attach to DOM, then re-apply appearance on play area + question root.
+   * Matches Multi Choice / Drag Question: registerDomElements runs before the
+   * root exists in the tree; embedded CP remounts need a post-attach pass.
+   *
+   * @param {H5P.jQuery} $container
+   * @returns {*}
+   */
+  SingleChoiceSet.prototype.attach = function ($container) {
+    this.$questionRoot = $container;
+    var result = Question.prototype.attach.call(this, $container);
+    applyActivityAppearance(this);
+    applyActionButtonAppearance(this);
+    return result;
+  };
+
+  /**
+   * Re-apply activity appearance after Course Presentation editor remounts.
+   */
+  SingleChoiceSet.prototype.refreshAppearance = function () {
+    applyActivityAppearance(this);
+    applyActionButtonAppearance(this);
+  };
 
   /**
    * Set if a element is tabbable or not
@@ -1077,6 +1185,9 @@ H5P.SingleChoiceSetCFRD = (function ($, UI, Question, SingleChoice, SolutionView
       height: layout.heightPx
     });
 
+    // Re-apply after layout so embedded remounts keep author appearance vars.
+    applyActivityAppearance(self);
+
     self.refreshInstructionsScale();
     self.syncSlideHeights();
   };
@@ -1424,3 +1535,4 @@ if (AppearanceModule) {
     H5P.SingleChoiceSetCFRD[utilName] = SingleChoiceSetNamespace[utilName];
   }
 });
+})();

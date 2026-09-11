@@ -958,6 +958,7 @@
             "br",
             "strong",
             "em",
+            "u",
             "code"
           ],
           "label": "Question",
@@ -1053,6 +1054,7 @@
               "br",
               "strong",
               "em",
+              "u",
               "code"
             ],
                 "label": "Text",
