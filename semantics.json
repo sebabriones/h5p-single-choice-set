@@ -1433,17 +1433,8 @@
             "name": "showFeedbackIcons",
             "type": "boolean",
             "label": "Show correct/wrong icons on alternatives",
-            "description": "Displays a check or cross icon after answering. Turn off when colors alone are enough feedback. Not available for circular alternatives.",
-            "default": true,
-            "widget": "showWhen",
-            "showWhen": {
-              "rules": [
-                {
-                  "field": "shape",
-                  "equals": ["box", "pill"]
-                }
-              ]
-            }
+            "description": "Displays a check or cross icon after answering. Turn off when colors alone are enough feedback. For circular alternatives the icon stacks above or below the text.",
+            "default": true
           },
           {
             "name": "feedbackIconSize",
@@ -1454,22 +1445,13 @@
             "min": 0.5,
             "max": 3,
             "decimals": 2,
-            "unit": "em",
-            "widget": "showWhen",
-            "showWhen": {
-              "rules": [
-                {
-                  "field": "shape",
-                  "equals": ["box", "pill"]
-                }
-              ]
-            }
+            "unit": "em"
           },
           {
             "name": "feedbackIconVerticalAlign",
             "type": "select",
             "label": "Feedback icon vertical alignment",
-            "description": "Vertical position of the correct/wrong icon within multi-line alternatives.",
+            "description": "Vertical position of the correct/wrong icon to the right of the text (box and pill shapes).",
             "default": "top",
             "options": [
               {
@@ -1491,6 +1473,32 @@
                 {
                   "field": "shape",
                   "equals": ["box", "pill"]
+                }
+              ]
+            }
+          },
+          {
+            "name": "feedbackIconStackPosition",
+            "type": "select",
+            "label": "Feedback icon position (circle)",
+            "description": "Places the correct/wrong icon above or below the text inside circular alternatives.",
+            "default": "above",
+            "options": [
+              {
+                "value": "above",
+                "label": "Above text"
+              },
+              {
+                "value": "below",
+                "label": "Below text"
+              }
+            ],
+            "widget": "showWhen",
+            "showWhen": {
+              "rules": [
+                {
+                  "field": "shape",
+                  "equals": ["circle"]
                 }
               ]
             }

@@ -441,7 +441,7 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
 
   /**
    * @param {Object} [appearance]
-   * @returns {{layout: string, shape: string, colorMode: string, horizontalMaxWidth: number, gap: number, showFeedbackIcons: boolean, feedbackIconSize: number, feedbackIconVerticalAlign: string}}
+   * @returns {{layout: string, shape: string, colorMode: string, horizontalMaxWidth: number, gap: number, showFeedbackIcons: boolean, feedbackIconSize: number, feedbackIconVerticalAlign: string, feedbackIconStackPosition: string}}
    */
   function getAlternativesPresentation(appearance) {
     var presentation = resolveAlternativesBlock(appearance);
@@ -451,6 +451,7 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
     var gap = Number(presentation.gap);
     var feedbackIconSize = Number(presentation.feedbackIconSize);
     var feedbackIconVerticalAlign = presentation.feedbackIconVerticalAlign;
+    var feedbackIconStackPosition = presentation.feedbackIconStackPosition;
 
     if (shape !== 'pill' && shape !== 'circle') {
       shape = 'box';
@@ -481,16 +482,20 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
       feedbackIconVerticalAlign = 'top';
     }
 
+    if (feedbackIconStackPosition !== 'below') {
+      feedbackIconStackPosition = 'above';
+    }
+
     return {
       layout: layout,
       shape: shape,
       colorMode: resolveColorMode(appearance),
       horizontalMaxWidth: horizontalMaxWidth,
       gap: gap,
-      // Circle never shows feedback icons (editor hides the option; force off for legacy content).
-      showFeedbackIcons: shape !== 'circle' && presentation.showFeedbackIcons !== false,
+      showFeedbackIcons: presentation.showFeedbackIcons !== false,
       feedbackIconSize: feedbackIconSize,
-      feedbackIconVerticalAlign: feedbackIconVerticalAlign
+      feedbackIconVerticalAlign: feedbackIconVerticalAlign,
+      feedbackIconStackPosition: feedbackIconStackPosition
     };
   }
 
@@ -580,12 +585,17 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
         'h5p-sc-alts-hide-feedback-icons',
         'h5p-sc-feedback-icon-valign-top',
         'h5p-sc-feedback-icon-valign-center',
-        'h5p-sc-feedback-icon-valign-bottom'
+        'h5p-sc-feedback-icon-valign-bottom',
+        'h5p-sc-feedback-icon-stack-above',
+        'h5p-sc-feedback-icon-stack-below'
       );
       el.classList.add('h5p-sc-alts-layout-' + presentation.layout);
       el.classList.add('h5p-sc-alts-shape-' + presentation.shape);
       el.classList.add(
         'h5p-sc-feedback-icon-valign-' + presentation.feedbackIconVerticalAlign
+      );
+      el.classList.add(
+        'h5p-sc-feedback-icon-stack-' + presentation.feedbackIconStackPosition
       );
 
       if (!presentation.showFeedbackIcons) {

@@ -559,7 +559,7 @@
             },
             {
               "label": "Mostrar iconos de acierto o error en alternativas",
-              "description": "Muestra un icono de verificación o cruz tras responder. Desactívelo cuando los colores bastan como retroalimentación. No aplica a alternativas circulares."
+              "description": "Muestra un icono de verificación o cruz tras responder. Desactívelo cuando los colores bastan como retroalimentación. En alternativas circulares el icono se apila arriba o abajo del texto."
             },
             {
               "label": "Tamaño del icono de retroalimentación",
@@ -567,7 +567,7 @@
             },
             {
               "label": "Alineación vertical del icono de retroalimentación",
-              "description": "Posición vertical del icono de acierto o error en alternativas de varias líneas.",
+              "description": "Posición vertical del icono de acierto o error a la derecha del texto (formas caja y píldora).",
               "options": [
                 {
                   "label": "Arriba"
@@ -577,6 +577,18 @@
                 },
                 {
                   "label": "Abajo"
+                }
+              ]
+            },
+            {
+              "label": "Posición del icono de retroalimentación (círculo)",
+              "description": "Coloca el icono de acierto o error arriba o abajo del texto en alternativas circulares.",
+              "options": [
+                {
+                  "label": "Arriba del texto"
+                },
+                {
+                  "label": "Abajo del texto"
                 }
               ]
             },

@@ -1119,12 +1119,12 @@ li.h5p-sc-alternative.h5p-sc-drummed .h5p-sc-status {
   aspect-ratio: 1;
   border-radius: 50%;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
   padding: var(--sc-spacing-s, 0.5em);
-  gap: 0;
+  gap: 0.15em;
 }
 
 .h5p-sc-play-area.h5p-sc-alts-shape-circle li.h5p-sc-alternative .h5p-sc-alternative-body {
@@ -1134,21 +1134,34 @@ li.h5p-sc-alternative.h5p-sc-drummed .h5p-sc-status {
   text-align: center;
   width: 100%;
   min-width: 0;
+  order: 0;
+  /* Do not grow: keep text+icon stack centered as a unit inside the circle. */
+  flex: 0 1 auto;
 }
 
-/* Keep circle text centered: icon overlays without shifting flex layout. */
+/* Circle: stack feedback icon above or below the text (not to the side). */
 .h5p-sc-play-area.h5p-sc-alts-shape-circle li.h5p-sc-alternative .h5p-sc-status,
 .h5p-sc-play-area.h5p-sc-alts-shape-circle li.h5p-sc-alternative.h5p-sc-drummed .h5p-sc-status {
-  position: absolute;
-  top: 0.35em;
-  right: 0.35em;
+  position: static;
+  top: auto;
+  right: auto;
   left: auto;
-  align-self: auto;
-  width: 1.15em;
-  height: 1.15em;
-  font-size: 1.15em;
-  line-height: 1.15;
-  overflow: visible;
+  align-self: center;
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+/* Empty icon slot must not reserve space before the answer is revealed. */
+.h5p-sc-play-area.h5p-sc-alts-shape-circle li.h5p-sc-alternative:not(.h5p-sc-drummed) .h5p-sc-status {
+  display: none;
+}
+
+.h5p-sc-play-area.h5p-sc-alts-shape-circle.h5p-sc-feedback-icon-stack-above li.h5p-sc-alternative .h5p-sc-status {
+  order: -1;
+}
+
+.h5p-sc-play-area.h5p-sc-alts-shape-circle.h5p-sc-feedback-icon-stack-below li.h5p-sc-alternative .h5p-sc-status {
+  order: 1;
 }
 
 .h5p-sc-play-area.h5p-sc-alts-shape-circle.h5p-sc-alts-layout-vertical ul.h5p-sc-alternatives li.h5p-sc-alternative {
