@@ -29,7 +29,7 @@
   --sc-alternative-border-radius: 0.25em;
   --sc-alternative-border-width: 0;
   --sc-alternative-border-color: transparent;
-  --sc-alternative-box-shadow: 0 0.1em 0 rgba(0,0,0,0.3);
+  --sc-alternative-box-shadow: none;
   --sc-question-border-width: 0;
   --sc-question-border-color: transparent;
   --sc-feedback-bg: #ffffff;

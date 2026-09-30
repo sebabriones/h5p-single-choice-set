@@ -29,7 +29,7 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
     alternativeBorderWidth: '0',
     alternativeBorderColor: 'transparent',
     alternativeHoverBorderColor: 'transparent',
-    alternativeBoxShadow: '0 0.1em 0 rgba(0,0,0,0.3)',
+    alternativeBoxShadow: 'none',
     questionBorderWidth: '0',
     questionBorderColor: 'transparent',
     correctBorderWidth: '0',
@@ -273,7 +273,7 @@ H5P.SingleChoiceSetCFRD = H5P.SingleChoiceSetCFRD || {};
       merged.alternativeBorderWidth = '0';
       merged.alternativeBorderColor = 'transparent';
       merged.alternativeHoverBorderColor = 'transparent';
-      merged.alternativeBoxShadow = '0 0.1em 0 rgba(0,0,0,0.3)';
+      merged.alternativeBoxShadow = 'none';
     }
 
     if (isTruthy(questionArea.useBorder)) {
