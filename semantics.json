@@ -1046,7 +1046,7 @@
           "importance": "medium",
           "entity": "answer",
           "min": 2,
-          "max": 4,
+          "max": 8,
           "defaultNum": 2,
           "field": {
             "name": "answer",
@@ -1596,12 +1596,11 @@
         "importance": "low",
         "entity": "alternative color",
         "min": 1,
-        "max": 4,
+        "max": 8,
         "defaultNum": 4,
         "optional": true,
         "widget": "showWhen",
         "showWhen": {
-          "detach": true,
           "rules": [
             {
               "field": "colorMode",
